@@ -1,0 +1,88 @@
+@startuml
+
+
+enum Ruolo{
+ADMIN
+CUCINA
+CAMERIERE
+}
+
+class Utente{
+nome : string
+cognome : string
+telefono: string 
+email : string
+ruolo : Ruolo
+supervisore : bool
+}
+
+class Ristorante{
+nome: string
+indirizzo: string
+telefono : string
+sitoWeb : string
+fotoPath : string
+
+getters e setters
+}
+
+class Ingrediente{
+nome: string
+}
+
+
+class Piatto{
+nome: string
+descrizione : string
+prezzo: float
+ingredienti [ingrediente]
+allergeni [string]
+
+getters e setters
+}
+
+class PiattoOrdinato extends Piatto{
+quantita : int
+}
+
+class Categoria{
+nome : string
+}
+
+Categoria "1" --> "N" Piatto : composta
+
+Tavolo "1" --> "N"  Piatto : ordina
+
+Piatto "1" --> "N"  Ingrediente : ha
+
+
+enum StatoTavolo{
+OCCUPATO
+LIBERO
+}
+
+class Tavolo{
+status : StatoTavolo
+id: int
+
+chiudiTavolo()
+aggiungiPiatto()
+stampaConto()
+}
+
+OrdineAllaCucina "1" --> "N" PiattoOrdinato : ha
+OrdineAllaCucina "1" --> "1" Tavolo: destinato a
+
+
+Ristorante "1" --> "N"  Utente: ha
+
+class OrdineAllaCucina{
+uuid: int
+timestamp : Datetime
+evaso : bool
+
+evadiOrdine()
+}
+
+
+@enduml
