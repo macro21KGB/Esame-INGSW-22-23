@@ -1,20 +1,27 @@
 @startuml
 
-
-enum Ruolo{
-ADMIN
-CUCINA
-CAMERIERE
-}
-
 class Utente{
 nome : string
 cognome : string
 telefono: string 
 email : string
-ruolo : Ruolo
 supervisore : bool
 }
+
+
+class Admin extends Utente{
+}
+
+class Cameriere extends Utente{
+tavoliServiti: int
+inviaOrdineAllaCucina(Ordinazione ordine)
+}
+
+class AddettoCucina extends Utente{
+ordiniEvasi : int
+evadiOrdine(Ordinazione ordine)
+}
+
 
 class Ristorante{
 nome: string
@@ -26,22 +33,19 @@ fotoPath : string
 getters e setters
 }
 
-class Ingrediente{
-nome: string
-}
 
 
-class Piatto{
+class Elemento{
 nome: string
 descrizione : string
 prezzo: float
-ingredienti [ingrediente]
+ingredienti [string]
 allergeni [string]
 
 getters e setters
 }
 
-class PiattoOrdinato extends Piatto{
+class ElementoConQuantita extends Elemento{
 quantita : int
 }
 
@@ -49,34 +53,35 @@ class Categoria{
 nome : string
 }
 
-Categoria "1" --> "N" Piatto : composta
+Categoria "1" --> "N" Elemento : composta
 
-Tavolo "1" --> "N"  Piatto : ordina
+abstract class Menu{
 
-Piatto "1" --> "N"  Ingrediente : ha
-
-
-enum StatoTavolo{
-OCCUPATO
-LIBERO
 }
 
+Menu "1" --> "N" Categoria : ha
+
+
+
 class Tavolo{
-status : StatoTavolo
+occupato : bool
 id: int
 
 chiudiTavolo()
-aggiungiPiatto()
 stampaConto()
 }
 
-OrdineAllaCucina "1" --> "N" PiattoOrdinato : ha
-OrdineAllaCucina "1" --> "1" Tavolo: destinato a
+Ordinazione "1" --> "N" ElementoConQuantita: ha
 
+Tavolo "1" --> "N" Ordinazione : prende
 
-Ristorante "1" --> "N"  Utente: ha
+Admin "1" --> "N" Ristorante : ha
 
-class OrdineAllaCucina{
+Ristorante "1" --> "1" Menu: ha
+Ristorante "1" --> "N" AddettoCucina: ha
+Ristorante "1" --> "N" Cameriere: ha
+
+class Ordinazione {
 uuid: int
 timestamp : Datetime
 evaso : bool
