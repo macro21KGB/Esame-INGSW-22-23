@@ -6,7 +6,7 @@ interface ICanBeSupervisor {
     supervisore: boolean;
 }
 
-abstract class Utente {
+class Utente {
     nome: string;
     cognome: string;
     telefono: string;
@@ -40,10 +40,8 @@ class Admin extends Utente {
         return this._ristoranti;
     }
 
-    public static fromTuttiIDati(nome : string, cognome : string, telefono : string, email : string, ristoranti : Ristorante[]) : Admin {
-        const admin = new Admin(nome, cognome, telefono, email);
-        admin.setRistoranti(ristoranti);
-        return admin;
+    constructor(nome: string, cognome: string, telefono: string, email: string) {
+        super(nome, cognome, telefono, email);
     }
 
 

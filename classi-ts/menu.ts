@@ -1,4 +1,23 @@
 class Menu {
+    private nome: string;
+    private categorie: Categoria[];
+
+    constructor(nome: string, categorie: Categoria[]) {
+        this.nome = nome;
+        this.categorie = categorie;
+    }
+
+    public getNome(): string {
+        return this.nome;
+    }
+    
+    public getCategorie(): Categoria[] {
+        return this.categorie;
+    }
+
+}
+
+class Categoria {
     nome: string;
     elementi: ElementoConQuantita[];
 
@@ -41,4 +60,4 @@ class ElementoConQuantita extends Elemento {
 }
 
 
-export { Menu, Elemento, ElementoConQuantita}
+export { Menu, Elemento, ElementoConQuantita, Categoria}

@@ -1,4 +1,9 @@
-import { AddettoAllaCucina, Cameriere } from "./utenti";
+import { AddettoAllaCucina, Cameriere } from "./utente";
+
+interface Personale {
+    camerieri: Cameriere[];
+    addettiAllaCucina: AddettoAllaCucina[];
+}
 
 export class Ristorante {
     nome: string;
@@ -6,17 +11,15 @@ export class Ristorante {
     telefono: string;
     sitoWeb: string;
     fotoPath: string;
-    camerieri: Cameriere[];
-    addettiAllaCucina: AddettoAllaCucina[];
+    personale: Personale;
 
-    constructor(nome: string, indirizzo: string, telefono: string, sitoWeb: string, fotoPath: string, camerieri: Cameriere[], addettiAllaCucina: AddettoAllaCucina[]) {
+    constructor(nome: string, indirizzo: string, telefono: string, sitoWeb: string, fotoPath: string, personale: Personale) {
         this.nome = nome;
         this.indirizzo = indirizzo;
         this.telefono = telefono;
         this.sitoWeb = sitoWeb;
         this.fotoPath = fotoPath;
-        this.camerieri = camerieri;
-        this.addettiAllaCucina = addettiAllaCucina;
+        this.personale = personale;
     }
 
 }
