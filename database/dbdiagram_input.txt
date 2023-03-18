@@ -1,0 +1,69 @@
+Table Utente {
+  id_utente int [pk, increment]
+  id_ristorante int [not null,unique]
+  nome string
+  cognome string
+  telefono string
+  email string
+  supervisore bool 
+}
+
+Table UtenteRistorante {
+  id_utente int [not null,unique]
+  id_ristorante int [not null, unique]
+  is_admin bool
+}
+
+Table Ristorante {
+  id_ristorante int [pk, increment]
+  nome string
+  indirizzo string
+  telefono string
+  sito_web string
+  foto_path string
+}
+
+Table Categoria {
+  id_categoria int [pk, increment]
+  id_ristorante int [not null, unique]
+  nome string
+}
+
+Table Elemento {
+  id_elemento int [pk, increment]
+  id_categoria int [not null, unique]
+  nome string
+  descrizione string
+  prezzo double
+  ingredienti string[]
+  allergeni string[]
+}
+
+Table Conto {
+  id_conto int [pk, increment]
+  data date
+}
+
+Table Ordinazione {
+  id_ordinazione int [pk, increment]
+  id_ristorante int [not null, unique]
+  id_conto int [not null, unique]
+  timestamp datetime
+  evaso bool
+}
+
+Table ElementoConQuantita {
+  id_elemento int [not null, unique]
+  id_ordinazione int [not null, unique]
+  quantita int
+}
+
+Ref: Utente.id_utente < UtenteRistorante.id_utente
+Ref: Ristorante.id_ristorante < UtenteRistorante.id_ristorante
+
+Ref: Ristorante.id_ristorante < Categoria.id_ristorante
+Ref: Ristorante.id_ristorante < Ordinazione.id_ristorante
+
+Ref: Categoria.id_categoria < Elemento.id_categoria
+Ref: Conto.id_conto < Ordinazione.id_conto
+Ref: Ordinazione.id_ordinazione < ElementoConQuantita.id_ordinazione
