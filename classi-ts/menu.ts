@@ -42,6 +42,10 @@ class Elemento {
         this.ingredienti = ingredienti;
         this.allergeni = allergeni;
     }
+
+    public getPrezzo(): number {
+        return this.prezzo;
+    }
 }
 
 class ElementoConQuantita extends Elemento {
