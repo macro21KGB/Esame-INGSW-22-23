@@ -58,6 +58,7 @@ class Admin extends Utente {
 class Cameriere extends Utente implements ICanBeSupervisor {
 
     supervisore: boolean;
+    
     constructor(nome: string, cognome: string, telefono: string, email: string, supervisore: boolean) {
         super(nome, cognome, telefono, email);
         this.supervisore = supervisore;

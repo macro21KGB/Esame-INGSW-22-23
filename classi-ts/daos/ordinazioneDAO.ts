@@ -1,4 +1,3 @@
-import { dummyOrdinazione } from '../dummyObjects';
 import { Ordinazione } from './../ordinazione';
 
 interface IOrdinazioneDAO {
@@ -40,7 +39,7 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
     deleteOrdinazione(id: number): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
     }
-
+    
 }
 
 export { OrdinazioneDAO };

@@ -9,9 +9,13 @@ interface IContoDAO {
     getConti(): Promise<Conto[]>;
     getContiByData(data: Date): Promise<Conto[]>;
   
+    stampaConto(conto: Conto): Promise<boolean>;
 }
 
 export class ContoDAO implements IContoDAO {
+    stampaConto(conto: Conto): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
     creaConto(conto: Conto): Promise<boolean> {
         throw new Error("Method not implemented.");
     }

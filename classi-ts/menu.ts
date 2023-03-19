@@ -1,3 +1,5 @@
+import { Allergene } from './allergene';
+
 class Menu {
     private nome: string;
     private categorie: Categoria[];
@@ -33,9 +35,9 @@ class Elemento {
     descrizione: string;
     prezzo: number;
     ingredienti: string[];
-    allergeni: string[];
+    allergeni: Allergene[];
 
-    constructor(nome: string, descrizione: string, prezzo: number, ingredienti: string[], allergeni: string[]) {
+    constructor(nome: string, descrizione: string, prezzo: number, ingredienti: string[], allergeni: Allergene[]) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
@@ -46,12 +48,16 @@ class Elemento {
     public getPrezzo(): number {
         return this.prezzo;
     }
+
+    public getAllergeni(): Allergene[] {
+        return this.allergeni;
+    }
 }
 
 class ElementoConQuantita extends Elemento {
     quantita: number;
 
-    constructor(nome: string, descrizione: string, prezzo: number, ingredienti: string[], allergeni: string[], quantita: number) {
+    constructor(nome: string, descrizione: string, prezzo: number, ingredienti: string[], allergeni: Allergene[], quantita: number) {
         super(nome, descrizione, prezzo, ingredienti, allergeni);
         this.quantita = quantita;
     }

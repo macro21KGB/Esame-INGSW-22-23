@@ -1,10 +1,10 @@
 Table Utente {
   id_utente int [pk, increment]
-  id_ristorante int [not null,unique]
   nome string
   cognome string
   telefono string
   email string
+  ruolo Ruolo
   supervisore bool 
 }
 
@@ -36,19 +36,21 @@ Table Elemento {
   descrizione string
   prezzo double
   ingredienti string[]
-  allergeni string[]
 }
 
 Table Conto {
   id_conto int [pk, increment]
+  id_ristorante int [not null, unique]
+  codice_tavolo string [not null]
   data date
 }
 
 Table Ordinazione {
   id_ordinazione int [pk, increment]
-  id_ristorante int [not null, unique]
   id_conto int [not null, unique]
   timestamp datetime
+  date date
+  evaso_da int [not null, unique]
   evaso bool
 }
 
@@ -58,12 +60,32 @@ Table ElementoConQuantita {
   quantita int
 }
 
+Table Allergene {
+  id_elemento int [not null]
+  nome string [pk,  not null]
+}
+
+Enum Ruolo {
+  ADDETTO_CUCINA
+  CAMERIERE
+  ADMIN
+}
+
+
+
 Ref: Utente.id_utente < UtenteRistorante.id_utente
 Ref: Ristorante.id_ristorante < UtenteRistorante.id_ristorante
 
 Ref: Ristorante.id_ristorante < Categoria.id_ristorante
-Ref: Ristorante.id_ristorante < Ordinazione.id_ristorante
 
 Ref: Categoria.id_categoria < Elemento.id_categoria
 Ref: Conto.id_conto < Ordinazione.id_conto
 Ref: Ordinazione.id_ordinazione < ElementoConQuantita.id_ordinazione
+
+Ref: "Ristorante"."id_ristorante" < "Conto"."id_ristorante"
+
+Ref: "Elemento"."id_elemento" - "ElementoConQuantita"."id_elemento"
+
+Ref: "Ordinazione"."evaso_da" - "Utente"."id_utente"
+
+Ref: "Elemento"."id_elemento" < "Allergene"."id_elemento"
