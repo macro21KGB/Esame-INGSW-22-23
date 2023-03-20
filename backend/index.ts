@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
+import cors from 'cors';
 import { Utente,Ruolo } from './classi-ts/utente'
+
 const app = express();
 const router = Router();
 const port = 3000;
@@ -34,6 +36,7 @@ function verifyToken(token: string): Promise<TokenPayload> {
 }
 
 // Middleware
+app.use(cors())
 app.use('/api', router);
 router.use(express.json());
 
