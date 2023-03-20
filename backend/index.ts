@@ -7,11 +7,6 @@ const port = 3000;
 
 const secret = 'ilMioSegretoSegretissimo';
 
-interface Credentials {
-  username : string,
-  password : string
-}
-
 interface TokenPayload {
   id : string,
   nome : string,
