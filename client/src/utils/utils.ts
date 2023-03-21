@@ -22,29 +22,14 @@ export function stringToRuolo(ruoloString: string) {
 	}
 }
 
-export const mandaRichiestaEVisualizzaToast = async (url: string, method: string, body?: any) => {
-	try {
-		const result = await axios.post(url, {
-			username: body.email,
-			password: body.password,
-		});
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-		if (result.status !== 200) {
-			toast.error("Errore durante il login");
-			return;
-		}
+export function verificaEmail(email: string) {
+	return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) !== null;
+}
 
-		const data: Result = result.data;
-
-		if (data.success) {
-			toast.success("Login effettuato con successo");
-
-			// salva data in un cookie chiamato token con scadenza di 1 ora
-			document.cookie = `token=${data.data}; max-age=3600`;
-		} else {
-			toast.error("Login fallito: Credenziali errate");
-		}
-	} catch (error) {
-		toast.error("Errore durante il login");
-	}
+export function salvaTokenInCookie(token: string, tempoDiScadenza: number) {
+	const dataDiScadenza = new Date();
+	dataDiScadenza.setTime(dataDiScadenza.getTime() + tempoDiScadenza * 1000);
+	document.cookie = `token=${token}; expires=${dataDiScadenza.toUTCString()}; path=/`;
 }

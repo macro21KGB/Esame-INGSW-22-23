@@ -7,6 +7,7 @@ import ErrorPage from "./error-page";
 import Login from "./routes/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TestRoute from "./routes/Test";
 
 const router = createBrowserRouter([
 	{
@@ -17,6 +18,11 @@ const router = createBrowserRouter([
 	{
 		path: "/app",
 		element: <App />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/test",
+		element: <TestRoute />,
 		errorElement: <ErrorPage />,
 	},
 ]);
@@ -36,6 +42,4 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	GET /resturants
 	POST /resturant
 	GET /resturant/:id
-
-
 */

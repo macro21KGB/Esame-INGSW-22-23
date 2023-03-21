@@ -19,6 +19,8 @@ export const RUOLI = {
     NESSUNO: "nessuno"
 };
 
+export const API_URL = "http://localhost:3001/api";
+
 export interface Result {
     success: boolean; 
     data: string 

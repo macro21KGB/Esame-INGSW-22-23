@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,7 +9,11 @@ import InputBox from "../components/InputBox";
 
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
-import { Result } from "../utils/constants";
+import { API_URL, Result } from "../utils/constants";
+import {
+	salvaTokenInCookie,
+	verificaEmail as emailValida,
+} from "../utils/utils";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -44,14 +48,6 @@ export default function Login() {
 		password: "",
 	});
 
-	const pulisciCampi = () => {
-		setLoginInfo({
-			email: "",
-			password: "",
-			confirmPassword: "",
-		});
-	};
-
 	const navigate = useNavigate();
 
 	const [isLogging, setIsLogging] = React.useState(true);
@@ -63,7 +59,13 @@ export default function Login() {
 	};
 
 	const handleLoginRegister = async () => {
-		let outApi = "login";
+		let outApi = "/login";
+
+		if (!emailValida(loginInfo.email)) {
+			toast.error("Email non valida");
+			return;
+		}
+
 		if (loginInfo.email === "" || loginInfo.password === "") {
 			toast.error("Inserisci email e password");
 			return;
@@ -74,30 +76,35 @@ export default function Login() {
 				toast.error("Le password non coincidono");
 				return;
 			}
-			outApi = "register";
+			outApi = "/register";
 		}
 
-		// in caso di errore usa un toast
 		try {
-			const result = await axios.post(`http://localhost:3000/api/${outApi}`, {
+			const result = await axios.post(API_URL + outApi, {
 				username: loginInfo.email,
 				password: loginInfo.password,
 			});
 
 			const data: Result = result.data;
 
-			if (data.success) {
-				toast.success("Login effettuato con successo");
-
-				// salva data in un cookie chiamato token con scadenza di 1 ora
-				document.cookie = `token=${data.data}; max-age=3600`;
-				navigate("/app");
-			} else {
-				toast.error(data.data);
-			}
+			handleSuccessRequest(data);
 		} catch (error) {
-			const errorMessage = error.response.data.data;
+			handleError(error);
+		}
+
+		function handleError(error: AxiosError<Result>) {
+			const errorMessage = error.response?.data.data || "Errore sconosciuto";
 			toast.error(errorMessage);
+		}
+
+		function handleSuccessRequest(data: Result) {
+			if (!data.success) toast.error(data.data);
+
+			toast.success("Login effettuato con successo");
+
+			// salva data in un cookie chiamato token con scadenza di 1 ora
+			salvaTokenInCookie(data.data, 1);
+			navigate("/app");
 		}
 	};
 
