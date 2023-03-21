@@ -81,11 +81,11 @@ router.post('/register', (req: Request, res: Response) => {
 
   // verifica che non esista utente
   if(username =="pippo")
-    return res.status(400).send({ success: false, data: "User already exists" });
+    return res.status(400).send({ success: false, data: "Utente già registrato" });
 
   // crea user nel db
 
-  res.status(200).send({ success: true, data: "Registration success" });
+  res.status(200).send({ success: true, data: "Registrazione avvenuta con successo" });
 });
 
 router.get('/', (req: Request, res: Response) => {
