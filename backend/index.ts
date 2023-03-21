@@ -22,6 +22,23 @@ function generateToken(payload: TokenPayload): string {
 }
 
 
+function authenticateToken(req : Request, res : Response, next : NextFunction) {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) return res.sendStatus(401)
+
+  jwt.verify(token, secret, (err: any, user: any) => {
+    console.log(err)
+
+    if (err) return res.sendStatus(403);
+
+    console.log("TOKEN OK");
+
+    next()
+  })
+}
+
 function verifyToken(token: string): Promise<TokenPayload> {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secret, (err, decoded) => {
@@ -42,11 +59,10 @@ router.use(express.json());
 
 
 router.post('/login', (req: Request, res: Response) => {
-  if (!req.headers.authorization)
+  if (!req.body['username'] || !req.body['password'])
     return res.status(400).send({ message: 'Credentials not provided.' });
 
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || ''
-  const [username, password] = Buffer.from(b64auth, 'base64').toString().split(':')
+  const [username, password] = [req.body['username'] as string, req.body['password'] as string]
   console.log("Credentials: "+username + " "+ password);
   // dummy user
   if (username === 'pippo' && password === '123') { 
@@ -87,7 +103,7 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 // rotta protetta
-router.get('/secure', verifyToken, (req: Request, res: Response) => {
+router.get('/secure', authenticateToken, (req: Request, res: Response) => {
   res.send({ message: 'Secure Hello World' });
 });
 
