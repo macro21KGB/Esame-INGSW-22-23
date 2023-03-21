@@ -1,11 +1,15 @@
+import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import "../App.css";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
+
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
-import { useToggle } from "../utils/hooks";
+import { Result } from "../utils/constants";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -24,12 +28,14 @@ const LoginPageContainer = styled.div`
 		text-align: right;
 		margin-right: 1rem;
 		color: #44c9ea;
+		cursor: pointer;
 	}
     `;
 
 interface LoginInfo {
 	email: string;
 	password: string;
+	confirmPassword?: string;
 }
 
 export default function Login() {
@@ -38,7 +44,17 @@ export default function Login() {
 		password: "",
 	});
 
-	const [isLogging, toggle] = useToggle(true);
+	const pulisciCampi = () => {
+		setLoginInfo({
+			email: "",
+			password: "",
+			confirmPassword: "",
+		});
+	};
+
+	const navigate = useNavigate();
+
+	const [isLogging, setIsLogging] = React.useState(true);
 	const handleInfoLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setLoginInfo({
 			...loginInfo,
@@ -46,8 +62,43 @@ export default function Login() {
 		});
 	};
 
-	const handleLogin = () => {
-		//TODO effettua fetch
+	const handleLoginRegister = async () => {
+		let outApi = "login";
+		if (loginInfo.email === "" || loginInfo.password === "") {
+			toast.error("Inserisci email e password");
+			return;
+		}
+
+		if (!isLogging) {
+			if (loginInfo.password !== loginInfo.confirmPassword) {
+				toast.error("Le password non coincidono");
+				return;
+			}
+			outApi = "register";
+		}
+
+		// in caso di errore usa un toast
+		try {
+			const result = await axios.post(`http://localhost:3000/api/${outApi}`, {
+				username: loginInfo.email,
+				password: loginInfo.password,
+			});
+
+			const data: Result = result.data;
+
+			if (data.success) {
+				toast.success("Login effettuato con successo");
+
+				// salva data in un cookie chiamato token con scadenza di 1 ora
+				document.cookie = `token=${data.data}; max-age=3600`;
+				navigate("/app");
+			} else {
+				toast.error(data.data);
+			}
+		} catch (error) {
+			const errorMessage = error.response.data.data;
+			toast.error(errorMessage);
+		}
 	};
 
 	return (
@@ -99,12 +150,33 @@ export default function Login() {
 					type="password"
 					name="password"
 				/>
+				{!isLogging && (
+					<InputBox
+						placeholder="Password"
+						value={loginInfo.confirmPassword}
+						onChange={handleInfoLogin}
+						type="password"
+						name="confirmPassword"
+					/>
+				)}
 			</div>
 
 			<div id="submit_container">
-				<BigButton onClick={handleLogin} text="Login" />
+				<BigButton
+					onClick={handleLoginRegister}
+					text={isLogging ? "Login" : "Registrati"}
+				/>
 				<br />
-				<p>Hai dimenticato la Password?</p>
+				{/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+				<p
+					onClick={() => {
+						setIsLogging(!isLogging);
+					}}
+				>
+					{isLogging
+						? "Non hai un account? Clicca qui"
+						: "Hai già un account? Clicca qui"}
+				</p>
 			</div>
 		</LoginPageContainer>
 	);

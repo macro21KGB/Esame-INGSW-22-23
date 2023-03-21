@@ -5,12 +5,12 @@ import NavBar from "../components/NavBar";
 
 import "../App.css";
 
-function App() {
-	const AppContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-  `;
+const AppContainer = styled.div`
+display: flex;
+flex-direction: column;
+`;
 
+function App() {
 	return (
 		<AppContainer>
 			<NavBar

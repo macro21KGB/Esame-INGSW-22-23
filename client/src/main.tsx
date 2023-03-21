@@ -5,11 +5,18 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ErrorPage from "./error-page";
 import Login from "./routes/Login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <Login />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/app",
+		element: <App />,
 		errorElement: <ErrorPage />,
 	},
 ]);
@@ -19,7 +26,16 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<QueryClientProvider client={queryClient}>
+			<ToastContainer />
 			<RouterProvider router={router} />
 		</QueryClientProvider>
 	</React.StrictMode>,
 );
+
+/*
+	GET /resturants
+	POST /resturant
+	GET /resturant/:id
+
+
+*/

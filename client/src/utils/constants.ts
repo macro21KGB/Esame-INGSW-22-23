@@ -18,3 +18,8 @@ export const RUOLI = {
     CAMERIERE: "cameriere",
     NESSUNO: "nessuno"
 };
+
+export interface Result {
+    success: boolean; 
+    data: string 
+}
