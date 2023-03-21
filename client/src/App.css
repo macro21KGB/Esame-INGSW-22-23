@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+:root {
+  --primary-background-color: #14213D;
+  --accent-background-color: #0E1933;
+
+  --primary-text-color: white;
+  --primary-background-item-color: #263657;
+
+  --primary-color: #FCA311;
+
+  --danger-color: #EF3636;
+}
+
+/* 
+* {
+  outline: 1px solid red;
+} */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0.2rem;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--primary-background-color);
+}
