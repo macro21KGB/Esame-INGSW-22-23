@@ -31,7 +31,7 @@ function authenticateToken(req : Request, res : Response, next : NextFunction) {
   jwt.verify(token, secret, (err: any, user: any) => {
     console.log(err)
 
-    if (err) return res.sendStatus(403);
+    if (err) return res.sendStatus(403).json({message:"Invalid token"});
 
     console.log("TOKEN OK");
 
@@ -81,7 +81,7 @@ router.post('/login', (req: Request, res: Response) => {
   }
   const response = { success: true, data: generateToken(payload) };
 
-  res.json(response);
+  res.status(200).json(response);
 });
 
 
