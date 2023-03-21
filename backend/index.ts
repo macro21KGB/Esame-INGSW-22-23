@@ -73,26 +73,15 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 
-// Esempio di request json
-router.post('/json', (req: Request, res: Response) => {
-  const param = req.body['par'] as string;
-  if(!param){
-    return res.status(400).send({ message: 'PARAM not provided.' });
-  }
-  const response = { success: true, data:"ho ricevuto: ".concat(param) };
-
-  res.json(response);
-});
-
 
 // rotta non protetta
 router.get('/', (req: Request, res: Response) => {
-  res.send({ message: 'Server is up and running!' });
+  res.status(200).send({ message: 'Server is up and running!' });
 });
 
 // rotta protetta
 router.get('/secure', authenticateToken, (req: Request, res: Response) => {
-  res.send({ message: 'Secure Hello World' });
+  res.status(200).send({ message: 'Secure Hello World' });
 });
 
 // Avvia il server
