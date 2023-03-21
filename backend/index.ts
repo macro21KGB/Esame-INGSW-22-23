@@ -28,13 +28,13 @@ function authenticateToken(req : Request, res : Response, next : NextFunction) {
 
   if (token == null) return res.sendStatus(401)
 
-  jwt.verify(token, secret, (err: any, user: any) => {
+  jwt.verify(token, secret, (err: any, decoded: any) => {
     console.log(err)
 
     if (err) return res.sendStatus(403).json({message:"Invalid token"});
 
     console.log("TOKEN OK");
-
+    console.log(decoded as TokenPayload);
     next()
   })
 }
