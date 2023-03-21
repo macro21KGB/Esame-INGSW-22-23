@@ -39,18 +39,6 @@ function authenticateToken(req : Request, res : Response, next : NextFunction) {
   })
 }
 
-function verifyToken(token: string): Promise<TokenPayload> {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, secret, (err, decoded) => {
-      if (err) {
-        reject(err);
-      }
-
-      const payload = decoded as TokenPayload;
-      resolve(payload);
-    });
-  });
-}
 
 // Middleware
 app.use(cors())
