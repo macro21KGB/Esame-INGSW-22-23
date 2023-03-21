@@ -26,12 +26,12 @@ function authenticateToken(req : Request, res : Response, next : NextFunction) {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
-  if (token == null) return res.sendStatus(401)
+  if (token == null) return res.status(400).json({message:"Token not provided"});
 
   jwt.verify(token, secret, (err: any, decoded: any) => {
     console.log(err)
 
-    if (err) return res.sendStatus(403).json({message:"Invalid token"});
+    if (err) return res.status(403).json({message:"Invalid token"});
 
     console.log("TOKEN OK");
     console.log(decoded as TokenPayload);
@@ -73,18 +73,32 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 
+router.post('/register', (req: Request, res: Response) => {
+  if (!req.body['username'] || !req.body['password'])
+    return res.status(400).send({ message: 'Wrong parameters' });
 
-// rotta non protetta
+  const [username, password] = [req.body['username'] as string, req.body['password'] as string];
+
+  // verifica che non esista utente
+  if(username =="pippo")
+    return res.status(400).send({ message: 'User already exists.' });
+
+  // crea user nel db
+
+  res.status(200).send({ message: 'Registration success' });
+});
+
 router.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'Server is up and running!' });
 });
 
-// rotta protetta
+
+
 router.get('/secure', authenticateToken, (req: Request, res: Response) => {
   res.status(200).send({ message: 'Secure Hello World' });
 });
 
-// Avvia il server
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
