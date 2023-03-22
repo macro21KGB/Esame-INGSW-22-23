@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  node_backend:
+    container_name: node-server
+    image: node-server
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - node-db
+  node-db:
+    container_name: node-db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=ratatouille
+    volumes:
+      - nps_data:/var/lib/postgresql/data
+volumes:
+  nps_data: {}
