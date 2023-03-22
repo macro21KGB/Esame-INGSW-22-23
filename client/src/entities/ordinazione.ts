@@ -3,13 +3,13 @@ import { Cameriere } from "./utente";
 
 
 export class Ordinazione {
-    codice_tavolo: number;
+    codice_tavolo: string;
     timestamp: Date;
     evaso: boolean;
-    evasaDa: Cameriere
+    evasaDa?: Cameriere
     elementi: ElementoConQuantita[];
 
-    constructor(codice_tavolo: number, timestamp: Date = new Date(), servitaDa : Cameriere, evaso: boolean = false, elementi: ElementoConQuantita[] = []) {
+    constructor(codice_tavolo: string, timestamp: Date = new Date(), servitaDa : Cameriere, evaso: boolean = false, elementi: ElementoConQuantita[] = []) {
         this.codice_tavolo = codice_tavolo;
         this.timestamp = timestamp;
         this.evasaDa = servitaDa;

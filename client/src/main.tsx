@@ -16,7 +16,7 @@ const router = createBrowserRouter([
 		errorElement: <ErrorPage />,
 	},
 	{
-		path: "/app",
+		path: "/dashboard",
 		element: <App />,
 		errorElement: <ErrorPage />,
 	},
@@ -37,9 +37,3 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 		</QueryClientProvider>
 	</React.StrictMode>,
 );
-
-/*
-	GET /resturants
-	POST /resturant
-	GET /resturant/:id
-*/

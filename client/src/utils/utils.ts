@@ -33,3 +33,19 @@ export function salvaTokenInCookie(token: string, tempoDiScadenza: number) {
 	dataDiScadenza.setTime(dataDiScadenza.getTime() + tempoDiScadenza * 1000);
 	document.cookie = `token=${token}; expires=${dataDiScadenza.toUTCString()}; path=/`;
 }
+
+// da un date estrarre l'ora e i minuti nel seguente formato: hh:mm
+export function getOraMinutiDaDate(date: Date) {
+	const ora = date.getHours();
+	const minuti = date.getMinutes();
+	return `${ora < 10 ? `0${ora}` : ora}:${minuti < 10 ? `0${minuti}` : minuti}`;
+}
+
+// prese due date, restituisce la differenza in minuti e ora nel segue formato: hh:mm
+export function getDifferenzaInMinuti(date1: Date, date2: Date) {
+	const diff = Math.abs(date1.getTime() - date2.getTime());
+	const diffInMinuti = Math.floor(diff / 1000 / 60);
+	const ore = Math.floor(diffInMinuti / 60);
+	const minuti = diffInMinuti % 60;
+	return `${ore < 10 ? `0${ore}` : ore}:${minuti < 10 ? `0${minuti}` : minuti}`;
+}

@@ -1,4 +1,4 @@
-export const COLORS = {
+const COLORS = {
 
     primaryBackgroundColor: "#14213D",
     accentBackgroundColor: "#0E1933",
@@ -11,7 +11,7 @@ export const COLORS = {
     dangerColor: "#EF3636",
 };
 
-export const RUOLI = {
+const RUOLI = {
     ADMIN: "admin",
     MANAGER: "manager",
     ADDETTO_ALLA_CUCINA: "addetto alla cucina",
@@ -19,9 +19,23 @@ export const RUOLI = {
     NESSUNO: "nessuno"
 };
 
-export const API_URL = "http://localhost:3001/api";
+const ALLERGENI = {
+    GLUTINE: "glutine",
+    LATTOSIO: "lattosio",
+    UOVO: "uovo",
+    PESCE: "pesce",
+    FRUTTA_A_GUSCIO: "frutta a guscio",
+};
+
+const API_URL = "http://localhost:3001/api";
 
 export interface Result {
     success: boolean; 
     data: string 
 }
+
+export {
+    COLORS,
+    RUOLI,
+    API_URL,
+};

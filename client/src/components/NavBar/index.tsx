@@ -6,9 +6,13 @@ import { COLORS } from "../../utils/constants";
 
 interface NavBarProps {
 	addFunc: () => void;
-	backFunc: () => void;
 	state?: string[];
 }
+
+// go back inhistory with react router
+const goBack = () => {
+	window.history.back();
+};
 
 const ButtonsContainer = styled.div`
 display: flex;
@@ -46,7 +50,7 @@ export default function NavBar(props: NavBarProps) {
 					<FABAddButton onClick={props.addFunc} />
 				)}
 				{state.indexOf("back") !== -1 && (
-					<NavbarButton onClick={props.backFunc}>
+					<NavbarButton onClick={goBack}>
 						<svg
 							width="22"
 							height="21"

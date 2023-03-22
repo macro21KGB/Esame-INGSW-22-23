@@ -1,5 +1,3 @@
-
-
 export class Allergene {
 
     nome: string;
