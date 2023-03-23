@@ -23,6 +23,7 @@ body,
 #root {
   height: 100%;
   margin: 0;
+  box-sizing: border-box;
   padding: 0;
   font-family: 'Poppins', sans-serif;
   background-color: var(--primary-background-color);

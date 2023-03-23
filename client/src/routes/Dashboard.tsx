@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import NavBar from "../components/NavBar";
+import NavBar, { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
 import ItemRistorante from "../components/ItemRistorante";
 import { Controller } from "../entities/controller";
@@ -9,6 +9,7 @@ import LoadingCircle from "../components/LoadingCircle";
 import SlideUpModal from "../components/SlideUpModal";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
+import Drawer from "../components/Drawer";
 
 const AppContainer = styled.div`
 display: flex;
@@ -102,11 +103,7 @@ function App() {
 
 	return (
 		<AppContainer>
-			<NavBar
-				addFunc={() => {
-					setShowModal(true);
-				}}
-			/>
+			{NavbarFactory.generateNavbarAddAndMenu(() => setShowModal(true))}
 			<WelcomePanel title="Benvenuto," subtitle="Mario" />
 			<p id="start_list_ristoranti">I Miei Ristoranti</p>
 			<ListaRistorantiContainer>

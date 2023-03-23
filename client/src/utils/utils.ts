@@ -2,7 +2,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Result, RUOLI } from "./constants";
 
-
 export function verificaNumeroTelefono(numeroTelefono: string) {
 	return numeroTelefono.match(/^[0-9]{10}$/) !== null;
 }
@@ -49,3 +48,4 @@ export function getDifferenzaInMinuti(date1: Date, date2: Date) {
 	const minuti = diffInMinuti % 60;
 	return `${ore < 10 ? `0${ore}` : ore}:${minuti < 10 ? `0${minuti}` : minuti}`;
 }
+

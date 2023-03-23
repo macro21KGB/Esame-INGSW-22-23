@@ -1,12 +1,14 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import FABAddButton from "../FABAddButton";
 import styled from "styled-components";
 import { COLORS } from "../../utils/constants";
+import { createPortal } from "react-dom";
+import Drawer from "../Drawer";
 
+// the state variable accept an array of 1 or more of the following strings: "add", "back", "menu"
 interface NavBarProps {
-	addFunc: () => void;
-	state?: string[];
+	addFunc?: () => void;
+	state?: ("add" | "back" | "menu")[];
 }
 
 // go back inhistory with react router
@@ -26,25 +28,67 @@ cursor: pointer;
 border: none;
 `;
 
-export default function NavBar(props: NavBarProps) {
-	const NavBarContainer = styled.div`
-        background-color: ${COLORS.accentBackgroundColor};
-        color: ${COLORS.primaryTextColor};
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        padding: 0 0.8rem;
-        font-size: 1.2rem;
-        justify-content: space-between;
-        border:none;
-    `;
+const NavBarContainer = styled.div`
+background-color: ${COLORS.accentBackgroundColor};
+color: ${COLORS.primaryTextColor};
+display: flex;
+align-items: center;
+flex-direction: row;
+padding: 0 0.8rem;
+font-size: 1.2rem;
+justify-content: space-between;
+border:none;
+`;
+
+class NavbarFactory {
+	public static generateNavbarOnlyBack(): JSX.Element {
+		return <NavBar state={["back"]} />;
+	}
+
+	public static generateNavbarOnlyAdd(): JSX.Element {
+		return <NavBar state={["add"]} />;
+	}
+
+	public static generateNavbarOnlyMenu(): JSX.Element {
+		return <NavBar state={["menu"]} />;
+	}
+
+	public static generateNavbarAddAndBack(addFunction: () => void): JSX.Element {
+		return <NavBar state={["add", "back"]} addFunc={addFunction} />;
+	}
+
+	public static generateNavbarAddAndMenu(addFunction: () => void): JSX.Element {
+		return <NavBar state={["add", "menu"]} addFunc={addFunction} />;
+	}
+
+	public static generateNavbarBackAndMenu(): JSX.Element {
+		return <NavBar state={["back", "menu"]} />;
+	}
+
+	public static generateNavbarAll(addFunction: () => void): JSX.Element {
+		return <NavBar state={["add", "back", "menu"]} addFunc={addFunction} />;
+	}
+}
+
+function NavBar(props: NavBarProps) {
 	const DEFAULT_STATE = ["add", "back", "menu"];
+
+	const [drawerOpen, setDrawerOpen] = useState(false);
+
+	const closeDrawer = () => {
+		setDrawerOpen(false);
+	};
 
 	const state = props.state || DEFAULT_STATE;
 
 	return (
 		<NavBarContainer>
 			<h3 style={{ fontFamily: "Pacifico" }}>Ratatouille</h3>
+			{drawerOpen &&
+				createPortal(
+					<Drawer onClose={closeDrawer} />,
+					document.querySelector("#root"),
+				)}
 			<ButtonsContainer>
 				{state.indexOf("add") !== -1 && (
 					<FABAddButton onClick={props.addFunc} />
@@ -66,7 +110,7 @@ export default function NavBar(props: NavBarProps) {
 					</NavbarButton>
 				)}
 				{state.indexOf("menu") !== -1 && (
-					<NavbarButton>
+					<NavbarButton onClick={() => setDrawerOpen(!drawerOpen)}>
 						<svg
 							width="32"
 							height="19"
@@ -104,3 +148,6 @@ export default function NavBar(props: NavBarProps) {
 		</NavBarContainer>
 	);
 }
+
+export default NavBar;
+export { NavbarFactory };
