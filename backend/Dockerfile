@@ -1,6 +1,7 @@
 FROM node:19
 
 EXPOSE 3000
+EXPOSE 5432
 
 WORKDIR /src
 
@@ -13,3 +14,5 @@ RUN npm install
 COPY . .
 
 CMD ["node", "dist/index.js"]
+
+

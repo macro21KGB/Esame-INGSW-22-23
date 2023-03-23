@@ -87,6 +87,10 @@ ALTER TABLE "Conto" ADD FOREIGN KEY ("id_ristorante") REFERENCES "Ristorante" ("
 
 ALTER TABLE "ElementoConQuantita" ADD FOREIGN KEY ("id_elemento") REFERENCES "Elemento" ("id_elemento");
 
-ALTER TABLE "Utente" ADD FOREIGN KEY ("id_utente") REFERENCES "Ordinazione" ("evaso_da");
+ALTER TABLE "Ordinazione" ADD FOREIGN KEY ("evaso_da") REFERENCES "Utente" ("id_utente");
 
 ALTER TABLE "Allergene" ADD FOREIGN KEY ("id_elemento") REFERENCES "Elemento" ("id_elemento");
+
+
+INSERT INTO "Utente" (id_utente, nome, cognome, email,ruolo) VALUES (1, 'Mario', 'Rossi', 'mario.rossi@gmail.com','ADMIN');
+INSERT INTO "Utente" (id_utente, nome, cognome, email,ruolo) VALUES (2, 'Salvatore', 'Esposito', 'salvo.espo@gmail.com','CAMERIERE');
