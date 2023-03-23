@@ -13,7 +13,7 @@ interface IRistoranteDAO {
 // TODO da implementare
 class RistoranteDAO implements IRistoranteDAO {
     getRistoranti(): Promise<Ristorante[]> {
-        return Promise.resolve([]);
+        return Promise.resolve([dummyResturant]);
     }
     getRistorante(id: number): Promise<Ristorante> {
         return Promise.resolve(dummyResturant);
