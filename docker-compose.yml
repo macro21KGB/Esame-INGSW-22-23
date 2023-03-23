@@ -3,8 +3,7 @@ version: '3.9'
 services:
   node-backend:
     container_name: node-server
-    build:
-      dockerfile: Dockerfile
+    build: backend/.
     ports:
       - "3000:3000"
     depends_on:

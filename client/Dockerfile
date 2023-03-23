@@ -1,6 +1,6 @@
-FROM node:19
-
-EXPOSE 3000
+# TODO - configure dockerfile for client
+FROM node
+EXPOSE 3001
 
 WORKDIR /src
 
@@ -13,5 +13,3 @@ RUN npm install
 COPY . .
 
 CMD ["node", "dist/index.js"]
-
-
