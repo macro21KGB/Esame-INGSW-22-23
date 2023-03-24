@@ -58,4 +58,8 @@ export class Controller {
 	): Promise<Utente | null> {
 		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
 	}
+
+    public async getUtenti(): Promise<Utente[]> {
+        return wait(1000).then(() => this.utenteDAO.getUtenti());
+    }
 }

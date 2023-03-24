@@ -11,12 +11,20 @@ class Utente {
 	cognome: string;
 	telefono: string;
 	email: string;
+	ruolo?: string;
 
-	constructor(nome: string, cognome: string, telefono: string, email: string) {
+	constructor(
+		nome: string,
+		cognome: string,
+		telefono: string,
+		email: string,
+		ruolo?: string,
+	) {
 		this.nome = nome;
 		this.cognome = cognome;
 		this.telefono = telefono;
 		this.email = email;
+		this.ruolo = ruolo;
 	}
 
 	public static fromJson(jsonText: string): Utente {

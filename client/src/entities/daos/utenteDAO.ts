@@ -9,12 +9,17 @@ interface IUtenteDAO {
 	accediUtente(email: string, password: string): Promise<Utente | null>;
 
 	getUtente(email: string, password: string): Promise<Utente>;
+	getUtenti(): Promise<Utente[]>;
+
 	addUtente(utente: Utente): Promise<Utente>;
 	updateUtente(utente: Utente): Promise<Utente>;
 	deleteUtente(utente: Utente): Promise<Utente>;
 }
 
 class UtenteDAO implements IUtenteDAO {
+	getUtenti(): Promise<Utente[]> {
+		return Promise.resolve([]);
+	}
 	async registraUtente(email: string, password: string): Promise<boolean> {
 		try {
 			const result = await axios.post(`${API_URL}/register`, {
