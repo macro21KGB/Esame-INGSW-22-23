@@ -8,7 +8,7 @@ import SoftButton from "../components/SoftButton";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 
-const AppContainer = styled.div`
+const DashboardContainer = styled.div`
 display: flex;
 flex-direction: column;
 margin: 0;
@@ -19,7 +19,18 @@ padding: 0;
     flex-direction: row;
     padding: 0.5rem;
 }
+
 `;
+
+const DashboardContent = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+
+	`;
 
 export default function DashboardRistoranteRoute(props) {
 	const { id } = useParams();
@@ -30,24 +41,28 @@ export default function DashboardRistoranteRoute(props) {
 	);
 
 	return (
-		<AppContainer>
+		<DashboardContainer>
 			{NavbarFactory.generateNavbarBackAndMenu()}
 			<WelcomePanel title="Gestione" subtitle="Ristorante1" />
 			{query.isLoading ? (
-				<LoadingCircle />
+				<DashboardContent>
+					<LoadingCircle />
+				</DashboardContent>
 			) : (
-				<div id="buttons">
-					<Link to={`/dashboard/${id}/utenze`}>
-						<SoftButton text="Gestione utenze" />
-					</Link>
-					<Link to={`/dashboard/${id}/menu`}>
-						<SoftButton text="Gestisci menu" />
-					</Link>
-					<Link to={`/dashboard/${id}/statistiche`}>
-						<SoftButton text="Visualizza Statistiche" />
-					</Link>
-				</div>
+				<>
+					<div id="buttons">
+						<Link to={`/dashboard/${id}/utenze`}>
+							<SoftButton text="Gestione utenze" />
+						</Link>
+						<Link to={`/dashboard/${id}/menu`}>
+							<SoftButton text="Gestisci menu" />
+						</Link>
+						<Link to={`/dashboard/${id}/statistiche`}>
+							<SoftButton text="Visualizza Statistiche" />
+						</Link>
+					</div>
+				</>
 			)}
-		</AppContainer>
+		</DashboardContainer>
 	);
 }
