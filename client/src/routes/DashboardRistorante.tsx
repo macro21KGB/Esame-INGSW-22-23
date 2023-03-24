@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
@@ -32,13 +33,23 @@ const DashboardContent = styled.div`
 
 	`;
 
-export default function DashboardRistoranteRoute(props) {
+export default function DashboardRistoranteRoute() {
 	const { id } = useParams();
 	const controller = Controller.getInstance();
 
-	const query = useQuery(["ristorante", id], () =>
-		controller.getRistorante(id),
-	);
+	const query = useQuery(["ristorante", id], () => {
+		if (id === undefined) {
+			toast.error("ID non valido");
+			return;
+		}
+		const parsedInt = parseInt(id);
+		if (isNaN(parsedInt)) {
+			toast.error("ID non valido");
+			return;
+		}
+
+		return controller.getRistorante(parsedInt);
+	});
 
 	return (
 		<DashboardContainer>

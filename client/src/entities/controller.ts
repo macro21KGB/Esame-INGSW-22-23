@@ -1,63 +1,61 @@
-import { ContoDAO } from './daos/contoDAO';
-import { wait } from './../utils/utils';
+import { ContoDAO } from "./daos/contoDAO";
+import { wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
 import { Ristorante } from "./ristorante";
-import { UtenteDAO } from './daos/utenteDAO';
-import { OrdinazioneDAO } from './daos/ordinazioneDAO';
-import { ElementoDAO } from './daos/elementoDAO';
-import { CategoriaDAO } from './daos/categoriaDAO';
-import { Utente } from './utente';
+import { UtenteDAO } from "./daos/utenteDAO";
+import { OrdinazioneDAO } from "./daos/ordinazioneDAO";
+import { ElementoDAO } from "./daos/elementoDAO";
+import { CategoriaDAO } from "./daos/categoriaDAO";
+import { Utente } from "./utente";
 
 export class Controller {
+	private static _instance: Controller;
+	private ristoranteDAO: RistoranteDAO;
+	private utenteDAO: UtenteDAO;
+	private contoDAO: ContoDAO;
+	private ordinazioneDAO: OrdinazioneDAO;
+	private elementoMenuDAO: ElementoDAO;
+	private categoriaDAO: CategoriaDAO;
 
-    private static _instance: Controller;
-    private ristoranteDAO: RistoranteDAO;
-    private utenteDAO: UtenteDAO;
-    private contoDAO: ContoDAO;
-    private ordinazioneDAO: OrdinazioneDAO;
-    private elementoMenuDAO: ElementoDAO;
-    private categoriaDAO: CategoriaDAO;
+	public static getInstance(): Controller {
+		if (!this._instance) {
+			this._instance = new Controller();
+		}
+		return this._instance;
+	}
 
-    public static getInstance(): Controller {
-        if (!this._instance) {
-            this._instance = new Controller();
-        }
-        return this._instance;
-    }
+	private constructor() {
+		this.ristoranteDAO = new RistoranteDAO();
+		this.categoriaDAO = new CategoriaDAO();
+		this.elementoMenuDAO = new ElementoDAO();
+		this.utenteDAO = new UtenteDAO();
+		this.contoDAO = new ContoDAO();
+		this.ordinazioneDAO = new OrdinazioneDAO();
+	}
 
-    private constructor() {
-        this.ristoranteDAO = new RistoranteDAO();
-        this.categoriaDAO = new CategoriaDAO();
-        this.elementoMenuDAO = new ElementoDAO();
-        this.utenteDAO = new UtenteDAO();
-        this.contoDAO = new ContoDAO();
-        this.ordinazioneDAO = new OrdinazioneDAO();
-    }
+	// assegna tutti i dao ad una varaibil
 
-    // assegna tutti i dao ad una varaibil
+	public async getRistoranti(): Promise<Ristorante[]> {
+		return wait(1000).then(() => this.ristoranteDAO.getRistoranti());
+	}
 
+	public async getRistorante(id: number): Promise<Ristorante> {
+		return wait(1000).then(() => this.ristoranteDAO.getRistorante(id));
+	}
 
-    public async getRistoranti(): Promise<Ristorante[]> {
-        return wait(1000).then(() => this.ristoranteDAO.getRistoranti());
-    }
+	public async registraUtente(
+		email: string,
+		password: string,
+	): Promise<boolean> {
+		return wait(1000).then(() =>
+			this.utenteDAO.registraUtente(email, password),
+		);
+	}
 
-    public async getRistorante(id: number| string) : Promise<Ristorante> {
-        if (typeof id === 'string') {
-            id = parseInt(id);
-        }
-        const convertedId = id as number;
-
-        return wait(1000).then(() => this.ristoranteDAO.getRistorante(convertedId));
-    }
-
-    public async registraUtente(email: string, password: string) : Promise<boolean> {
-        return wait(1000).then(() => this.utenteDAO.registraUtente(email,password));
-    }
-
-    public async accediUtente(email: string, password: string) : Promise<Utente | null> {
-        return wait(1000).then(() => this.utenteDAO.accediUtente(email,password));
-    }
-
-
-
+	public async accediUtente(
+		email: string,
+		password: string,
+	): Promise<Utente | null> {
+		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
+	}
 }

@@ -95,12 +95,16 @@ export default function ItemOrdinazione(props: ItemOrdinazioneProps) {
 
 	const tempoOrdinazione = ordinazione.timestamp;
 
+	const evadiOrdinazione = () => {
+		console.log("Evadi ordinazione");
+	};
+
 	return (
 		<OuterLayer>
 			<ItemOrdinazioneNavbar>
 				<p>Tavolo {ordinazione.codice_tavolo}</p>
 				<div style={{ display: "flex", flexDirection: "row" }}>
-					<button className="delete_button" onClick={null}>
+					<button className="delete_button" onClick={() => {}}>
 						🗑️
 					</button>
 					<DateHolder>
@@ -118,7 +122,7 @@ export default function ItemOrdinazione(props: ItemOrdinazioneProps) {
 					);
 				})}
 			</ItemOrdinazioneContainer>
-			<EvadiButton disabled={ordinazione.evaso} onClick={null}>
+			<EvadiButton disabled={ordinazione.evaso} onClick={evadiOrdinazione}>
 				Evadi Ordine ➡️
 			</EvadiButton>
 		</OuterLayer>

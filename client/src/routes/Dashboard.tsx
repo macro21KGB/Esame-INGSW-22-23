@@ -109,10 +109,10 @@ function App() {
 			<ListaRistorantiContainer>
 				{query.isLoading ? (
 					<LoadingCircle />
-				) : query.data.length === 0 ? (
+				) : query.data?.length === 0 ? (
 					<p id="no_resturants">Non Hai ancora creato Nessun ristorante</p>
 				) : (
-					query.data.map((ristorante) => (
+					query.data?.map((ristorante) => (
 						<ItemRistorante
 							ristorante={ristorante}
 							key={ristorante.nome + ristorante.indirizzo}

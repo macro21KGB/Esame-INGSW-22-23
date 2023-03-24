@@ -50,11 +50,11 @@ export const UtenzaItemContainer = styled.div`
 `;
 
 interface UtenzaItemProps {
-    ruolo: string;
-    nome: string;
+	ruolo: string;
+	nome: string;
 }
 
-export default function UtenzaItem(props : UtenzaItemProps) {
+export default function UtenzaItem(props: UtenzaItemProps) {
 	return (
 		<UtenzaItemContainer>
 			<div id="info">

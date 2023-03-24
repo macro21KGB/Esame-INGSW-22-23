@@ -62,6 +62,7 @@ export default function Login() {
 	};
 
 	const handleLoginRegister = async () => {
+		navigate("/dashboard");
 		if (!verificaEmail(loginInfo.email)) {
 			toast.error("Email non valida");
 			return;

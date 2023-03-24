@@ -66,7 +66,7 @@ class NavbarFactory {
 	}
 
 	public static generateNavbarAll(addFunction: () => void): JSX.Element {
-		return <NavBar state={["add", "back", "menu"]} addFunc={addFunction} />;
+		return <NavBar addFunc={addFunction} />;
 	}
 }
 
@@ -79,19 +79,21 @@ function NavBar(props: NavBarProps) {
 		setDrawerOpen(false);
 	};
 
+	const handleAddClick = () => {
+		if (props.addFunc) props.addFunc();
+	};
+
 	const state = props.state || DEFAULT_STATE;
 
+	// TODO da controllare se body va bene
 	return (
 		<NavBarContainer>
 			<h3 style={{ fontFamily: "Pacifico" }}>Ratatouille</h3>
 			{drawerOpen &&
-				createPortal(
-					<Drawer onClose={closeDrawer} />,
-					document.querySelector("#root"),
-				)}
+				createPortal(<Drawer onClose={closeDrawer} />, document.body)}
 			<ButtonsContainer>
 				{state.indexOf("add") !== -1 && (
-					<FABAddButton onClick={props.addFunc} />
+					<FABAddButton onClick={handleAddClick} />
 				)}
 				{state.indexOf("back") !== -1 && (
 					<NavbarButton onClick={goBack}>
