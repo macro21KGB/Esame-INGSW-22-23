@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Ristorante } from "../../entities/ristorante";
 
-const ItemRistoranteContainer = styled.button`
+const ItemRistoranteContainer = styled(Link)`
     
     all:unset;
 
@@ -48,7 +49,7 @@ export default function ItemRistorante(props: ItemRistoranteProps) {
 	const { ristorante } = props;
 
 	return (
-		<ItemRistoranteContainer type="button">
+		<ItemRistoranteContainer to={`/dashboard/${1}`} type="button">
 			<div id="infos">
 				<p>{ristorante.nome}</p>
 				<sub>{ristorante.indirizzo}</sub>

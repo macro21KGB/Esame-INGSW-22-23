@@ -8,6 +8,8 @@ import Login from "./routes/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TestRoute from "./routes/Test";
+import DashboardRistoranteRoute from "./routes/DashboardRistorante";
+import GestisciUtenzaRoute from "./routes/GestisciUtenza";
 
 const router = createBrowserRouter([
 	{
@@ -20,6 +22,17 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 	},
+	{
+		path: "/dashboard/:id",
+		element: <DashboardRistoranteRoute />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/dashboard/:id/utenze",
+		element: <GestisciUtenzaRoute />,
+		errorElement: <ErrorPage />,
+	},
+
 	{
 		path: "/test",
 		element: <TestRoute />,

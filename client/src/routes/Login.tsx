@@ -6,6 +6,7 @@ import styled from "styled-components";
 import "../App.css";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
+import { Controller } from "../entities/controller";
 
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
@@ -13,6 +14,7 @@ import { API_URL, Result } from "../utils/constants";
 import {
 	salvaTokenInCookie,
 	verificaEmail as emailValida,
+	verificaEmail,
 } from "../utils/utils";
 
 const LoginPageContainer = styled.div`
@@ -48,6 +50,7 @@ export default function Login() {
 		password: "",
 	});
 
+	const controller = Controller.getInstance();
 	const navigate = useNavigate();
 
 	const [isLogging, setIsLogging] = React.useState(true);
@@ -59,9 +62,7 @@ export default function Login() {
 	};
 
 	const handleLoginRegister = async () => {
-		let outApi = "/login";
-
-		if (!emailValida(loginInfo.email)) {
+		if (!verificaEmail(loginInfo.email)) {
 			toast.error("Email non valida");
 			return;
 		}
@@ -70,41 +71,26 @@ export default function Login() {
 			toast.error("Inserisci email e password");
 			return;
 		}
-
 		if (!isLogging) {
-			if (loginInfo.password !== loginInfo.confirmPassword) {
-				toast.error("Le password non coincidono");
-				return;
+			const isUserCreatedSuccessfully = await controller.registraUtente(
+				loginInfo.email,
+				loginInfo.password,
+			);
+
+			if (isUserCreatedSuccessfully) {
+				toast.success("Utente creato con successo");
+				navigate("/dashboard");
 			}
-			outApi = "/register";
-		}
+		} else {
+			const isUserLoggedIn = await controller.accediUtente(
+				loginInfo.email,
+				loginInfo.password,
+			);
 
-		try {
-			const result = await axios.post(API_URL + outApi, {
-				username: loginInfo.email,
-				password: loginInfo.password,
-			});
-
-			const data: Result = result.data;
-
-			handleSuccessRequest(data);
-		} catch (error) {
-			handleError(error);
-		}
-
-		function handleError(error: AxiosError<Result>) {
-			const errorMessage = error.response?.data.data || "Errore sconosciuto";
-			toast.error(errorMessage);
-		}
-
-		function handleSuccessRequest(data: Result) {
-			if (!data.success) toast.error(data.data);
-
-			toast.success("Login effettuato con successo");
-
-			// salva data in un cookie chiamato token con scadenza di 1 ora
-			salvaTokenInCookie(data.data, 1);
-			navigate("/app");
+			if (isUserLoggedIn) {
+				toast.success("Accesso eseguito con successo");
+				navigate("/dashboard");
+			}
 		}
 	};
 

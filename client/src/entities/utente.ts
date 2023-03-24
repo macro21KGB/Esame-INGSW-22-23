@@ -18,6 +18,11 @@ class Utente {
         this.telefono = telefono;
         this.email = email;
     }
+
+    public static fromJson(jsonText: string): Utente {
+        const json = JSON.parse(jsonText);
+        return new Utente(json.nome, json.cognome, json.telefono, json.email);
+    }
 }
 
 /**
@@ -76,4 +81,4 @@ class AddettoAllaCucina extends Utente implements ICanBeSupervisor {
     }
 }
 
-export { Utente, Admin, Cameriere, AddettoAllaCucina, ICanBeSupervisor }
+export { Utente, Admin, Cameriere, AddettoAllaCucina }

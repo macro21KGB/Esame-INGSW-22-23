@@ -6,6 +6,7 @@ import { UtenteDAO } from './daos/utenteDAO';
 import { OrdinazioneDAO } from './daos/ordinazioneDAO';
 import { ElementoDAO } from './daos/elementoDAO';
 import { CategoriaDAO } from './daos/categoriaDAO';
+import { Utente } from './utente';
 
 export class Controller {
 
@@ -39,5 +40,24 @@ export class Controller {
     public async getRistoranti(): Promise<Ristorante[]> {
         return wait(1000).then(() => this.ristoranteDAO.getRistoranti());
     }
+
+    public async getRistorante(id: number| string) : Promise<Ristorante> {
+        if (typeof id === 'string') {
+            id = parseInt(id);
+        }
+        const convertedId = id as number;
+
+        return wait(1000).then(() => this.ristoranteDAO.getRistorante(convertedId));
+    }
+
+    public async registraUtente(email: string, password: string) : Promise<boolean> {
+        return wait(1000).then(() => this.utenteDAO.registraUtente(email,password));
+    }
+
+    public async accediUtente(email: string, password: string) : Promise<Utente | null> {
+        return wait(1000).then(() => this.utenteDAO.accediUtente(email,password));
+    }
+
+
 
 }

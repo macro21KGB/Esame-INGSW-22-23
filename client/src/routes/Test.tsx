@@ -1,4 +1,5 @@
 import ItemOrdinazione from "../components/ItemOrdinazione";
+import UtenzaItem from "../components/UtenzaItem";
 import { Allergene } from "../entities/allergene";
 import { ElementoConQuantita } from "../entities/menu";
 import { Ordinazione } from "../entities/ordinazione";
@@ -24,6 +25,7 @@ export default function TestRoute() {
 	return (
 		<>
 			<ItemOrdinazione ordinazione={ordinazione} />
+			<UtenzaItem />
 		</>
 	);
 }
