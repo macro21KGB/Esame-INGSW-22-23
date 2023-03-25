@@ -35,3 +35,7 @@ Strumenti CASE: Utilizzo di Strumenti per disegnare diagrammi
 
 La presentazione deve essere tecnica.
 Lunghezza del PowerPoint con la presentazione di almeno 15 minuti
+
+## Riferimenti utili
+https://nayak.io/posts/docker-compose-postgres-and-connection-refused/
+
