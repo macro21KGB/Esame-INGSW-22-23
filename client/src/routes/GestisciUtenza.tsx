@@ -8,9 +8,10 @@ import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
 import SoftButton from "../components/SoftButton";
 import UtenzaItem from "../components/UtenzaItem";
+import StarBadge from "../components/UtenzaItem/StarBadge";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
-import { Utente } from "../entities/utente";
+import { Ruolo, Utente } from "../entities/utente";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -30,11 +31,43 @@ const ListaUtenze = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: center;
+	align-items: stretch;
 	margin: 0;
 	padding: 0.5rem;
 
-	`;
+`;
+
+const AssegnaRuoloSelect = styled.select`
+	all: unset;
+	position: relative;
+	margin: 0.5rem;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	padding: 0.5rem;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 80%;
+	text-align: center;
+	background-color: #1A1515;
+`;
+
+const AssegnaSupervisoreButton = styled.button<{ isSupervisore: boolean }>`
+	all: unset;
+	position: relative;
+	margin: 0.5rem;
+	border-radius: 1rem;
+	cursor: pointer;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 80%;
+	text-align: center;
+	background-color: ${(props) => (props.isSupervisore ? "#1183C2" : "1A1515")};
+	
+`;
 
 interface InformazioniUtente {
 	nome: string;
@@ -97,6 +130,11 @@ export default function GestisciUtenzaRoute() {
 							key={utente.email + utente.telefono}
 							nome={utente.nome}
 							ruolo={utente.ruolo}
+							onModifica={() => {
+								impostaInformazioniUtente(utente);
+								setShowModal(true);
+							}}
+							onChiama={() => {}}
 						/>
 					))
 				)}
@@ -130,7 +168,16 @@ export default function GestisciUtenzaRoute() {
 					name="passwordPrimoAccesso"
 					onChange={defaultHandleOnChange}
 				/>
-				<SoftButton text="Assegna Ruolo" />
+				<AssegnaRuoloSelect name="ruolo">
+					<option value={Ruolo.ADMIN}>Admin</option>
+					<option value={Ruolo.ADDETTO_CUCINA}>Addetto alla Cucina</option>
+					<option value={Ruolo.CAMERIERE}>Cameriere</option>
+				</AssegnaRuoloSelect>
+
+				<AssegnaSupervisoreButton isSupervisore={true}>
+					<StarBadge isOn={true} />
+					<p>Assegna come supervisore</p>
+				</AssegnaSupervisoreButton>
 
 				<br />
 				<BigButton onClick={() => {}} text="Crea" />

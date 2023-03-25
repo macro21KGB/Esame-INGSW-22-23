@@ -6,19 +6,25 @@ interface ICanBeSupervisor {
 	supervisore: boolean;
 }
 
+export enum RUOLI {
+	ADMIN = "admin",
+	ADDETTO_CUCINA = "addetto cucina",
+	CAMERIERE = "cameriere",
+}
+
 class Utente {
 	nome: string;
 	cognome: string;
 	telefono: string;
 	email: string;
-	ruolo?: string;
+	ruolo?: RUOLI;
 
 	constructor(
 		nome: string,
 		cognome: string,
 		telefono: string,
 		email: string,
-		ruolo?: string,
+		ruolo?: RUOLI,
 	) {
 		this.nome = nome;
 		this.cognome = cognome;
@@ -29,7 +35,13 @@ class Utente {
 
 	public static fromJson(jsonText: string): Utente {
 		const json = JSON.parse(jsonText);
-		return new Utente(json.nome, json.cognome, json.telefono, json.email);
+		return new Utente(
+			json.nome,
+			json.cognome,
+			json.telefono,
+			json.email,
+			json.ruolo,
+		);
 	}
 }
 
@@ -103,4 +115,4 @@ class AddettoAllaCucina extends Utente implements ICanBeSupervisor {
 	}
 }
 
-export { Utente, Admin, Cameriere, AddettoAllaCucina };
+export { Utente, Admin, Cameriere, AddettoAllaCucina, RUOLI as Ruolo };

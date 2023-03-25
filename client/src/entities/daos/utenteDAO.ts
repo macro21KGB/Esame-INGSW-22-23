@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { API_URL, Result } from "../../utils/constants";
 import { salvaTokenInCookie, verificaEmail } from "../../utils/utils";
+import { dummyAdmin } from "../dummyObjects";
 import { Utente } from "../utente";
 
 interface IUtenteDAO {
@@ -18,7 +19,7 @@ interface IUtenteDAO {
 
 class UtenteDAO implements IUtenteDAO {
 	getUtenti(): Promise<Utente[]> {
-		return Promise.resolve([]);
+		return Promise.resolve([dummyAdmin]);
 	}
 	async registraUtente(email: string, password: string): Promise<boolean> {
 		try {
@@ -76,8 +77,6 @@ class UtenteDAO implements IUtenteDAO {
 
 		function handleSuccessRequest(data: Result): Utente | null {
 			if (!data.success) toast.error(data.data);
-
-			toast.success("Login effettuato con successo");
 
 			// salva data in un cookie chiamato token con scadenza di 1 ora
 			salvaTokenInCookie(data.data, 1);

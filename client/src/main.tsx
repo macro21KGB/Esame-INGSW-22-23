@@ -9,6 +9,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DashboardRistoranteRoute from "./routes/DashboardRistorante";
 import GestisciUtenzaRoute from "./routes/GestisciUtenza";
+import GestisciMenuRoute from "./routes/GestisciMenu";
+import GestisciElementiCategoriaRoute from "./routes/GestisciElementiCategoria";
 
 const router = createBrowserRouter([
 	{
@@ -29,6 +31,16 @@ const router = createBrowserRouter([
 	{
 		path: "/dashboard/:id/utenze",
 		element: <GestisciUtenzaRoute />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/dashboard/:id/menu",
+		element: <GestisciMenuRoute />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/dashboard/:id/menu/:idCategoria",
+		element: <GestisciElementiCategoriaRoute />,
 		errorElement: <ErrorPage />,
 	},
 ]);

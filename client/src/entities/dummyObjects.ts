@@ -1,5 +1,6 @@
 import { Ordinazione } from "./ordinazione";
 import { Ristorante } from "./ristorante";
+import { Ruolo, Utente } from "./utente";
 
 const dummyResturant = new Ristorante(
 	"Ristorante",
@@ -10,6 +11,14 @@ const dummyResturant = new Ristorante(
 	{ camerieri: [], addettiAllaCucina: [] },
 );
 
+const dummyAdmin = new Utente(
+	"Admin",
+	"Amdmin",
+	"1234567890",
+	"email@email.com",
+	Ruolo.ADMIN,
+);
+
 const dummyOrdinazione = new Ordinazione("23");
 
-export { dummyResturant, dummyOrdinazione };
+export { dummyResturant, dummyOrdinazione, dummyAdmin };

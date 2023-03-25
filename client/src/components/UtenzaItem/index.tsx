@@ -52,6 +52,8 @@ export const UtenzaItemContainer = styled.div`
 interface UtenzaItemProps {
 	ruolo: string;
 	nome: string;
+	onModifica: () => void;
+	onChiama: () => void;
 }
 
 export default function UtenzaItem(props: UtenzaItemProps) {
@@ -63,7 +65,7 @@ export default function UtenzaItem(props: UtenzaItemProps) {
 			</div>
 
 			<div id="buttons">
-				<button type="button">
+				<button onClick={props.onModifica} type="button">
 					<svg
 						width="46"
 						height="46"
@@ -117,7 +119,7 @@ export default function UtenzaItem(props: UtenzaItemProps) {
 						</defs>
 					</svg>
 				</button>
-				<button type="button">
+				<button onClick={props.onChiama} type="button">
 					<svg
 						width="46"
 						height="46"

@@ -7,6 +7,7 @@ import { OrdinazioneDAO } from "./daos/ordinazioneDAO";
 import { ElementoDAO } from "./daos/elementoDAO";
 import { CategoriaDAO } from "./daos/categoriaDAO";
 import { Utente } from "./utente";
+import { Categoria } from "./menu";
 
 export class Controller {
 	private static _instance: Controller;
@@ -59,7 +60,17 @@ export class Controller {
 		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
 	}
 
-    public async getUtenti(): Promise<Utente[]> {
-        return wait(1000).then(() => this.utenteDAO.getUtenti());
-    }
+	public async getUtenti(): Promise<Utente[]> {
+		return wait(1000).then(() => this.utenteDAO.getUtenti());
+	}
+
+	// CATEGORY
+
+	public async getCategorie(): Promise<Categoria[]> {
+		return wait(1000).then(() => this.categoriaDAO.getCategorie());
+	}
+
+	public async getCategoria(id: number): Promise<Categoria> {
+		return wait(1000).then(() => this.categoriaDAO.getCategoria(id));
+	}
 }
