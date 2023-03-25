@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
-import { Utente,Ruolo } from './classi-ts/utente'
+import { Utente,RUOLI } from '../client/src/entities/utente'
 
 const app = express();
 const router = Router();
@@ -14,7 +14,7 @@ interface TokenPayload {
   nome : string,
   cognome : string,
   email: string,
-  ruolo : Ruolo
+  ruolo : RUOLI
 }
 
 function generateToken(payload: TokenPayload): string {
@@ -65,7 +65,7 @@ router.post('/login', (req: Request, res: Response) => {
     nome: "pippo",
     cognome : "rossi",
     email :"pippo.rossi@gmail.com",
-    ruolo :Ruolo.ADMIN
+    ruolo :RUOLI.ADMIN
   }
   const response = { success: true, data: generateToken(payload) };
 
@@ -89,10 +89,15 @@ router.post('/register', (req: Request, res: Response) => {
 });
 
 router.get('/', (req: Request, res: Response) => {
-  res.status(200).send({ message: 'Server is up and running!' });
+  res.status(200).send({ message: 'Server is up and running! test' });
 });
 
-
+router.get('/prova', (req: Request, res: Response) => {
+  const json_str = JSON.stringify(new Utente("pippo","rossi","email","password",RUOLI.ADMIN));
+  const u = JSON.parse(json_str) as Utente;
+  console.log(u.cognome);
+  res.status(200).json(json_str);
+});
 
 router.get('/secure', authenticateToken, (req: Request, res: Response) => {
   res.status(200).send({ message: 'Secure Hello World' });

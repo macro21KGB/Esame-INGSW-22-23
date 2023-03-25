@@ -2,17 +2,18 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "./dist/backend/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.ts\""
+    "start": "node dist/backend/index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/backend/index.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.11.0",
     "@types/cors": "^2.8.13",
     "cors": "^2.8.5",
     "express": "^4.18.2",
