@@ -1,6 +1,7 @@
 // create a zustand store
 
 import { create } from "zustand";
+import { dummyAdmin } from "../entities/dummyObjects";
 import { Utente } from "../entities/utente";
 
 interface Store {
@@ -10,7 +11,7 @@ interface Store {
 }
 
 export const useStore = create<Store>((set, get) => ({
-	user: null,
+	user: dummyAdmin,
 	token: null,
 	setUser: (user: Utente) => set({ user }),
 }));

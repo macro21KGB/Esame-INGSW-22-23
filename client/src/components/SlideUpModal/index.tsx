@@ -69,6 +69,7 @@ const SlideUpModal = ({
 		config: {
 			duration: 250,
 		},
+		reverse: showModal ? false : true,
 		opacity: showModal ? 1 : 0,
 		transform: showModal ? "translateY(0%)" : "translateY(100%)",
 	});

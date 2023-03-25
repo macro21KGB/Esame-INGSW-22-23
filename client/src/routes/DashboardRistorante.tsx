@@ -12,12 +12,14 @@ import { Controller } from "../entities/controller";
 const DashboardContainer = styled.div`
 display: flex;
 flex-direction: column;
+
 margin: 0;
 padding: 0;
 
 #buttons {
     display: flex;
     flex-direction: row;
+	justify-content: space-evenly;
     padding: 0.5rem;
 }
 
@@ -28,7 +30,7 @@ const DashboardContent = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	margin: 0;
+	margin-top: 3rem;
 	padding: 0;
 
 	`;
@@ -54,13 +56,13 @@ export default function DashboardRistoranteRoute() {
 	return (
 		<DashboardContainer>
 			{NavbarFactory.generateNavbarBackAndMenu()}
-			<WelcomePanel title="Gestione" subtitle="Ristorante1" />
 			{query.isLoading ? (
 				<DashboardContent>
 					<LoadingCircle />
 				</DashboardContent>
 			) : (
 				<>
+					<WelcomePanel title="Gestione" subtitle={query.data.nome} />
 					<div id="buttons">
 						<Link to={`/dashboard/${id}/utenze`}>
 							<SoftButton text="Gestione utenze" />

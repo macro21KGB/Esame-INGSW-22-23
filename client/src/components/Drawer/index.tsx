@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { animated, useSpring } from "@react-spring/web";
 import { COLORS } from "../../utils/constants";
+import { useStore } from "../../stores/store";
+import { useNavigate } from "react-router";
 
 const DrawerBackground = styled.div`
     position: fixed;
@@ -115,6 +117,15 @@ interface DrawerProps {
 function Drawer(props: DrawerProps): JSX.Element {
 	const { onClose } = props;
 
+	const setUserInStore = useStore((state) => state.setUser);
+	const navigate = useNavigate();
+
+	const logout = () => {
+		console.log("logout");
+		setUserInStore(null);
+		navigate("/");
+	};
+
 	const [animation, set] = useSpring(
 		() => ({
 			from: { opacity: 0, transform: "translateX(100%)" },
@@ -203,7 +214,7 @@ function Drawer(props: DrawerProps): JSX.Element {
 
 					<p>Supporto</p>
 				</DrawerButton>
-				<LogoutButton>Logout</LogoutButton>
+				<LogoutButton onClick={logout}>Logout</LogoutButton>
 			</DrawerContainer>
 		</DrawerBackground>
 	);
