@@ -103,4 +103,5 @@ class UtenteDAO implements IUtenteDAO {
 	}
 }
 
-export { UtenteDAO };
+export { UtenteDAO };	export type { IUtenteDAO };
+

@@ -2,6 +2,9 @@ import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
 import { Utente,RUOLI } from '../client/src/entities/utente'
+import { UtenteDAOPostgresDB } from './db_dao/utente';
+
+const UtenteDAO = new UtenteDAOPostgresDB();
 
 const app = express();
 const router = Router();
@@ -89,13 +92,17 @@ router.post('/register', (req: Request, res: Response) => {
 });
 
 router.get('/', (req: Request, res: Response) => {
-  res.status(200).send({ message: 'Server is up and running! test' });
+  res.status(200).send({ message: 'Server is up and running! rizz' });
 });
 
 router.get('/prova', (req: Request, res: Response) => {
   const json_str = JSON.stringify(new Utente("pippo","rossi","email","password",RUOLI.ADMIN));
   const u = JSON.parse(json_str) as Utente;
   console.log(u.cognome);
+  UtenteDAO.getUtenti().then((utenti) => {
+    console.log(utenti);
+  } );
+  
   res.status(200).json(json_str);
 });
 

@@ -11,22 +11,11 @@ services:
   node-db:
     container_name: node-db
     image: postgres
-    expose:
-      - "5432"
     ports:
-      - "5432:5432"
+      - "42069:5432"
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=12345
       - POSTGRES_DB=ratatouille
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
-    command: -p 5432
-  pgadmin:
-    image: dpage/pgadmin4:6
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@email.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-      - PGADMIN_LISTEN_PORT=5050
-    ports:
-      - 5050:5050
