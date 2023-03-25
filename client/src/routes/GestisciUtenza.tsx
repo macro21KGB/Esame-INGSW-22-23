@@ -35,6 +35,13 @@ const ListaUtenze = styled.div`
 	margin: 0;
 	padding: 0.5rem;
 
+	#loading_container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+
 `;
 
 const AssegnaRuoloSelect = styled.select`
@@ -123,18 +130,18 @@ export default function GestisciUtenzaRoute() {
 			<WelcomePanel title="Gestione" subtitle="Utenze" />
 			<ListaUtenze>
 				{query.isLoading ? (
-					<LoadingCircle />
+					<div id="loading_container">
+						<LoadingCircle />
+					</div>
 				) : (
 					query.data?.map((utente: Utente) => (
 						<UtenzaItem
 							key={utente.email + utente.telefono}
-							nome={utente.nome}
-							ruolo={utente.ruolo}
+							utente={utente}
 							onModifica={() => {
 								impostaInformazioniUtente(utente);
 								setShowModal(true);
 							}}
-							onChiama={() => {}}
 						/>
 					))
 				)}

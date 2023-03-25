@@ -1,4 +1,3 @@
-import axios, { AxiosError } from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,12 +10,7 @@ import { Controller } from "../entities/controller";
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
 import { useStore } from "../stores/store";
-import { API_URL, Result } from "../utils/constants";
-import {
-	salvaTokenInCookie,
-	verificaEmail as emailValida,
-	verificaEmail,
-} from "../utils/utils";
+import { verificaEmail } from "../utils/utils";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -74,6 +68,8 @@ export default function Login() {
 			toast.error("Inserisci email e password");
 			return;
 		}
+
+		// se non è in fase di login
 		if (!isLogging) {
 			const isUserCreatedSuccessfully = await controller.registraUtente(
 				loginInfo.email,
@@ -82,8 +78,11 @@ export default function Login() {
 
 			if (isUserCreatedSuccessfully) {
 				toast.success("Utente creato con successo");
+				//TODO il register mi deve restituire l'utente creato
 				navigate("/dashboard");
 			}
+
+			// se è in fase di login
 		} else {
 			const loggedInUser = await controller.accediUtente(
 				loginInfo.email,

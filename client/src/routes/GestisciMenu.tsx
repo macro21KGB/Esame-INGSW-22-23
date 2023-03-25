@@ -3,7 +3,6 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
-import ItemRistorante from "../components/ItemRistorante";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
@@ -40,36 +39,6 @@ const ListaCategorieContainer = styled.div`
 	}
 `;
 
-const FileInput = styled.div`
-	.file {
-		opacity: 0;
-		width: 0.1px;
-		height: 0.1px;
-		position: absolute;
-	}
-
-
-	label {
-		display: flex;
-		flex-direction: column;
-		position: relative;
-		height: 50px;
-		margin: 0;
-		padding: 1rem;
-		line-height: 0.5rem;
-		border-radius: 0.5rem;
-		background: transparent;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #fff;
-		border: 1px dashed #fff;
-		font-weight: bold;
-		cursor: pointer;
-		transition: transform .2s ease-out;
-	}
-`;
-
 export default function GestisciMenuRoute() {
 	const controller = Controller.getInstance();
 
@@ -84,7 +53,7 @@ export default function GestisciMenuRoute() {
 	// TODO aggiungere l'ordine delle categorie sul backend
 	return (
 		<AppContainer>
-			{NavbarFactory.generateNavbarAddAndMenu(() => setShowModal(true))}
+			{NavbarFactory.generateNavbarAll(() => setShowModal(true))}
 			<WelcomePanel title="Benvenuto," subtitle="Mario" />
 			<p id="start_list_ristoranti">Il mio Menu</p>
 			<ListaCategorieContainer>
@@ -97,7 +66,7 @@ export default function GestisciMenuRoute() {
 				)}
 
 				<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
-					<p>Nuovo Ristorante</p>
+					<p>Nuova Categoria</p>
 					<InputBox
 						placeholder="Nome Categoria"
 						value={nomeCategoria}

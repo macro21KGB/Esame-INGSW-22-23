@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import NavBar, { NavbarFactory } from "../components/NavBar";
+import { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
 import ItemRistorante from "../components/ItemRistorante";
 import { Controller } from "../entities/controller";
@@ -9,7 +9,7 @@ import LoadingCircle from "../components/LoadingCircle";
 import SlideUpModal from "../components/SlideUpModal";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
-import Drawer from "../components/Drawer";
+import { useStore } from "../stores/store";
 
 const AppContainer = styled.div`
 display: flex;
@@ -73,6 +73,7 @@ const FileInput = styled.div`
 function App() {
 	const controller = Controller.getInstance();
 
+	const utenteCorrente = useStore((state) => state.user);
 	const query = useQuery("ristoranti", () => controller.getRistoranti());
 
 	const [showModal, setShowModal] = useState(false);
@@ -104,7 +105,7 @@ function App() {
 	return (
 		<AppContainer>
 			{NavbarFactory.generateNavbarAddAndMenu(() => setShowModal(true))}
-			<WelcomePanel title="Benvenuto," subtitle="Mario" />
+			<WelcomePanel title="Benvenuto," subtitle={utenteCorrente.nome} />
 			<p id="start_list_ristoranti">I Miei Ristoranti</p>
 			<ListaRistorantiContainer>
 				{query.isLoading ? (

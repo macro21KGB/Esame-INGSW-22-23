@@ -12,15 +12,21 @@ interface IUtenteDAO {
 	getUtente(email: string, password: string): Promise<Utente>;
 	getUtenti(): Promise<Utente[]>;
 
+	promuoviASupervisore(utente: Utente): Promise<Utente>;
+
 	addUtente(utente: Utente): Promise<Utente>;
 	updateUtente(utente: Utente): Promise<Utente>;
 	deleteUtente(utente: Utente): Promise<Utente>;
 }
 
 class UtenteDAO implements IUtenteDAO {
+	promuoviASupervisore(utente: Utente): Promise<Utente> {
+		throw new Error("Method not implemented.");
+	}
 	getUtenti(): Promise<Utente[]> {
 		return Promise.resolve([dummyAdmin]);
 	}
+
 	async registraUtente(email: string, password: string): Promise<boolean> {
 		try {
 			const result = await axios.post(`${API_URL}/register`, {

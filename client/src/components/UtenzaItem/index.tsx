@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { RUOLI, Utente } from "../../entities/utente";
 import StarBadge from "./StarBadge";
 
 export const UtenzaItemContainer = styled.div`
@@ -23,13 +24,19 @@ export const UtenzaItemContainer = styled.div`
         gap: 0.5rem;
     }
 
-    button {
+    button, a {
         all: unset;
         cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
+	button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		outline: none;
+	}
 
     #info {
         line-height: 0rem;
@@ -50,22 +57,24 @@ export const UtenzaItemContainer = styled.div`
 `;
 
 interface UtenzaItemProps {
-	ruolo: string;
-	nome: string;
+	utente: Utente;
 	onModifica: () => void;
-	onChiama: () => void;
 }
 
-export default function UtenzaItem(props: UtenzaItemProps) {
+export default function UtenzaItem({ utente, onModifica }: UtenzaItemProps) {
 	return (
 		<UtenzaItemContainer>
 			<div id="info">
-				<h3>{props.nome}</h3>
-				<p>{props.ruolo}</p>
+				<h3>{utente.nome}</h3>
+				<p>{utente.ruolo}</p>
 			</div>
 
 			<div id="buttons">
-				<button onClick={props.onModifica} type="button">
+				<button
+					disabled={utente.ruolo === RUOLI.ADMIN}
+					onClick={onModifica}
+					type="button"
+				>
 					<svg
 						width="46"
 						height="46"
@@ -119,7 +128,7 @@ export default function UtenzaItem(props: UtenzaItemProps) {
 						</defs>
 					</svg>
 				</button>
-				<button onClick={props.onChiama} type="button">
+				<a href={`tel:${utente.telefono}`}>
 					<svg
 						width="46"
 						height="46"
@@ -156,10 +165,9 @@ export default function UtenzaItem(props: UtenzaItemProps) {
 							/>
 						</defs>
 					</svg>
-				</button>
+				</a>
 			</div>
-
-			<StarBadge isOn={true} />
+			{utente.ruolo !== RUOLI.ADMIN && <StarBadge isOn={true} />}
 		</UtenzaItemContainer>
 	);
 }

@@ -2,14 +2,14 @@ import { Ristorante } from "./ristorante";
 
 // questa interfaccia serve per indicare che un utente può essere un supervisore
 // nel nostro caso solo l'admin non può essere un supervisore
-interface ICanBeSupervisor {
+interface ICanBeSupervisor extends Utente {
 	supervisore: boolean;
 }
 
 export enum RUOLI {
-	ADMIN = "admin",
-	ADDETTO_CUCINA = "addetto cucina",
-	CAMERIERE = "cameriere",
+	ADMIN = "ADMIN",
+	ADDETTO_CUCINA = "ADDETTO_CUCINA",
+	CAMERIERE = "CAMERIERE",
 }
 
 class Utente {
@@ -24,7 +24,7 @@ class Utente {
 		cognome: string,
 		telefono: string,
 		email: string,
-		ruolo?: RUOLI,
+		ruolo: RUOLI = RUOLI.ADMIN,
 	) {
 		this.nome = nome;
 		this.cognome = cognome;

@@ -3,6 +3,7 @@ import { Ristorante } from "./ristorante";
 import { Ruolo, Utente } from "./utente";
 
 const dummyResturant = new Ristorante(
+	1,
 	"Ristorante",
 	"Via Roma",
 	"1234567890",
@@ -12,10 +13,10 @@ const dummyResturant = new Ristorante(
 );
 
 const dummyAdmin = new Utente(
-	"Admin",
-	"Amdmin",
+	"Mario",
+	"Rossi",
 	"1234567890",
-	"email@email.com",
+	"mario.rossi@email.com",
 	Ruolo.ADMIN,
 );
 

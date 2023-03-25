@@ -29,15 +29,20 @@ border: none;
 `;
 
 const NavBarContainer = styled.div`
-background-color: ${COLORS.accentBackgroundColor};
-color: ${COLORS.primaryTextColor};
-display: flex;
-align-items: center;
-flex-direction: row;
-padding: 0 0.8rem;
-font-size: 1.2rem;
-justify-content: space-between;
-border:none;
+	background-color: ${COLORS.accentBackgroundColor};
+	color: ${COLORS.primaryTextColor};
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	padding: 0 0.8rem;
+	font-size: 1.2rem;
+	justify-content: space-between;
+	border:none;
+	
+	h3 {
+		margin: 0.8rem;
+		font-weight: 500;
+	}
 `;
 
 class NavbarFactory {
