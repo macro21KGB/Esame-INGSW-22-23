@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
+import ItemCategoria from "../components/ItemCategoria";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
@@ -28,7 +29,6 @@ const ListaCategorieContainer = styled.div`
 	color: white;
 	flex-direction: column;
 	justify-content: stretch;
-	align-items: center;
 	padding: 1rem;
 
 	#no_resturants {
@@ -62,10 +62,20 @@ export default function GestisciMenuRoute() {
 				) : query.data?.length === 0 ? (
 					<p id="no_resturants">Non Hai ancora creato nessuna categoria</p>
 				) : (
-					query.data?.map((categoria) => <SoftButton text={categoria.nome} />)
+					query.data?.map((categoria) => (
+						<ItemCategoria
+							categoria={categoria}
+							onClickUp={() => {}}
+							onClickDown={() => {}}
+						/>
+					))
 				)}
 
-				<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
+				<SlideUpModal
+					showModal={showModal}
+					setShowModal={setShowModal}
+					onClose={() => setNomeCategoria("")}
+				>
 					<p>Nuova Categoria</p>
 					<InputBox
 						placeholder="Nome Categoria"

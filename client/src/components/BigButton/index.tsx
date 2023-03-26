@@ -5,11 +5,13 @@ import { COLORS } from "../../utils/constants";
 interface BigButtonProps {
 	onClick: () => void;
 	text: string;
+	color?: string;
 }
 
 // box shadow on text
 const BigButtonContainer = styled.button`
-    background-color: ${COLORS.primaryColor};
+    background-color: ${(props) =>
+			props.color ? props.color : COLORS.primaryColor};
     border-radius: 0.4rem;
     border: none;
     padding: 0.8rem 0.5rem;
@@ -26,7 +28,7 @@ const BigButtonContainer = styled.button`
 
 export default function BigButton(props: BigButtonProps) {
 	return (
-		<BigButtonContainer onClick={props.onClick}>
+		<BigButtonContainer color={props.color} onClick={props.onClick}>
 			<span>{props.text}</span>
 		</BigButtonContainer>
 	);

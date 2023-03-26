@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DashboardRistoranteRoute from "./routes/DashboardRistorante";
 import GestisciUtenzaRoute from "./routes/GestisciUtenza";
-import GestisciMenuRoute from "./routes/GestisciMenu";
+import GestisciMenuRoute from "./routes/GestisciCategorie";
 import GestisciElementiCategoriaRoute from "./routes/GestisciElementiCategoria";
 
 const router = createBrowserRouter([
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
 		errorElement: <ErrorPage />,
 	},
 	{
-		path: "/dashboard/:id/menu/:idCategoria",
+		path: "/dashboard/:id/menu/:nomeCategoria",
 		element: <GestisciElementiCategoriaRoute />,
 		errorElement: <ErrorPage />,
 	},
