@@ -13,7 +13,6 @@ const port = 3000;
 const secret = 'ilMioSegretoSegretissimo';
 
 interface TokenPayload {
-  id : string,
   nome : string,
   cognome : string,
   email: string,
@@ -49,26 +48,26 @@ app.use('/api', router);
 router.use(express.json());
 
 
-router.post('/login', (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
   if (!req.body['username'] || !req.body['password'])
     return res.status(400).send({ message: 'Credentials not provided.' });
 
   const [username, password] = [req.body['username'] as string, req.body['password'] as string]
-  console.log("Credentials: "+username + " "+ password);
-  // dummy user
-  if (username === 'pippo' && password === '123') { 
+  
+  const user = await UtenteDAO.accediUtente(username,password);
+  if (user!=null) { 
     console.log("authorized");
   }
   else {
     console.log("unauthorized");
     return res.status(401).send({ message: 'Invalid credentials.' });
   }
+  console.log(user);
   const payload: TokenPayload = {
-    id: "6969",
-    nome: "pippo",
-    cognome : "rossi",
-    email :"pippo.rossi@gmail.com",
-    ruolo :RUOLI.ADMIN
+    nome: user.nome,
+    cognome : user.cognome,
+    email :user.email,
+    ruolo :user.ruolo?user.ruolo:RUOLI.ADMIN
   }
   const response = { success: true, data: generateToken(payload) };
 
@@ -76,18 +75,19 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 
-router.post('/register', (req: Request, res: Response) => {
+router.post('/register',async (req: Request, res: Response) => {
   if (!req.body['username'] || !req.body['password'])
     return res.status(400).send({ message: 'Wrong parameters' });
 
   const [username, password] = [req.body['username'] as string, req.body['password'] as string];
 
   // verifica che non esista utente
-  if(username =="pippo")
+  const utenti = await UtenteDAO.getUtenti();
+  if(utenti.find(u => u.email === username))
     return res.status(400).send({ success: false, data: "Utente già registrato" });
 
   // crea user nel db
-
+  UtenteDAO.registraUtente(username,password);
   res.status(200).send({ success: true, data: "Registrazione avvenuta con successo" });
 });
 
@@ -110,6 +110,20 @@ router.get('/secure', authenticateToken, (req: Request, res: Response) => {
   res.status(200).send({ message: 'Secure Hello World' });
 });
 
+router.get('/resturants', authenticateToken, (req: Request, res: Response) => {
+  //TODO
+  res.status(200).send({ message: 'Ristoranti' });
+});
+
+router.get('/resturant/:id', authenticateToken, (req: Request, res: Response) => {
+  //TODO
+  res.status(200).send({ message: 'Ristoranti' });
+});
+
+router.post('/resturant', authenticateToken, (req: Request, res: Response) => {
+  //TODO
+  res.status(200).send({ message: 'Ristoranti' });
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
