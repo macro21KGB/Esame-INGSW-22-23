@@ -1,3 +1,4 @@
+import { dummyCategoria } from "../dummyObjects";
 import { Categoria, Elemento } from "../menu";
 import { Ristorante } from "../ristorante";
 
@@ -15,7 +16,7 @@ interface ICategoriaDAO {
 
 export class CategoriaDAO implements ICategoriaDAO {
 	getCategorie(): Promise<Categoria[]> {
-		return Promise.resolve([]);
+		return Promise.resolve([dummyCategoria]);
 	}
 	getCategoria(id: number): Promise<Categoria> {
 		return Promise.resolve(new Categoria("categoria1", []));
