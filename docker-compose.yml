@@ -12,7 +12,7 @@ services:
     container_name: node-db
     image: postgres
     ports:
-      - "5432:5432"
+      - "42069:5432"
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=12345

@@ -12,6 +12,6 @@ RUN npm install
 
 COPY . .
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/backend/index.js"]
 
 
