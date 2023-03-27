@@ -1,28 +1,50 @@
 import { rejects } from 'assert';
-import { IUtenteDAO } from '../../client/src/entities/daos/utenteDAO'
-import { RUOLI, Ruolo, Utente } from '../../client/src/entities/utente'
+import { IUtenteDAO } from '../shared/entities/daos/utenteDAO'
+import { RUOLI, Ruolo, Utente } from '../shared/entities/utente'
 import { hashPassword } from '../utils';
 import {conn} from '../db_connection'
 import { verifyPassword } from '../utils';
-
-class UtenteFactory {
-	static getUtente(data : any) : Utente {
+import { IMapper } from './mapper';
+import { Ristorante } from '@shared/entities/ristorante';
+import { RistoranteMapper } from './ristorante';
+class UtenteMapper implements IMapper<Utente> {
+	map(data : any) : Utente {
 		return new Utente(data.nome, data.cognome, data.telefono, data.email, data.ruolo);
 	}
 }
 
 class UtenteDAOPostgresDB implements IUtenteDAO {
+	utenteMapper : UtenteMapper = new UtenteMapper();
+	ristoranteMapper : RistoranteMapper = new RistoranteMapper();
+	getRistoranti(email: string): Promise<Ristorante[]> {
+		return new Promise((resolve, reject) => {
+			conn.query(`
+			SELECT * FROM (
+			SELECT "Utente".id_utente as id_utente, "Utente".email as email,
+			"Utente".password as pw,"Utente".ruolo as ruolo, "UtenteRistorante".id_ristorante as id_ristorante
+			FROM ("Utente" natural join "UtenteRistorante")
+			) as t natural join "Ristorante" where email = $1;
+			`,[email], (err : any, results : any) => {
+
+				if (err) {
+					return reject(err);
+				}
+				resolve(results.rows.map((data : any) => this.ristoranteMapper.map(data)));
+			});
+		});
+	}
+	
     promuoviASupervisore(utente: Utente): Promise<Utente> {
         throw new Error('Method not implemented.');
     }
 	getUtenti(): Promise<Utente[]> {
-		return new Promise<Utente[]>(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			conn.query('SELECT * FROM public."Utente";', (err : any, results : any) => {
 
 				if (err) {
 					return reject(err);
 				}
-				resolve(results.rows.map((data : any) => UtenteFactory.getUtente(data)));
+				resolve(results.rows.map((data : any) => this.utenteMapper.map(data)));
 			});
 		});
 	}
@@ -45,7 +67,7 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 	}
 
 	async accediUtente(email: string, password: string): Promise<Utente | null> {
-		return new Promise<Utente | null>(function(resolve, reject) {
+		return new Promise((resolve, reject) =>{
 			conn.query('SELECT * FROM public."Utente" WHERE email = $1;', [email], (error : any, results : any) => {
 				if (error) {
 					return reject(error);
@@ -54,7 +76,7 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 					resolve(null);
 				} else {
 					if (verifyPassword(password, results.rows[0].password)) {
-						resolve(UtenteFactory.getUtente(results.rows[0]));
+						resolve(this.utenteMapper.map(results.rows[0]));
 					}
 					else{
 						resolve(null);

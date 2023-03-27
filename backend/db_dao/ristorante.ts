@@ -1,10 +1,11 @@
 import { rejects } from 'assert';
-import { IRistoranteDAO } from '../../client/src/entities/daos/ristoranteDAO'
-import { Ristorante } from '../../client/src/entities/ristorante'
+import { IRistoranteDAO } from '../shared/entities/daos/ristoranteDAO'
+import { Ristorante } from '../shared/entities/ristorante'
 import {conn} from '../db_connection'
+import { IMapper } from './mapper';
 
-class RistoranteFactory {
-    static getRistorante(data : any) : Ristorante {
+class RistoranteMapper implements IMapper<Ristorante>{
+    map(data : any) : Ristorante {
         return new Ristorante(
             data.id_ristorante,
             data.nome,
@@ -18,13 +19,14 @@ class RistoranteFactory {
 }
 
 class RistoranteDAOPostgresDB implements IRistoranteDAO {
+    ristoranteMapper : RistoranteMapper = new RistoranteMapper();
     getRistoranti(): Promise<Ristorante[]> {
         return new Promise((resolve, reject) => {
             conn.query('SELECT * FROM "Ristorante";', (err : any, res : any) => {
                 if (err) {
                     return reject(err);
                 } else {
-                    resolve(res.rows.map((data : any) => RistoranteFactory.getRistorante(data)));
+                    resolve(res.rows.map((data : any) => this.ristoranteMapper.map(data)));
                 }
             })
         })
@@ -39,7 +41,7 @@ class RistoranteDAOPostgresDB implements IRistoranteDAO {
                     if (res.rows.length == 0) {
                         return resolve(null);
                     }
-                    resolve(RistoranteFactory.getRistorante(res.rows[0]));
+                    resolve(this.ristoranteMapper.map(res.rows[0]));
                 }
             })
         }
@@ -70,4 +72,4 @@ class RistoranteDAOPostgresDB implements IRistoranteDAO {
     
 }
 
-export { RistoranteDAOPostgresDB };
+export { RistoranteDAOPostgresDB,RistoranteMapper };

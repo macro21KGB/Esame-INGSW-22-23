@@ -12,6 +12,8 @@ RUN npm install
 
 COPY . .
 
-CMD ["node", "dist/backend/index.js"]
+RUN npx tsc -p ./tsconfig.json
+
+CMD ["node", "dist/index.js"]
 
 
