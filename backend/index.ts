@@ -1,10 +1,10 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
-import { Utente,RUOLI } from '../client/src/entities/utente'
+import { Utente,RUOLI } from './shared/entities/utente'
 import { UtenteDAOPostgresDB } from './db_dao/utente';
 import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
-import { Ristorante } from '../client/src/entities/ristorante';
+import { Ristorante } from './shared/entities/ristorante';
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
 
@@ -33,7 +33,7 @@ function authenticateToken(req : Request, res : Response, next : NextFunction) {
   if (token == null) return res.status(400).json({message:"Token not provided"});
 
   jwt.verify(token, secret, (err: any, decoded: any) => {
-    console.log(err)
+    //console.log(err)
 
     if (err) return res.status(403).json({message:"Invalid token"});
 
@@ -94,7 +94,11 @@ router.post('/register',async (req: Request, res: Response) => {
 });
 
 router.get('/', (req: Request, res: Response) => {
-  res.status(200).send({ message: 'Server is up and running! rizz' });
+  res.status(200).send({ message: 'Server is up and running!' });
+});
+
+router.get('/test', (req: Request, res: Response) => {
+  res.status(200).send({ message: 'Antani' });
 });
 
 router.get('/prova', (req: Request, res: Response) => {
