@@ -72,4 +72,4 @@ class RistoranteDAOPostgresDB implements IRistoranteDAO {
     
 }
 
-export { RistoranteDAOPostgresDB };
+export { RistoranteDAOPostgresDB,RistoranteMapper };

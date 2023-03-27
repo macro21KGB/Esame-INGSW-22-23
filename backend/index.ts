@@ -29,15 +29,9 @@ function generateToken(payload: TokenPayload): string {
 function authenticateToken(req : Request, res : Response, next : NextFunction) {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
-
   if (token == null) return res.status(400).json({message:"Token not provided"});
-
   jwt.verify(token, secret, (err: any, decoded: any) => {
-    //console.log(err)
-
     if (err) return res.status(403).json({message:"Invalid token"});
-
-    console.log("TOKEN OK");
     console.log(decoded as TokenPayload);
     next()
   })
@@ -97,27 +91,18 @@ router.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'Server is up and running!' });
 });
 
-router.get('/test', (req: Request, res: Response) => {
-  res.status(200).send({ message: 'Antani' });
-});
-
-router.get('/prova', (req: Request, res: Response) => {
-  const json_str = JSON.stringify(new Utente("pippo","rossi","email","password",RUOLI.ADMIN));
-  const u = JSON.parse(json_str) as Utente;
-  console.log(u.cognome);
-  UtenteDAO.getUtenti().then((utenti) => {
-    console.log(utenti);
-  } );
-  
-  res.status(200).json(json_str);
-});
-
-router.get('/secure', authenticateToken, (req: Request, res: Response) => {
-  res.status(200).send({ message: 'Secure Hello World' });
-});
 
 router.get('/resturants', authenticateToken, async (req: Request, res: Response) => {
-  res.status(200).json(JSON.stringify(await RistoranteDAO.getRistoranti()));
+  // ottieni email dell'utente dal token
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({message:"Token not provided"});
+
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({message:"Invalid token"});
+    const email = decoded.email;
+    res.status(200).json(JSON.stringify(await UtenteDAO.getRistoranti(email)));
+  })
 });
 
 router.get('/resturant/:id', authenticateToken, async(req: Request, res: Response) => {

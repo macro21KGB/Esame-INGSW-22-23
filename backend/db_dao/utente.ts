@@ -5,6 +5,8 @@ import { hashPassword } from '../utils';
 import {conn} from '../db_connection'
 import { verifyPassword } from '../utils';
 import { IMapper } from './mapper';
+import { Ristorante } from '@shared/entities/ristorante';
+import { RistoranteMapper } from './ristorante';
 class UtenteMapper implements IMapper<Utente> {
 	map(data : any) : Utente {
 		return new Utente(data.nome, data.cognome, data.telefono, data.email, data.ruolo);
@@ -13,6 +15,25 @@ class UtenteMapper implements IMapper<Utente> {
 
 class UtenteDAOPostgresDB implements IUtenteDAO {
 	utenteMapper : UtenteMapper = new UtenteMapper();
+	ristoranteMapper : RistoranteMapper = new RistoranteMapper();
+	getRistoranti(email: string): Promise<Ristorante[]> {
+		return new Promise((resolve, reject) => {
+			conn.query(`
+			SELECT * FROM (
+			SELECT "Utente".id_utente as id_utente, "Utente".email as email,
+			"Utente".password as pw,"Utente".ruolo as ruolo, "UtenteRistorante".id_ristorante as id_ristorante
+			FROM ("Utente" natural join "UtenteRistorante")
+			) as t natural join "Ristorante" where email = $1;
+			`,[email], (err : any, results : any) => {
+
+				if (err) {
+					return reject(err);
+				}
+				resolve(results.rows.map((data : any) => this.ristoranteMapper.map(data)));
+			});
+		});
+	}
+	
     promuoviASupervisore(utente: Utente): Promise<Utente> {
         throw new Error('Method not implemented.');
     }

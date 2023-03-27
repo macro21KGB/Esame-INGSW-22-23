@@ -1,5 +1,6 @@
 
 
+import { Ristorante } from "../ristorante";
 import { Utente } from "../utente";
 
 interface IUtenteDAO {
@@ -8,7 +9,7 @@ interface IUtenteDAO {
 
 	getUtente(email: string, password: string): Promise<Utente>;
 	getUtenti(): Promise<Utente[]>;
-
+	getRistoranti(email: string) : Promise<Ristorante[]>;
 	promuoviASupervisore(utente: Utente): Promise<Utente>;
 
 	addUtente(utente: Utente): Promise<Utente>;
