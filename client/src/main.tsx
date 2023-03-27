@@ -11,6 +11,7 @@ import DashboardRistoranteRoute from "./routes/DashboardRistorante";
 import GestisciUtenzaRoute from "./routes/GestisciUtenza";
 import GestisciMenuRoute from "./routes/GestisciCategorie";
 import GestisciElementiCategoriaRoute from "./routes/GestisciElementiCategoria";
+import CucinaRoute from "./routes/CucinaRoute";
 
 const router = createBrowserRouter([
 	{
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
 	{
 		path: "/dashboard/:id/menu/:nomeCategoria",
 		element: <GestisciElementiCategoriaRoute />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/cucina",
+		element: <CucinaRoute />,
 		errorElement: <ErrorPage />,
 	},
 ]);

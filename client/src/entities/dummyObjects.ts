@@ -1,7 +1,7 @@
-import { Categoria } from "./menu";
+import { Categoria, Elemento, ElementoConQuantita } from "./menu";
 import { Ordinazione } from "./ordinazione";
 import { Ristorante } from "./ristorante";
-import { Ruolo, Utente } from "./utente";
+import { Cameriere, Ruolo, Utente } from "./utente";
 
 const dummyResturant = new Ristorante(
 	1,
@@ -23,6 +23,35 @@ const dummyAdmin = new Utente(
 
 const dummyCategoria = new Categoria("Primi", [], 0);
 
-const dummyOrdinazione = new Ordinazione("23");
+const dummyElemento = new Elemento(
+	"Pasta al forno",
+	"Pasta fatta al forno",
+	7,
+	{
+		ingredienti: [],
+		allergeni: [],
+		ordine: 0,
+	},
+);
 
-export { dummyResturant, dummyOrdinazione, dummyAdmin, dummyCategoria };
+const dummyElementoConQuantita = ElementoConQuantita.fromElemento(
+	dummyElemento,
+	2,
+);
+
+const dummyOrdinazione = new Ordinazione("23").setElementi([
+	dummyElementoConQuantita,
+]);
+const dummyOrdinazioneEvasa = new Ordinazione("23")
+	.setElementi([dummyElementoConQuantita])
+	.setEvasaDa(Cameriere.fromUtente(dummyAdmin));
+
+export {
+	dummyResturant,
+	dummyOrdinazione,
+	dummyAdmin,
+	dummyCategoria,
+	dummyElemento,
+	dummyElementoConQuantita,
+	dummyOrdinazioneEvasa,
+};

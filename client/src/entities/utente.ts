@@ -98,6 +98,16 @@ class Cameriere extends Utente implements ICanBeSupervisor {
 		super(nome, cognome, telefono, email);
 		this.supervisore = supervisore;
 	}
+
+	public static fromUtente(utente: Utente): Cameriere {
+		return new Cameriere(
+			utente.nome,
+			utente.cognome,
+			utente.telefono,
+			utente.email,
+			false,
+		);
+	}
 }
 
 class AddettoAllaCucina extends Utente implements ICanBeSupervisor {

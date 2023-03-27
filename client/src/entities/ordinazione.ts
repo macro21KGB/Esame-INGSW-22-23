@@ -22,6 +22,17 @@ export class Ordinazione {
 		this.elementi = elementi;
 	}
 
+	setElementi(elementi: ElementoConQuantita[]) {
+		this.elementi = elementi;
+		console.log(this.elementi);
+		return this;
+	}
+
+	setEvasaDa(evasaDa: Cameriere) {
+		this.evasaDa = evasaDa;
+		return this;
+	}
+
 	getImporto(): number {
 		let importo = 0;
 		for (let elemento of this.elementi) {
