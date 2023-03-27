@@ -1,6 +1,6 @@
 import { rejects } from 'assert';
 import { IUtenteDAO } from '../shared/entities/daos/utenteDAO'
-import { RUOLI, Ruolo, Utente } from '../shared/entities/utente'
+import { RUOLI, Ruolo, Utente,UtenteFactory} from '../shared/entities/utente'
 import { hashPassword } from '../utils';
 import {conn} from '../db_connection'
 import { verifyPassword } from '../utils';
@@ -9,7 +9,7 @@ import { Ristorante } from '@shared/entities/ristorante';
 import { RistoranteMapper } from './ristorante';
 class UtenteMapper implements IMapper<Utente> {
 	map(data : any) : Utente {
-		return new Utente(data.nome, data.cognome, data.telefono, data.email, data.ruolo);
+		return UtenteFactory.creaUtente(data.nome, data.cognome, data.telefono, data.email, data.ruolo);
 	}
 }
 
@@ -53,7 +53,7 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 		const cognome="";
 		const telefono="";
 		const ruolo = RUOLI.ADMIN;
-		const data = new Utente(nome,cognome,telefono,email, ruolo);
+		const data = UtenteFactory.creaUtente(nome, cognome, telefono, email, ruolo);
 		const hashedPw = hashPassword(password);
 		return new Promise<boolean>(function(resolve, reject) {
 			conn.query('INSERT INTO public."Utente" (nome, cognome, telefono, email, password, ruolo) VALUES ($1, $2, $3, $4, $5, $6);',
