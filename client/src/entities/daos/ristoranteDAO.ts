@@ -3,8 +3,8 @@ import { Ristorante } from './../ristorante';
 
 interface IRistoranteDAO {
     getRistoranti(): Promise<Ristorante[]>;
-    getRistorante(id: number): Promise<Ristorante>;
-    addRistorante(ristorante: Ristorante): Promise<Ristorante>;
+    getRistorante(id: number): Promise<Ristorante | null>;
+    addRistorante(ristorante: Ristorante): Promise<Boolean>;
     updateRistorante(ristorante: Ristorante): Promise<Ristorante>;
     deleteRistorante(id: number): Promise<Ristorante>;
 }
@@ -15,11 +15,11 @@ class RistoranteDAO implements IRistoranteDAO {
     getRistoranti(): Promise<Ristorante[]> {
         return Promise.resolve([dummyResturant]);
     }
-    getRistorante(id: number): Promise<Ristorante> {
+    getRistorante(id: number): Promise<Ristorante | null> {
         return Promise.resolve(dummyResturant);
     }
-    addRistorante(ristorante: Ristorante): Promise<Ristorante> {
-        return Promise.resolve(dummyResturant);
+    addRistorante(ristorante: Ristorante): Promise<Boolean> {
+        return Promise.resolve(true);
     }
     updateRistorante(ristorante: Ristorante): Promise<Ristorante> {
         return Promise.resolve(dummyResturant);
@@ -30,4 +30,4 @@ class RistoranteDAO implements IRistoranteDAO {
     }
 }
 
-export { RistoranteDAO };
+export { RistoranteDAO }; export type { IRistoranteDAO };

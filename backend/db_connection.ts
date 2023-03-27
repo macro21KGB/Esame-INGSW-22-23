@@ -1,5 +1,5 @@
 const Pool = require('pg').Pool
-/*
+
 const conn = new Pool({ // for docker testing
   user: 'docker',
   host: 'node-db',
@@ -7,7 +7,8 @@ const conn = new Pool({ // for docker testing
   password: '12345',
   port: 5432,
 })
-*/
+
+/*
 const conn = new Pool({ // for local testing
   user: 'docker',
   host: 'localhost',
@@ -15,4 +16,5 @@ const conn = new Pool({ // for local testing
   password: '12345',
   port: 42069,
 })
+*/
 export {conn};

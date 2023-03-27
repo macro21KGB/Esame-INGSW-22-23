@@ -25,7 +25,7 @@ CREATE TABLE "UtenteRistorante" (
 
 CREATE TABLE "Ristorante" (
   "id_ristorante" SERIAL PRIMARY KEY,
-  "nome" VARCHAR(50),
+  "nome" VARCHAR(50) UNIQUE NOT NULL,
   "indirizzo" VARCHAR(50),
   "telefono" VARCHAR(13),
   "sito_web" VARCHAR(50),

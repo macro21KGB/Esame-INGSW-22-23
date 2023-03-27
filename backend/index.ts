@@ -3,8 +3,10 @@ import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
 import { Utente,RUOLI } from '../client/src/entities/utente'
 import { UtenteDAOPostgresDB } from './db_dao/utente';
-
+import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
+import { Ristorante } from '../client/src/entities/ristorante';
 const UtenteDAO = new UtenteDAOPostgresDB();
+const RistoranteDAO = new RistoranteDAOPostgresDB();
 
 const app = express();
 const router = Router();
@@ -110,19 +112,36 @@ router.get('/secure', authenticateToken, (req: Request, res: Response) => {
   res.status(200).send({ message: 'Secure Hello World' });
 });
 
-router.get('/resturants', authenticateToken, (req: Request, res: Response) => {
-  //TODO
-  res.status(200).send({ message: 'Ristoranti' });
+router.get('/resturants', authenticateToken, async (req: Request, res: Response) => {
+  res.status(200).json(JSON.stringify(await RistoranteDAO.getRistoranti()));
 });
 
-router.get('/resturant/:id', authenticateToken, (req: Request, res: Response) => {
-  //TODO
-  res.status(200).send({ message: 'Ristoranti' });
+router.get('/resturant/:id', authenticateToken, async(req: Request, res: Response) => {
+  const ristorante = await RistoranteDAO.getRistorante(+req.params.id);
+  if(ristorante!=null)
+    res.status(200).json(JSON.stringify(ristorante));
+  else
+    res.status(404).json({"message":"nessun ristorante con questo id"});
+  
 });
 
-router.post('/resturant', authenticateToken, (req: Request, res: Response) => {
-  //TODO
-  res.status(200).send({ message: 'Ristoranti' });
+router.post('/resturant', authenticateToken, async(req: Request, res: Response) => {
+  // TODO mettersi d'accordo su come passare i dati
+  try{
+    const ristorante = JSON.parse(req.body) as Ristorante;
+    console.log(ristorante);
+    /*
+
+    if(await RistoranteDAO.addRistorante(ristorante))
+      res.status(200).send({ message: 'Ristorante aggiunto' });
+    else
+      res.status(400).send({ message: 'Ristorante non aggiunto' });
+      */
+  }
+  catch(e){
+    res.status(400).send({ message: 'Bad request' });
+  }
+  
 });
 
 app.listen(port, () => {
