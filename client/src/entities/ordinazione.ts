@@ -24,7 +24,6 @@ export class Ordinazione {
 
 	setElementi(elementi: ElementoConQuantita[]) {
 		this.elementi = elementi;
-		console.log(this.elementi);
 		return this;
 	}
 

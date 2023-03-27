@@ -28,7 +28,11 @@ const BigButtonContainer = styled.button`
 
 export default function BigButton(props: BigButtonProps) {
 	return (
-		<BigButtonContainer color={props.color} onClick={props.onClick}>
+		<BigButtonContainer
+			type="button"
+			color={props.color}
+			onClick={props.onClick}
+		>
 			<span>{props.text}</span>
 		</BigButtonContainer>
 	);

@@ -67,6 +67,7 @@ export default function GestisciMenuRoute() {
 							categoria={categoria}
 							onClickUp={() => {}}
 							onClickDown={() => {}}
+							key={categoria.nome}
 						/>
 					))
 				)}

@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
+import ItemElementoCategoria from "../components/ItemElementoCategoria";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
@@ -141,7 +142,7 @@ export default function GestisciElementiCategoriaRoute() {
 				<>
 					<ListaElementi>
 						{query.data?.elementi.map((elemento: Elemento) => (
-							<SoftButton key={elemento.nome} text={elemento.nome} />
+							<ItemElementoCategoria key={elemento.nome} elemento={elemento} />
 						))}
 					</ListaElementi>
 				</>
