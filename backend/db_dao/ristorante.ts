@@ -55,6 +55,7 @@ class RistoranteDAOPostgresDB implements IRistoranteDAO {
                 if (err) {
                     return reject(false);
                 }
+                // TODO deve ritornare false se non è stato inserito nulla
                 resolve(true);
             }
         ); 
