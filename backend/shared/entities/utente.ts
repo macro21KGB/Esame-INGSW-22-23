@@ -55,7 +55,7 @@ class CameriereFactory implements IUtenteAbstractFactory {
 		cognome: string,
 		telefono: string,
 		email: string,
-		ruolo: RUOLI = RUOLI.ADMIN,
+		ruolo: RUOLI = RUOLI.CAMERIERE,
 		supervisore: boolean = false,
 	) {
 		this.nome = nome;
@@ -84,7 +84,7 @@ class AddettoCucinaFactory implements IUtenteAbstractFactory {
 		cognome: string,
 		telefono: string,
 		email: string,
-		ruolo: RUOLI = RUOLI.ADMIN,
+		ruolo: RUOLI = RUOLI.ADDETTO_CUCINA,
 		supervisore: boolean = false,
 	) {
 		this.nome = nome;
@@ -167,6 +167,7 @@ class Admin extends Utente {
 	constructor(nome: string, cognome: string, telefono: string, email: string) {
 		super(nome, cognome, telefono, email);
 		this._ristoranti = [];
+		this.ruolo = RUOLI.ADMIN;
 	}
 
 	
@@ -184,6 +185,7 @@ class Cameriere extends Utente implements ICanBeSupervisor {
 	) {
 		super(nome, cognome, telefono, email);
 		this.supervisore = supervisore;
+		this.ruolo = RUOLI.CAMERIERE;
 	}
 }
 
@@ -199,6 +201,7 @@ class AddettoAllaCucina extends Utente implements ICanBeSupervisor {
 	) {
 		super(nome, cognome, telefono, email);
 		this.supervisore = supervisore;
+		this.ruolo = RUOLI.ADDETTO_CUCINA;
 	}
 }
 
