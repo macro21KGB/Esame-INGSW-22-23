@@ -54,19 +54,19 @@ export default function GestisciMenuRoute() {
 	return (
 		<AppContainer>
 			{NavbarFactory.generateNavbarAll(() => setShowModal(true))}
-			<WelcomePanel title="Benvenuto," subtitle="Mario" />
+			<WelcomePanel title="Gestione" subtitle="Menu" />
 			<p id="start_list_ristoranti">Il mio Menu</p>
 			<ListaCategorieContainer>
 				{query.isLoading ? (
-					<LoadingCircle />
+					<LoadingCircle position="absolute" />
 				) : query.data?.length === 0 ? (
 					<p id="no_resturants">Non Hai ancora creato nessuna categoria</p>
 				) : (
 					query.data?.map((categoria) => (
 						<ItemCategoria
 							categoria={categoria}
-							onClickUp={() => {}}
-							onClickDown={() => {}}
+							onClickUp={() => { }}
+							onClickDown={() => { }}
 							key={categoria.nome}
 						/>
 					))
@@ -88,7 +88,7 @@ export default function GestisciMenuRoute() {
 					/>
 
 					<br />
-					<BigButton onClick={() => {}} text="Crea" />
+					<BigButton onClick={() => { }} text="Crea" />
 				</SlideUpModal>
 			</ListaCategorieContainer>
 		</AppContainer>

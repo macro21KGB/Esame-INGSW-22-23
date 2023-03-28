@@ -62,7 +62,7 @@ export default function DashboardRistoranteRoute() {
 				</DashboardContent>
 			) : (
 				<>
-					<WelcomePanel title="Gestione" subtitle={query.data.nome} />
+					<WelcomePanel title="Gestione" subtitle={query.data?.nome || "Ristorante"} />
 					<div id="buttons">
 						<Link to={`/dashboard/${id}/utenze`}>
 							<SoftButton text="Gestione utenze" />

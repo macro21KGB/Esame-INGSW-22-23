@@ -23,9 +23,9 @@ const ALLERGENI = {
 
 const API_URL = "http://localhost:3000/api";
 
-export interface Result {
+export interface Result<T> {
 	success: boolean;
-	data: string;
+	data: T;
 }
 
 export { COLORS, API_URL };

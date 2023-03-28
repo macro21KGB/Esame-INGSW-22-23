@@ -115,7 +115,7 @@ export default function GestisciUtenzaRoute() {
 			nome: utente.nome,
 			cognome: utente.cognome,
 			numeroTelefono: utente.telefono,
-			ruolo: utente.ruolo,
+			ruolo: utente.ruolo || "",
 			supervisore: false,
 		});
 	};
@@ -187,7 +187,7 @@ export default function GestisciUtenzaRoute() {
 				</AssegnaSupervisoreButton>
 
 				<br />
-				<BigButton onClick={() => {}} text="Crea" />
+				<BigButton onClick={() => { }} text="Crea" />
 			</SlideUpModal>
 		</DashboardContainer>
 	);

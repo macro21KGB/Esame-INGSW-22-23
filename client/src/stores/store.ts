@@ -9,6 +9,8 @@ interface Store {
 	token: string | null;
 	idRistorante: number | null;
 	setUser: (user: Utente) => void;
+	setToken: (token: string) => void;
+	setIdRistorante: (idRistorante: number) => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -16,4 +18,6 @@ export const useStore = create<Store>((set, get) => ({
 	token: null,
 	idRistorante: null,
 	setUser: (user: Utente) => set({ user }),
+	setToken: (token: string) => set({ token }),
+	setIdRistorante: (idRistorante: number) => set({ idRistorante }),
 }));

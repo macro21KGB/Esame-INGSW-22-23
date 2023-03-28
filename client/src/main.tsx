@@ -14,6 +14,8 @@ import GestisciElementiCategoriaRoute from "./routes/GestisciElementiCategoria";
 import CucinaRoute from "./routes/CucinaRoute";
 import PrendiOrdinazioneRoute from "./routes/PrendiOrdinazione";
 import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrdinazione";
+import DashboardSupervisore from "./routes/DashboardSupervisore";
+import GestisciContiRoute from "./routes/GestisciConti";
 
 const router = createBrowserRouter([
 	{
@@ -21,6 +23,7 @@ const router = createBrowserRouter([
 		element: <Login />,
 		errorElement: <ErrorPage />,
 	},
+
 	{
 		path: "/dashboard",
 		element: <App />,
@@ -59,6 +62,16 @@ const router = createBrowserRouter([
 	{
 		path: "/ordinazione/:codiceTavolo",
 		element: <InserimentoElementiOrdinazioneRoute />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/supervisore",
+		element: <DashboardSupervisore />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/supervisore/cassa",
+		element: <GestisciContiRoute />,
 		errorElement: <ErrorPage />,
 	},
 ]);

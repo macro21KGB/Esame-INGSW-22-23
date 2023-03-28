@@ -49,6 +49,19 @@ const ItemElementoCategoriaContainer = styled.div`
 		color: white;
 	}	
 
+	button {
+		all: unset;
+		cursor: pointer;
+		font-size: 1.5rem;
+		border-radius: 50%;
+		width: 2rem;
+		height: 2rem;
+	
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.2);
+		}
+	}
+
 	sub {
 		font-style: italic;
 	}

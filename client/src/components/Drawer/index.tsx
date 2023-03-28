@@ -3,6 +3,8 @@ import { animated, useSpring } from "@react-spring/web";
 import { COLORS } from "../../utils/constants";
 import { useStore } from "../../stores/store";
 import { useNavigate } from "react-router";
+import { rimuoviTokenDaCookie } from "../../utils/utils";
+import { toast } from "react-toastify";
 
 const DrawerBackground = styled.div`
     position: fixed;
@@ -121,9 +123,15 @@ function Drawer(props: DrawerProps): JSX.Element {
 	const navigate = useNavigate();
 
 	const logout = () => {
-		console.log("logout");
+
+		// rimuovo l'utente dallo store
+		// rimuovo il token dal cookie
+		// navigo al login	
 		setUserInStore(null);
+		rimuoviTokenDaCookie();
 		navigate("/");
+
+		toast.success("Logout effettuato con successo");
 	};
 
 	const [animation, set] = useSpring(

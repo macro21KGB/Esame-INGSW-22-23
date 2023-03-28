@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { RUOLI, UtenteFactory } from "../entities/utente";
 import styled from "styled-components";
 import "../App.css";
 import BigButton from "../components/BigButton";
@@ -10,7 +11,7 @@ import { Controller } from "../entities/controller";
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
 import { useStore } from "../stores/store";
-import { verificaEmail } from "../utils/utils";
+import { salvaTokenInCookie, verificaEmail } from "../utils/utils";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -19,17 +20,23 @@ const LoginPageContainer = styled.div`
     align-items: center;
     height: 95%;    
     color: white;
+	
+
 
 	div {
 		width: 100%;
 		text-align: center;
 	}
+	#submit_container {
+		overflow: hidden;	
 
-	#submit_container > p {
-		text-align: right;
-		margin-right: 1rem;
-		color: #44c9ea;
-		cursor: pointer;
+
+		p {
+			text-align: right;
+			margin-right: 1rem;
+			color: #44c9ea;
+			cursor: pointer;
+		}
 	}
     `;
 
@@ -45,7 +52,7 @@ export default function Login() {
 		password: "",
 	});
 
-	const setUserInStore = useStore((state) => state.setUser);
+	const setTokenInStore = useStore((state) => state.setToken);
 
 	const controller = Controller.getInstance();
 	const navigate = useNavigate();
@@ -69,7 +76,7 @@ export default function Login() {
 			return;
 		}
 
-		// se non è in fase di login
+		// se è in fase di REGISTRZIONE
 		if (!isLogging) {
 			const isUserCreatedSuccessfully = await controller.registraUtente(
 				loginInfo.email,
@@ -78,20 +85,20 @@ export default function Login() {
 
 			if (isUserCreatedSuccessfully) {
 				toast.success("Utente creato con successo");
-				//TODO il register mi deve restituire l'utente creato
-				navigate("/dashboard");
+				setIsLogging(true);
 			}
 
-			// se è in fase di login
+			// se è in fase di LOGIN
 		} else {
 			const loggedInUser = await controller.accediUtente(
 				loginInfo.email,
 				loginInfo.password,
 			);
 
-			if (loggedInUser) {
+			if (loggedInUser.success) {
 				toast.success("Accesso eseguito con successo");
-				setUserInStore(loggedInUser);
+				setTokenInStore(loggedInUser.data);
+				salvaTokenInCookie(loggedInUser.data, 3600);
 				navigate("/dashboard");
 			} else {
 				toast.error("Email o password errati");
@@ -101,8 +108,6 @@ export default function Login() {
 
 	return (
 		<LoginPageContainer>
-			{/* Blob */}
-
 			<div
 				style={{
 					display: "flex",
@@ -110,6 +115,7 @@ export default function Login() {
 					alignItems: "center",
 					width: "100%",
 					zIndex: 1,
+					marginTop: "2rem",
 				}}
 			>
 				{/* make this blob appear on all the screen */}

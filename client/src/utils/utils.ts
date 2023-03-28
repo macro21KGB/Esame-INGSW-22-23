@@ -54,6 +54,20 @@ export function salvaTokenInCookie(token: string, tempoDiScadenza: number) {
 	document.cookie = `token=${token}; expires=${dataDiScadenza.toUTCString()}; path=/`;
 }
 
+export function getTokenDaCookie(): string {
+	const token = document.cookie
+		.split(";")
+		.find((row) => row.trim().startsWith("token="));
+	if (token) {
+		return token.split("=")[1];
+	}
+	return "";
+}
+
+export function rimuoviTokenDaCookie() {
+	document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
 // da un date estrarre l'ora e i minuti nel seguente formato: hh:mm
 export function getOraMinutiDaDate(date: Date) {
 	const ora = date.getHours();

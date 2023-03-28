@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Ristorante } from "../../entities/ristorante";
 
-const ItemRistoranteContainer = styled(Link)`
+const ItemRistoranteContainer = styled.button`
     
     all:unset;
 
@@ -43,18 +43,25 @@ const ItemRistoranteContainer = styled(Link)`
 
 interface ItemRistoranteProps {
 	ristorante: Ristorante;
+	onClick: () => void;
 }
 
-export default function ItemRistorante(props: ItemRistoranteProps) {
-	const { ristorante } = props;
-
+export default function ItemRistorante({
+	ristorante,
+	onClick,
+}: ItemRistoranteProps) {
 	return (
-		<ItemRistoranteContainer to={`/dashboard/${1}`} type="button">
+		<ItemRistoranteContainer
+			onClick={() => {
+				onClick();
+			}}
+			type="button"
+		>
 			<div id="infos">
 				<p>{ristorante.nome}</p>
 				<sub>{ristorante.indirizzo}</sub>
 			</div>
-			<img src="https://picsum.photos/100" alt="" />
+			<img src="https://picsum.photos/100?blur4" alt="" />
 		</ItemRistoranteContainer>
 	);
 }

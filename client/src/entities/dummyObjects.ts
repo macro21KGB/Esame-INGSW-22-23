@@ -1,7 +1,15 @@
+import { Conto } from "./conto";
 import { Categoria, Elemento, ElementoConQuantita } from "./menu";
 import { Ordinazione } from "./ordinazione";
 import { Ristorante } from "./ristorante";
-import { Cameriere, Ruolo, Utente } from "./utente";
+import {
+	AdminFactory,
+	Cameriere,
+	RUOLI,
+	Ruolo,
+	Utente,
+	UtenteFactory,
+} from "./utente";
 
 const dummyResturant = new Ristorante(
 	1,
@@ -13,12 +21,14 @@ const dummyResturant = new Ristorante(
 	{ camerieri: [], addettiAllaCucina: [] },
 );
 
-const dummyAdmin = new Utente(
+const dummyConto = new Conto(new Date(), "Tavolo 23", []);
+
+const dummyAdmin = UtenteFactory.creaUtente(
 	"Mario",
 	"Rossi",
 	"1234567890",
 	"mario.rossi@email.com",
-	Ruolo.ADMIN,
+	RUOLI.ADMIN,
 );
 
 const dummyCategoria = new Categoria("Primi", [], 0);
@@ -44,7 +54,7 @@ const dummyOrdinazione = new Ordinazione("23").setElementi([
 ]);
 const dummyOrdinazioneEvasa = new Ordinazione("23")
 	.setElementi([dummyElementoConQuantita])
-	.setEvasaDa(Cameriere.fromUtente(dummyAdmin));
+	.setEvasaDa(dummyAdmin as Cameriere);
 
 export {
 	dummyResturant,
@@ -54,4 +64,5 @@ export {
 	dummyElemento,
 	dummyElementoConQuantita,
 	dummyOrdinazioneEvasa,
+	dummyConto
 };

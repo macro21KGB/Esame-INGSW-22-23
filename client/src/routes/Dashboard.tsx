@@ -4,12 +4,17 @@ import { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
 import ItemRistorante from "../components/ItemRistorante";
 import { Controller } from "../entities/controller";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import LoadingCircle from "../components/LoadingCircle";
 import SlideUpModal from "../components/SlideUpModal";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
 import { useStore } from "../stores/store";
+import { Elemento } from "../entities/menu";
+import { getTokenDaCookie } from "../utils/utils";
+import { useNavigate } from "react-router";
+import { Ristorante } from "../entities/ristorante";
+import { toast } from "react-toastify";
 
 const AppContainer = styled.div`
 display: flex;
@@ -73,8 +78,11 @@ const FileInput = styled.div`
 function App() {
 	const controller = Controller.getInstance();
 
+	const navigate = useNavigate();
 	const utenteCorrente = useStore((state) => state.user);
-	const query = useQuery("ristoranti", () => controller.getRistoranti());
+	const query = useQuery(["ristoranti"], () => controller.getRistoranti());
+
+	const saveIdRistorante = useStore((state) => state.setIdRistorante);
 
 	const [showModal, setShowModal] = useState(false);
 	const [informazioniRistorante, setInformazioniRistorante] = useState({
@@ -93,6 +101,11 @@ function App() {
 		});
 	};
 
+	const salvaIdRistoranteEAvanza = (id: number) => {
+		saveIdRistorante(+id);
+		navigate(`/dashboard/${id}`);
+	};
+
 	const handleOnChangeInformazioniRistorante = (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
@@ -102,10 +115,42 @@ function App() {
 		});
 	};
 
+	const mutation = useMutation((newResturant: Ristorante) => controller.creaRistorante(newResturant));
+	const queryClient = useQueryClient();
+
+	const aggiungiRistorante = () => {
+
+		// check if all fields are filled
+		if (informazioniRistorante.nome === "" ||
+			informazioniRistorante.indirizzo === "" ||
+			informazioniRistorante.telefono === "") {
+			toast.warn("Compila tutti i campi");
+			return;
+		}
+
+
+		const nuovoRistorante = new Ristorante(
+			0,
+			informazioniRistorante.nome,
+			informazioniRistorante.indirizzo,
+			informazioniRistorante.telefono,
+			informazioniRistorante.sitoWeb || "",
+			"",
+		)
+
+		mutation.mutate(nuovoRistorante, {
+			onSuccess: () => {
+				queryClient.invalidateQueries("ristoranti");
+				setShowModal(false);
+				resettaCampi();
+			}
+		});
+	};
+
 	return (
 		<AppContainer>
 			{NavbarFactory.generateNavbarAddAndMenu(() => setShowModal(true))}
-			<WelcomePanel title="Benvenuto," subtitle={utenteCorrente.nome} />
+			<WelcomePanel title="Benvenuto," subtitle={utenteCorrente?.nome || "Utente"} />
 			<p id="start_list_ristoranti">I Miei Ristoranti</p>
 			<ListaRistorantiContainer>
 				{query.isLoading ? (
@@ -115,6 +160,7 @@ function App() {
 				) : (
 					query.data?.map((ristorante) => (
 						<ItemRistorante
+							onClick={() => salvaIdRistoranteEAvanza(ristorante.id)}
 							ristorante={ristorante}
 							key={ristorante.nome + ristorante.indirizzo}
 						/>
@@ -152,15 +198,8 @@ function App() {
 						name="sitoWeb"
 						onChange={handleOnChangeInformazioniRistorante}
 					/>
-					<FileInput>
-						<input type="file" id="file" className="file" />
-						<label htmlFor="file">
-							<p>Seleziona un immagine per il tuo ristorante</p>
-							<sub>(opzionale)</sub>
-						</label>
-					</FileInput>
 					<br />
-					<BigButton onClick={() => {}} text="Crea" />
+					<BigButton disabled={mutation.isLoading} onClick={aggiungiRistorante} text="Crea" />
 				</SlideUpModal>
 			</ListaRistorantiContainer>
 		</AppContainer>

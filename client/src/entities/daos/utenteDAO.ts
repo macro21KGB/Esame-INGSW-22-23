@@ -3,11 +3,13 @@ import { toast } from "react-toastify";
 import { API_URL, Result } from "../../utils/constants";
 import { salvaTokenInCookie, verificaEmail } from "../../utils/utils";
 import { dummyAdmin } from "../dummyObjects";
+import { Ristorante } from "../ristorante";
 import { Utente } from "../utente";
 
+type Token = string;
 interface IUtenteDAO {
 	registraUtente(email: string, password: string): Promise<boolean>;
-	accediUtente(email: string, password: string): Promise<Utente | null>;
+	accediUtente(email: string, password: string): Promise<Result<string>>;
 
 	getUtente(email: string, password: string): Promise<Utente>;
 	getUtenti(): Promise<Utente[]>;
@@ -33,8 +35,7 @@ class UtenteDAO implements IUtenteDAO {
 				username: email,
 				password: password,
 			});
-
-			const data: Result = result.data;
+			const data: Result<string> = result.data;
 
 			return handleSuccessRequest(data);
 			// rome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -44,15 +45,15 @@ class UtenteDAO implements IUtenteDAO {
 
 		// rome-ignore lint/suspicious/noExplicitAny: <explanation>
 		function handleError(error: any): boolean {
-			const errorMessage = error.response?.data.data || "Errore sconosciuto";
-			toast.error(errorMessage);
+			
+			toast.error("Non è stato possibile registrare l'utente");
 			return false;
 		}
 
-		function handleSuccessRequest(data: Result): boolean {
+		function handleSuccessRequest(data: Result<string>): boolean {
 			if (!data.success) toast.error(data.data);
 
-			toast.success("Login effettuato con successo");
+			toast.success("Registrazione effettuata con successo");
 
 			// salva data in un cookie chiamato token con scadenza di 1 ora
 			salvaTokenInCookie(data.data, 1);
@@ -60,33 +61,41 @@ class UtenteDAO implements IUtenteDAO {
 		}
 	}
 
-	async accediUtente(email: string, password: string): Promise<Utente | null> {
+	async accediUtente(email: string, password: string): Promise<Result<string>> {
 		try {
 			const result = await axios.post(`${API_URL}/login`, {
 				username: email,
 				password: password,
 			});
 
-			const data: Result = result.data;
-
+			const data: Result<string> = result.data;
+			console.log(data);
 			return handleSuccessRequest(data);
 		} catch (error) {
 			return handleError(error);
 		}
 
 		// rome-ignore lint/suspicious/noExplicitAny: <explanation>
-		function handleError(error: any): Utente | null {
+		function handleError(error: any): Result<string> {
 			const errorMessage = error.response?.data.data || "Errore sconosciuto";
 			toast.error(errorMessage);
-			return null;
+			return {
+				data: errorMessage,
+				success: false,
+			};
 		}
 
-		function handleSuccessRequest(data: Result): Utente | null {
+		// quando l'utente si è loggato con successo, salva il token in un cookie
+		// e ritorna il token stesso
+		function handleSuccessRequest(data: Result<string>): Result<string> {
 			if (!data.success) toast.error(data.data);
 
 			// salva data in un cookie chiamato token con scadenza di 1 ora
 			salvaTokenInCookie(data.data, 1);
-			return Utente.fromJson(data.data);
+			return {
+				data: data.data,
+				success: true,
+			};
 		}
 	}
 	getUtente(email: string, password: string): Promise<Utente> {
@@ -103,5 +112,5 @@ class UtenteDAO implements IUtenteDAO {
 	}
 }
 
-export { UtenteDAO };	export type { IUtenteDAO };
-
+export { UtenteDAO };
+export type { IUtenteDAO };

@@ -21,7 +21,7 @@ export class Ristorante {
 		telefono: string,
 		sitoWeb: string,
 		fotoPath: string,
-		personale: Personale,
+		personale?: Personale,
 	) {
 		this.id = id;
 		this.nome = nome;
@@ -29,6 +29,6 @@ export class Ristorante {
 		this.telefono = telefono;
 		this.sitoWeb = sitoWeb;
 		this.fotoPath = fotoPath;
-		this.personale = personale;
+		this.personale = personale || { camerieri: [], addettiAllaCucina: [] };
 	}
 }

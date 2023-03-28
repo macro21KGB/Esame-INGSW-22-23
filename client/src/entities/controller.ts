@@ -1,3 +1,4 @@
+import { Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
 import { wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
@@ -8,6 +9,8 @@ import { ElementoDAO } from "./daos/elementoDAO";
 import { CategoriaDAO } from "./daos/categoriaDAO";
 import { Utente } from "./utente";
 import { Categoria } from "./menu";
+import { Conto } from "./conto";
+import { dummyConto } from "./dummyObjects";
 
 export class Controller {
 	private static _instance: Controller;
@@ -36,8 +39,12 @@ export class Controller {
 
 	// assegna tutti i dao ad una varaibil
 
+	public async creaRistorante(ristorante: Ristorante): Promise<Result<string>> {
+		return this.ristoranteDAO.addRistorante(ristorante);
+	}
+
 	public async getRistoranti(): Promise<Ristorante[]> {
-		return wait(1000).then(() => this.ristoranteDAO.getRistoranti());
+		return this.ristoranteDAO.getRistoranti();
 	}
 
 	public async getRistorante(id: number): Promise<Ristorante> {
@@ -48,15 +55,13 @@ export class Controller {
 		email: string,
 		password: string,
 	): Promise<boolean> {
-		return wait(1000).then(() =>
-			this.utenteDAO.registraUtente(email, password),
-		);
+		return this.utenteDAO.registraUtente(email, password);
 	}
 
 	public async accediUtente(
 		email: string,
 		password: string,
-	): Promise<Utente | null> {
+	): Promise<Result<string>> {
 		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
 	}
 
@@ -72,5 +77,16 @@ export class Controller {
 
 	public async getCategoria(id: number): Promise<Categoria> {
 		return wait(1000).then(() => this.categoriaDAO.getCategoria(id));
+	}
+
+	public async getContiTavoliUltime24h(): Promise<Result<Conto[]>>
+	{
+		return wait(1000).then(() => {
+			return {
+				success: true,
+				data: [dummyConto]
+			}
+
+		});
 	}
 }

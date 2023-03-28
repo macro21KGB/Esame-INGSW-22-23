@@ -43,6 +43,25 @@ const UovoContainer = styled.div`
 	border-radius: 1rem 1rem 0 0;
 	`;
 
+const InviaAllaCucinaButton = styled.button`
+    background-color: #4fa447;
+    border: none;
+    color: white;
+	width: 100%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0.5rem;
+    cursor: pointer;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+
+	&:hover {
+		background-color: #3f8a3a;
+	}
+
+`;
+
 export default function InserimentoElementiOrdinazioneRoute() {
 	const controller = Controller.getInstance();
 
@@ -65,7 +84,7 @@ export default function InserimentoElementiOrdinazioneRoute() {
 	);
 
 	const goBackToPreviousCategory = () => {
-		setCategoriaScelta(null);
+		setCategoriaScelta(undefined);
 	};
 
 	const checkIfElementoIsPresentAndAssignQuantita = (elemento: Elemento) => {
@@ -131,10 +150,14 @@ export default function InserimentoElementiOrdinazioneRoute() {
 				<p>Visualizza Ordine</p>
 
 				{elementiScelti.map((elementoConQuantita) => (
-					<li key={elementoConQuantita.elemento.nome}>
-						{elementoConQuantita.quantita}x {elementoConQuantita.elemento.nome}
-					</li>
+					<p key={elementoConQuantita.elemento.nome}>
+						<strong>{elementoConQuantita.quantita}x</strong>{" "}
+						{elementoConQuantita.elemento.nome}
+					</p>
 				))}
+				<InviaAllaCucinaButton onClick={() => { }}>
+					Invia alla cucina
+				</InviaAllaCucinaButton>
 			</SlideUpModal>
 			{!showModal && (
 				<UovoContainer>
