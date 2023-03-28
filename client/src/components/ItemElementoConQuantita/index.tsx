@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { Elemento } from "../../entities/menu";
 
@@ -32,6 +33,16 @@ const ItemElementoCategoriaContainer = styled.div`
 		width: 5rem;
 	}
 
+    .quantita {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+        text-align: center;
+    }
+
 	strong {
 		font-size: 1.5rem;
 		font-weight: bold;
@@ -48,6 +59,17 @@ export default function ItemElementoConQuantita({
 	quantita,
 	onChangeQuantita,
 }: ItemElementoCategoriaProps) {
+	const [quantitaDisplay, setQuantitaDisplay] = useState(quantita);
+
+	const onChangeQuantitaDisplay = (quantita: number) => {
+		if (quantita < 0) {
+			quantita = 0;
+		}
+
+		setQuantitaDisplay(quantita);
+		onChangeQuantita(elemento, quantita);
+	};
+
 	return (
 		<ItemElementoCategoriaContainer>
 			<div className="info">
@@ -61,6 +83,16 @@ export default function ItemElementoConQuantita({
 			</div>
 			<div className="prezzo">
 				<strong>€{elemento.prezzo}</strong>
+			</div>
+
+			<div className="quantita">
+				<button onClick={() => onChangeQuantitaDisplay(quantitaDisplay + 1)}>
+					+
+				</button>
+				<strong>{quantitaDisplay}</strong>
+				<button onClick={() => onChangeQuantitaDisplay(quantitaDisplay - 1)}>
+					-
+				</button>
 			</div>
 		</ItemElementoCategoriaContainer>
 	);

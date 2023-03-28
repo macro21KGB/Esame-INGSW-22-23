@@ -8,11 +8,17 @@ import Drawer from "../Drawer";
 // the state variable accept an array of 1 or more of the following strings: "add", "back", "menu"
 interface NavBarProps {
 	addFunc?: () => void;
+	backFunc?: () => void;
 	state?: ("add" | "back" | "menu")[];
 }
 
 // go back inhistory with react router
-const goBack = () => {
+const goBack = (backFunc?: () => void) => {
+	if (backFunc) {
+		backFunc();
+		return;
+	}
+
 	window.history.back();
 };
 
@@ -21,6 +27,7 @@ display: flex;
 align-items: center;
 gap: 0.7rem;
 `;
+
 const NavbarButton = styled.button`
 display: flex;
 background-color: transparent;
@@ -46,8 +53,8 @@ const NavBarContainer = styled.div`
 `;
 
 class NavbarFactory {
-	public static generateNavbarOnlyBack(): JSX.Element {
-		return <NavBar state={["back"]} />;
+	public static generateNavbarOnlyBack(backFunc?: () => void): JSX.Element {
+		return <NavBar backFunc={backFunc} state={["back"]} />;
 	}
 
 	public static generateNavbarOnlyAdd(): JSX.Element {
@@ -58,16 +65,25 @@ class NavbarFactory {
 		return <NavBar state={["menu"]} />;
 	}
 
-	public static generateNavbarAddAndBack(addFunction: () => void): JSX.Element {
-		return <NavBar state={["add", "back"]} addFunc={addFunction} />;
+	public static generateNavbarAddAndBack(
+		addFunction: () => void,
+		backFunc?: () => void,
+	): JSX.Element {
+		return (
+			<NavBar
+				backFunc={backFunc}
+				state={["add", "back"]}
+				addFunc={addFunction}
+			/>
+		);
 	}
 
 	public static generateNavbarAddAndMenu(addFunction: () => void): JSX.Element {
 		return <NavBar state={["add", "menu"]} addFunc={addFunction} />;
 	}
 
-	public static generateNavbarBackAndMenu(): JSX.Element {
-		return <NavBar state={["back", "menu"]} />;
+	public static generateNavbarBackAndMenu(backFunc?: () => void): JSX.Element {
+		return <NavBar backFunc={backFunc} state={["back", "menu"]} />;
 	}
 
 	public static generateNavbarAll(addFunction: () => void): JSX.Element {
@@ -101,7 +117,7 @@ function NavBar(props: NavBarProps) {
 					<FABAddButton onClick={handleAddClick} />
 				)}
 				{state.indexOf("back") !== -1 && (
-					<NavbarButton onClick={goBack}>
+					<NavbarButton onClick={() => goBack(props.backFunc)}>
 						<svg
 							width="22"
 							height="21"

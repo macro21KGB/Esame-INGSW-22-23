@@ -10,7 +10,7 @@ import SlideUpModal from "../components/SlideUpModal";
 import SoftButton from "../components/SoftButton";
 import { Controller } from "../entities/controller";
 import { dummyElemento } from "../entities/dummyObjects";
-import { Categoria, ElementoConQuantita } from "../entities/menu";
+import { Categoria, Elemento, ElementoConQuantita } from "../entities/menu";
 
 const Container = styled.div`
 	position: relative;
@@ -48,10 +48,10 @@ export default function InserimentoElementiOrdinazioneRoute() {
 
 	const [showModal, setShowModal] = useState(false);
 
-	const [elementiScelti, setElementiScelti] = useState<ElementoConQuantita[]>(
-		[],
-	);
-	
+	const [elementiScelti, setElementiScelti] = useState<
+		{ elemento: Elemento; quantita: number }[]
+	>([]);
+
 	const [categoriaScelta, setCategoriaScelta] = useState<Categoria>();
 	const query = useQuery(["categorie"], () => controller.getCategorie());
 	const queryElementi = useQuery(
@@ -64,9 +64,26 @@ export default function InserimentoElementiOrdinazioneRoute() {
 		},
 	);
 
+	const goBackToPreviousCategory = () => {
+		setCategoriaScelta(null);
+	};
+
+	const checkIfElementoIsPresentAndAssignQuantita = (elemento: Elemento) => {
+		const index = elementiScelti.findIndex((e) => e.elemento === elemento);
+		if (index === -1) {
+			return 0;
+		} else {
+			return elementiScelti[index].quantita;
+		}
+	};
+
+	useEffect(() => {
+		console.log(elementiScelti);
+	}, [elementiScelti]);
+
 	return (
 		<Container>
-			{NavbarFactory.generateNavbarBackAndMenu()}
+			{NavbarFactory.generateNavbarBackAndMenu(goBackToPreviousCategory)}
 			<Content>
 				{query.isLoading && <LoadingCircle position="absolute" />}
 				{!categoriaScelta &&
@@ -88,8 +105,23 @@ export default function InserimentoElementiOrdinazioneRoute() {
 							<ItemElementoConQuantita
 								key={elemento.nome}
 								elemento={elemento}
-								quantita={0}
-								onChangeQuantita={() => {}}
+								quantita={checkIfElementoIsPresentAndAssignQuantita(elemento)}
+								onChangeQuantita={(elemento, quantita) => {
+									setElementiScelti((prev) => {
+										const index = prev.findIndex(
+											(e) => e.elemento === elemento,
+										);
+										if (index === -1) {
+											return [...prev, { elemento, quantita }].filter(
+												(e) => e.quantita > 0,
+											);
+										} else {
+											const newElementi = [...prev];
+											newElementi[index].quantita = quantita;
+											return newElementi.filter((e) => e.quantita > 0);
+										}
+									});
+								}}
 							/>
 						))
 					))}
@@ -97,6 +129,12 @@ export default function InserimentoElementiOrdinazioneRoute() {
 
 			<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
 				<p>Visualizza Ordine</p>
+
+				{elementiScelti.map((elementoConQuantita) => (
+					<li key={elementoConQuantita.elemento.nome}>
+						{elementoConQuantita.quantita}x {elementoConQuantita.elemento.nome}
+					</li>
+				))}
 			</SlideUpModal>
 			{!showModal && (
 				<UovoContainer>
