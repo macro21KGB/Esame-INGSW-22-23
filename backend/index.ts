@@ -16,6 +16,7 @@ const port = 3000;
 const secret = 'ilMioSegretoSegretissimo';
 
 interface TokenPayload {
+  id : number,
   nome : string,
   cognome : string,
   email: string,
@@ -59,8 +60,11 @@ router.post('/login', async (req: Request, res: Response) => {
     console.log("unauthorized");
     return res.status(401).send({ message: 'Invalid credentials.' });
   }
-  console.log(user);
+  const id = await UtenteDAO.getIdUtente(username);
+  if (id == null) return res.status(400).send({ message: 'Unexpected error' });
+  console.log("utente id: "+id);
   const payload: TokenPayload = {
+    id: id,
     nome: user.nome,
     cognome : user.cognome,
     email :user.email,
@@ -149,21 +153,29 @@ router.get('/resturant/:id', authenticateToken, async(req: Request, res: Respons
 });
 
 router.post('/resturant', authenticateToken, async(req: Request, res: Response) => {
-  // TODO mettersi d'accordo su come passare i dati
-  try{
-    const ristorante = JSON.parse(req.body) as Ristorante;
-    console.log(ristorante);
-    /*
-
-    if(await RistoranteDAO.addRistorante(ristorante))
-      res.status(200).send({ message: 'Ristorante aggiunto' });
-    else
-      res.status(400).send({ message: 'Ristorante non aggiunto' });
-      */
+  if (!req.body['nome'] || !req.body['indirizzo'] || !req.body['telefono']){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
   }
-  catch(e){
-    res.status(400).send({ message: 'Bad request' });
-  }
+  const  sitoweb = req.body['sitoWeb'] || '';
+  const ristorante = new Ristorante(0,req.body['nome'],req.body['indirizzo'],req.body['telefono'],sitoweb);
+  // ottieni id utente dal token
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({message:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({message:"Invalid token"});
+    const id_utente = decoded.id;
+    try {
+      if(await RistoranteDAO.addRistorante(ristorante,id_utente)) 
+        res.status(200).send({success:true, data: 'Ristorante aggiunto' });
+      else
+        res.status(400).send({success:false, data: 'Ristorante non aggiunto' });
+    }
+    catch(err) {
+      res.status(400).send({success:false, data: 'Ristorante già esistente' });
+    }
+  });
   
 });
 

@@ -7,7 +7,7 @@ interface IUtenteDAO {
 	registraUtente(email: string, password: string): Promise<boolean>;
 	accediUtente(email: string, password: string): Promise<Utente | null>;
 
-	getUtente(email: string, password: string): Promise<Utente>;
+	getIdUtente(email: string): Promise<number | null>;
 	getUtenti(): Promise<Utente[]>;
 	getRistoranti(email: string) : Promise<Ristorante[]>;
 	promuoviASupervisore(utente: Utente): Promise<Utente>;
