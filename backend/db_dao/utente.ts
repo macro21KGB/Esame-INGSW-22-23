@@ -85,8 +85,19 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 			});
 		});
 	}
-	getUtente(email: string, password: string): Promise<Utente> {
-		throw new Error("Method not implemented.");
+	getIdUtente(email: string): Promise<number | null> {
+		return new Promise((resolve, reject) =>{
+			conn.query('SELECT * FROM public."Utente" WHERE email = $1;', [email], (error : any, results : any) => {
+				if (error) {
+					return reject(error);
+				}
+				if (results.rows.length == 0) {
+					resolve(null);
+				} else {
+					resolve(results.rows[0].id_utente);
+				}
+			});
+		});
 	}
 	addUtente(utente: Utente): Promise<Utente> {
 		throw new Error("Method not implemented.");

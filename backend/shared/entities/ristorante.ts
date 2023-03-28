@@ -5,7 +5,7 @@ interface Personale {
 	addettiAllaCucina: AddettoAllaCucina[];
 }
 
-export class Ristorante {
+class Ristorante {
 	id: number;
 	nome: string;
 	indirizzo: string;
@@ -20,8 +20,8 @@ export class Ristorante {
 		indirizzo: string,
 		telefono: string,
 		sitoWeb: string,
-		fotoPath: string,
-		personale: Personale,
+		fotoPath: string = "",
+		personale: Personale = { camerieri: [], addettiAllaCucina: [] },
 	) {
 		this.id = id;
 		this.nome = nome;
@@ -32,3 +32,4 @@ export class Ristorante {
 		this.personale = personale;
 	}
 }
+export { Ristorante };

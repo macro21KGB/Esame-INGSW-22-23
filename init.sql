@@ -18,14 +18,14 @@ CREATE TABLE "Utente" (
 );
 
 CREATE TABLE "UtenteRistorante" (
-  "id_utente" int UNIQUE NOT NULL,
-  "id_ristorante" int UNIQUE NOT NULL,
+  "id_utente" int NOT NULL,
+  "id_ristorante" int NOT NULL,
   "is_admin" bool
 );
 
 CREATE TABLE "Ristorante" (
   "id_ristorante" SERIAL PRIMARY KEY,
-  "nome" VARCHAR(50) UNIQUE NOT NULL,
+  "nome" VARCHAR(50) NOT NULL,
   "indirizzo" VARCHAR(50),
   "telefono" VARCHAR(13),
   "sito_web" VARCHAR(50),
