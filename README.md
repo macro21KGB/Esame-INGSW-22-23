@@ -39,3 +39,7 @@ Lunghezza del PowerPoint con la presentazione di almeno 15 minuti
 ## Riferimenti utili
 https://nayak.io/posts/docker-compose-postgres-and-connection-refused/
 
+https://stackoverflow.com/questions/54941329/share-interfaces-between-api-and-frontend
+
+https://www.geeksforgeeks.org/factory-method-for-designing-pattern/
+
