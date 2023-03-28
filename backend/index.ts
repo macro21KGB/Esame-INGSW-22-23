@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
-import { Utente,RUOLI } from './shared/entities/utente'
+import { Utente,RUOLI,UtenteFactory, Admin, Cameriere, AddettoAllaCucina } from './shared/entities/utente'
 import { UtenteDAOPostgresDB } from './db_dao/utente';
 import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
 import { Ristorante } from './shared/entities/ristorante';
+
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
 
@@ -91,6 +92,39 @@ router.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'Server is up and running!' });
 });
 
+router.get('/test', (req: Request, res: Response) => {
+  // crea un utente cameriere usando la factory
+  const cameriere = UtenteFactory.creaUtente(" ", " ", " ", " ", RUOLI.CAMERIERE,true);
+  let user : Cameriere;
+  if(cameriere.ruolo == RUOLI.CAMERIERE)
+  {
+    user = cameriere as Cameriere;
+    // stampa il campa supervisore
+    console.log("supervisor cameriere: "+user.supervisore);
+  }
+
+  // crea un utente addetto alla cucina 
+  const addetto = UtenteFactory.creaUtente(" ", " ", " ", " ", RUOLI.ADDETTO_CUCINA,false);
+  let user2 : AddettoAllaCucina;
+  if(addetto.ruolo == RUOLI.ADDETTO_CUCINA)
+  {
+    user2 = addetto as AddettoAllaCucina;
+    // stampa il campa supervisore
+    console.log("supervisor addetto: "+user2.supervisore);
+  }
+
+  // crea un utente admin
+  const admin = UtenteFactory.creaUtente(" ", " ", " ", " ", RUOLI.ADMIN);
+  let user3 : Admin;
+  if(admin.ruolo == RUOLI.ADMIN)
+  {
+    user3 = admin as Admin;
+    // stampa il campo supervisore
+    console.log("admin ristoranti: "+user3.getRistoranti().length);
+  }
+     
+  res.status(200).send({ message: 'Test!' });
+});
 
 router.get('/resturants', authenticateToken, async (req: Request, res: Response) => {
   // ottieni email dell'utente dal token
