@@ -1,14 +1,23 @@
 import styled from "styled-components";
 import { COLORS } from "../../utils/constants";
 
-const LoadingCircleContainer = styled.div`
- 
+interface LoadingCircleProps {
+	position?: string;
+}
+
+const LoadingCircleContainer = styled.div<{ position: string }>`
+	position: ${(props) => (props.position ? props.position : "relative")};
+	${(props) => (props.position ? "top: 50%; left: 50%;" : "")}
+	${(props) => (props.position ? "transform: translate(-50%, -50%);" : "")}
+
 	width: 3.5em;
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
 	justify-content: space-between;
-  
+	
+	
+
   
   & > div {
 	width: 0.8em;
@@ -37,9 +46,9 @@ const LoadingCircleContainer = styled.div`
   }
 `;
 
-export default function LoadingCircle() {
+export default function LoadingCircle({ position }: LoadingCircleProps) {
 	return (
-		<LoadingCircleContainer>
+		<LoadingCircleContainer position={position}>
 			<div />
 			<div />
 			<div />

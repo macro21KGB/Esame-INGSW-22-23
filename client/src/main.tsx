@@ -13,6 +13,7 @@ import GestisciMenuRoute from "./routes/GestisciCategorie";
 import GestisciElementiCategoriaRoute from "./routes/GestisciElementiCategoria";
 import CucinaRoute from "./routes/CucinaRoute";
 import PrendiOrdinazioneRoute from "./routes/PrendiOrdinazione";
+import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrdinazione";
 
 const router = createBrowserRouter([
 	{
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/ordinazione/:codiceTavolo",
-		element: <PrendiOrdinazioneRoute />,
+		element: <InserimentoElementiOrdinazioneRoute />,
 		errorElement: <ErrorPage />,
 	},
 ]);
