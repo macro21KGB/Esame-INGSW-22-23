@@ -1,6 +1,6 @@
 @startuml diagramma
 
-class Utente{
+abstract class Utente{
 nome : string
 cognome : string
 telefono: string 
@@ -8,18 +8,21 @@ email : string
 supervisore : bool
 }
 
+interface ICanBeSupervisore {
+	supervisore: bool
+}
 
 class Admin extends Utente{
 }
 
-class Cameriere extends Utente{
-tavoliServiti: int
-inviaOrdineAllaCucina(Ordinazione ordine)
+class Cameriere extends Utente implements ICanBeSupervisore {
+	tavoliServiti: int
+	inviaOrdineAllaCucina(Ordinazione ordine)
 }
 
-class AddettoCucina extends Utente{
-ordiniEvasi : int
-evadiOrdine(Ordinazione ordine)
+class AddettoCucina extends Utente implements ICanBeSupervisore {
+	ordiniEvasi : int
+	evadiOrdine(Ordinazione ordine)
 }
 
 
