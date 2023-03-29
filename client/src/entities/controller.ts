@@ -1,6 +1,6 @@
 import { Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
-import { wait } from "./../utils/utils";
+import { generaFakeDataCharts, wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
 import { Ristorante } from "./ristorante";
 import { UtenteDAO } from "./daos/utenteDAO";
@@ -13,6 +13,14 @@ import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 
 export class Controller {
+    getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
+        return wait(1000).then(() => {
+			return {
+				success: true,
+				data: generaFakeDataCharts(7),
+			}
+		});
+    }
 
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
@@ -72,17 +80,17 @@ export class Controller {
 
 	// CATEGORY
 
-	public async getCategorie(): Promise<Categoria[]> {
+	public async getCategorie(idRisotrante: number): Promise<Categoria[]> {
 		return wait(1000).then(() => this.categoriaDAO.getCategorie());
 	}
 
-	public async getCategoria(id: number): Promise<Categoria> {
-		return wait(1000).then(() => this.categoriaDAO.getCategoria(id));
+	public async getCategoria(idRistorante: number): Promise<Categoria> {
+		return wait(1000).then(() => this.categoriaDAO.getCategoria(idRistorante));
 	}
 	
 	// CONTI
 
-	public async getContiTavoliUltime24h(): Promise<Result<Conto[]>>
+	public async getContiTavoliUltime24h(idRistorante: number): Promise<Result<Conto[]>>
 	{
 		return wait(1000).then(() => {
 			return {

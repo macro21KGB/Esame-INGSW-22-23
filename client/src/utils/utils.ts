@@ -1,6 +1,7 @@
 import { Conto } from './../entities/conto';
 import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
+import dayjs from 'dayjs';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -93,6 +94,25 @@ export function scriviContoSuPDF(conto: Conto) {
 	doc.save(`conto_${conto.codice_tavolo}_${conto.data.toISOString()}.pdf`);
 
 }
+
+export function generaFakeDataCharts(maxDays: number) : {giorno: string, evasi: number}[] {
+	const data = [];
+	for (let i = 0; i < maxDays; i++) {
+		data.push({
+			giorno: `giorno ${i}`,
+			evasi: Math.floor(Math.random() * 100),
+		});
+	}
+	return data;
+}
+
+export const prendiInizioEFine = (lassoTemporale: "week" | "month" | "year") : {from: Date, to: Date} => {
+	const from = dayjs().startOf(lassoTemporale).toDate();
+	const to = dayjs().endOf(lassoTemporale).toDate();
+
+	return { from, to};
+}
+	
 
 export function rimuoviTokenDaCookie() {
 	document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

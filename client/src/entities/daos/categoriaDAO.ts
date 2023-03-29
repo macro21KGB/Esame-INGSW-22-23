@@ -4,7 +4,7 @@ import { Ristorante } from "../ristorante";
 
 interface ICategoriaDAO {
 	getCategoria(idCategoria: number): Promise<Categoria>;
-	getCategorie(): Promise<Categoria[]>;
+	getCategorie(idRistorante: number): Promise<Categoria[]>;
 
 	addCategoria(categoria: Categoria): Promise<Categoria>;
 	updateCategoria(categoria: Categoria): Promise<Categoria>;
@@ -18,7 +18,7 @@ export class CategoriaDAO implements ICategoriaDAO {
 	getCategorie(): Promise<Categoria[]> {
 		return Promise.resolve([dummyCategoria]);
 	}
-	getCategoria(id: number): Promise<Categoria> {
+	getCategoria(idRistorante: number): Promise<Categoria> {
 		return Promise.resolve(new Categoria("categoria1", []));
 	}
 	addCategoria(categoria: Categoria): Promise<Categoria> {

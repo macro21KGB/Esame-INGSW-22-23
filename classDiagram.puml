@@ -1,5 +1,45 @@
 @startuml diagramma
 
+class CucinaRoute {
+
+}
+
+class Dashboard {
+
+}
+
+class DashboardRistorante {
+
+}
+
+class DashboardSupervisore {
+
+}
+
+class GestioneCategorie {
+
+}
+
+class GestioneConti {
+
+}
+
+class GestisciElementiCategoria {
+
+}
+
+class InserimentoElementiOrdinazione {
+
+}
+
+class LoginRoute {
+
+}
+
+class StatisticheRoute {
+
+}
+
 abstract class Utente{
 nome : string
 cognome : string
