@@ -1,0 +1,30 @@
+@startuml sequence
+
+actor Admin
+
+participant "Dashboard" as D
+participant "Controller" as C
+participant "Ristorante" as R
+
+Admin -> D : aggiungiRistorante()
+activate D
+D -> C : getInstance(): Controller
+activate C
+C --> D : Controller
+deactivate C
+D -> D : Controlla se è parametri sono validi
+D -> R : new(): Ristorante
+activate R
+R --> D : nuvoRistorante: Ristorante
+deactivate R
+D -> C : creaRistorante(nuovoRistorante: Ristorante)
+activate C
+C --> D : successo: boolean
+deactivate C
+
+alt successo
+    D -> D : aggiorna la lista dei ristoranti
+else !successo
+    D -> D : mostra messaggio di errore
+end
+@enduml

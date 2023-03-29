@@ -1,0 +1,30 @@
+@startuml sequence2
+
+    actor Supervisor
+    participant "GestisciContiRoute" as GC
+    participant "Controller" as C
+    participant "Conto" as Conto
+
+    Supervisor -> GC : /supervisore/conti
+    activate GC 
+    GC -> C : getInstance(): Controller
+    activate C
+    C --> GC : Controller
+
+    GC -> C : getContiTavoliUltime24h(): List<Conto>
+    C --> GC : conti: List<Conto>
+    deactivate C
+    alt conti.length() > 0
+        loop for each conto in conti
+            GC -> Conto : getImportoTotale()
+            activate Conto
+            Conto --> GC : importoTotale: double
+            deactivate Conto
+
+            GC -> GC : crea <ItemConto conto={conto} />
+        end
+    else else 
+        GC -> GC: stampa "nessun conto"
+    end
+
+@enduml

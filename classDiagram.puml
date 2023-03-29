@@ -1,4 +1,4 @@
-@startuml
+@startuml diagramma
 
 class Utente{
 nome : string
@@ -24,29 +24,28 @@ evadiOrdine(Ordinazione ordine)
 
 
 class Ristorante{
-nome: string
-indirizzo: string
-telefono : string
-sitoWeb : string
-fotoPath : string
+    nome: string
+    indirizzo: string
+    telefono : string
+    sitoWeb? : string
 
-getters e setters
 }
 
+Ristorante "1" --> "1" Menu: ha
+Ristorante "1" --> "N" AddettoCucina: ha
+Ristorante "1" --> "N" Cameriere: ha
 
 
 class Elemento{
-nome: string
-descrizione : string
-prezzo: float
-ingredienti [string]
-allergeni [string]
-
-getters e setters
+    nome: string
+    descrizione : string
+    prezzo: float
+    ingredienti string[]
+    allergeni string[]
 }
 
 class ElementoConQuantita extends Elemento{
-quantita : int
+    quantita : int
 }
 
 class Categoria{
@@ -55,39 +54,212 @@ nome : string
 
 Categoria "1" --> "N" Elemento : composta
 
-abstract class Menu{
+Ristorante "1" --> "N" Categoria : ha
 
+
+class Conto{
+    data: Date;
+    codice_tavolo: string;
+
+    getImportoTotale(): double 
+    getTotaleElementi(): int 
 }
 
-Menu "1" --> "N" Categoria : ha
 
-
-
-class Tavolo{
-occupato : bool
-id: int
-
-chiudiTavolo()
-stampaConto()
-}
-
-Ordinazione "1" --> "N" ElementoConQuantita: ha
-
-Tavolo "1" --> "N" Ordinazione : prende
-
+Conto "1" --> "N" Ordinazione : contiene
 Admin "1" --> "N" Ristorante : ha
 
-Ristorante "1" --> "1" Menu: ha
-Ristorante "1" --> "N" AddettoCucina: ha
-Ristorante "1" --> "N" Cameriere: ha
+
 
 class Ordinazione {
-uuid: int
-timestamp : Datetime
-evaso : bool
+	codice_tavolo: string
+	timestamp: Date
+	evaso: boolean
 
-evadiOrdine()
+    evadiOrdine()
 }
+
+Ordinazione "1" - "1" Cameriere: evaso da
+Ordinazione "1" --> "N" ElementoConQuantita: ha
+
+
+interface ICategoriaDAO {
+	getCategoria(idCategoria: int): Promise<Categoria>
+	getCategorie(): Promise<Categoria[]>
+
+	addCategoria(categoria: Categoria): Promise<Categoria>
+	updateCategoria(categoria: Categoria): Promise<Categoria>
+	deleteCategoria(categoria: Categoria): Promise<Categoria>
+
+	getCategorieRistorante(ristorante: Ristorante): Promise<Categoria[]>
+	getElementiCategoria(categoria: Categoria): Promise<Elemento>
+}
+
+class CategoriaDAO {
+	getCategorie(): Promise<Categoria[]> 
+	getCategoria(id: int): Promise<Categoria> 
+
+	addCategoria(categoria: Categoria): Promise<Categoria> 
+	updateCategoria(categoria: Categoria): Promise<Categoria> 
+	deleteCategoria(categoria: Categoria): Promise<Categoria> 
+	
+    getCategorieRistorante(ristorante: Ristorante): Promise<Categoria[]> 
+	getElementiCategoria(categoria: Categoria): Promise<Elemento> 
+}
+
+CategoriaDAO ..|> ICategoriaDAO
+
+interface IContoDAO {
+    creaConto(conto: Conto): Promise<boolean>;
+    getContoByData(data: Date): Promise<Conto>;
+    getConti(): Promise<Conto[]>;
+    getContiByData(data: Date): Promise<Conto[]>;
+  
+    stampaConto(conto: Conto): Promise<boolean>;
+}
+
+class ContoDAO {
+    stampaConto(conto: Conto): Promise<boolean> 
+    creaConto(conto: Conto): Promise<boolean> 
+    getContoByData(data: Date): Promise<Conto> 
+    getConti(): Promise<Conto[]> 
+    getContiByData(data: Date): Promise<Conto[]> 
+}
+
+ContoDAO ..|> IContoDAO
+
+
+interface IElementoDAO {
+    getElemento(id: int): Promise<Elemento>
+    addElemento(elemento: Elemento): Promise<Elemento>
+    updateElemento(elemento: Elemento): Promise<Elemento>
+    deleteElemento(elemento: Elemento): Promise<Elemento>
+
+}
+
+class ElementoDAO {
+    getElemento(id: int): Promise<Elemento> 
+    addElemento(elemento: Elemento): Promise<Elemento> 
+    updateElemento(elemento: Elemento): Promise<Elemento> 
+    deleteElemento(elemento: Elemento): Promise<Elemento> 
+}
+
+ElementoDAO ..|> IElementoDAO
+
+
+interface IOrdinazioneDAO {
+    getOrdinazioni(): Promise<Ordinazione[]>
+    getOrdinazioniNonEvase(): Promise<Ordinazione[]>
+    getOrdinazioneConCodiceTavolo(codice_tavolo: int): Promise<Ordinazione[]>
+    getOrdinazione(id: int): Promise<Ordinazione>
+
+    evadiOrdinazione(id: int): Promise<boolean>
+    
+    addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>
+    updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>
+    deleteOrdinazione(id: int): Promise<Ordinazione>
+
+}
+
+class OrdinazioneDAO {
+    getOrdinazioni(): Promise<Ordinazione[]> 
+    getOrdinazioniNonEvase(): Promise<Ordinazione[]> 
+    getOrdinazioneConCodiceTavolo(codice_tavolo: string): Promise<Ordinazione[]> 
+    getOrdinazione(id: int): Promise<Ordinazione> 
+    
+    evadiOrdinazione(id: int): Promise<boolean> 
+    
+    addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione> 
+    updateOrdinazione(ordinazione: Ordinazione): Promise
+    
+}
+
+OrdinazioneDAO ..|> IOrdinazioneDAO
+
+
+interface IRistoranteDAO {
+	getRistoranti(): Promise<Ristorante[]>
+	getRistorante(id: int): Promise<Ristorante | null>
+	addRistorante(ristorante: Ristorante): Promise<Result<string>>
+	updateRistorante(ristorante: Ristorante): Promise<Ristorante>
+	deleteRistorante(id: int): Promise<Ristorante>
+}
+
+class RistoranteDAO {
+	getRistoranti(): Promise<Ristorante[]> 
+	getRistorante(id: int): Promise<Ristorante | null> 
+	
+    addRistorante(ristorante: Ristorante): Promise<Result<string>> 
+	
+    updateRistorante(ristorante: Ristorante): Promise<Ristorante> 
+	deleteRistorante(id: int): Promise<Ristorante> 
+}
+
+RistoranteDAO ..|> IRistoranteDAO
+
+
+interface IUtenteDAO {
+	registraUtente(email: string, password: string): Promise<boolean>
+	accediUtente(email: string, password: string): Promise<Result<string>>
+
+	getUtente(email: string, password: string): Promise<Utente>
+	getUtenti(): Promise<Utente[]>
+
+	promuoviASupervisore(utente: Utente): Promise<Utente>
+
+	addUtente(utente: Utente): Promise<Utente>
+	updateUtente(utente: Utente): Promise<Utente>
+	deleteUtente(utente: Utente): Promise<Utente>
+}
+
+class UtenteDAO {
+	promuoviASupervisore(utente: Utente): Promise<Utente> 
+	getUtenti(): Promise<Utente[]> 
+
+	async registraUtente(email: string, password: string): Promise<boolean> 
+	async accediUtente(email: string, password: string): Promise<Result<string>>
+	getUtente(email: string, password: string): Promise<Utente> 
+	addUtente(utente: Utente): Promise<Utente> 
+	updateUtente(utente: Utente): Promise<Utente> 
+	deleteUtente(utente: Utente): Promise<Utente> 
+}
+
+UtenteDAO ..|> IUtenteDAO
+
+
+class Controller {
+    
+	private static _instance: Controller;
+
+	private ristoranteDAO: RistoranteDAO;
+	private utenteDAO: UtenteDAO;
+	private contoDAO: ContoDAO;
+	private ordinazioneDAO: OrdinazioneDAO;
+	private elementoMenuDAO: ElementoDAO;
+	private categoriaDAO: CategoriaDAO;
+
+    public static getInstance(): Controller
+
+	public creaRistorante(ristorante: Ristorante): Promise<Result<string>>
+	public getRistoranti(): Promise<Ristorante[]>
+	public getRistorante(id: number): Promise<Ristorante>
+	public registraUtente(email: string,password: string)
+	public accediUtente(email: string,password: string): Promise<Result<string>>
+	public getUtenti(): Promise<Utente[]> 
+
+	public getCategorie(): Promise<Categoria[]> 
+	public getCategoria(id: number): Promise<Categoria> 
+
+	public getContiTavoliUltime24h(): Promise<Result<Conto[]>>
+	public chiudiConto(conto: Conto): Promise<Result<string>>
+}
+
+Controller "1" - "1" RistoranteDAO
+Controller "1" - "1" UtenteDAO
+Controller "1" - "1" ContoDAO
+Controller "1" - "1" OrdinazioneDAO
+Controller "1" - "1" ElementoDAO
+Controller "1" - "1" CategoriaDAO
 
 
 @enduml
