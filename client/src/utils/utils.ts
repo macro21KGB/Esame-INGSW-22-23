@@ -1,4 +1,6 @@
+import { Conto } from './../entities/conto';
 import { RUOLI } from "../entities/utente";
+import jsPDF from 'jspdf';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -62,6 +64,34 @@ export function getTokenDaCookie(): string {
 		return token.split("=")[1];
 	}
 	return "";
+}
+
+export function scriviContoSuPDF(conto: Conto) {
+	const doc = new jsPDF();
+
+	doc.setFontSize(20);
+
+	doc.text("Conto", 14, 22);
+	doc.setFontSize(12);
+	doc.text(`Numero tavolo: ${conto.codice_tavolo}`, 14, 32);
+	doc.text(`Data: ${conto.data.toISOString()}`, 14, 38);
+	doc.text(`Totale: €${conto.getImportoTotale()}`, 14, 44);
+	doc.text(`Totale elementi: ${conto.getTotaleElementi()}`, 14, 50);
+
+	conto.ordini.forEach((ordinazione, index) => {
+		doc.text(`Ordinazione ${index + 1}`, 14, 60 + index * 6);
+		doc.text(`Totale: €${ordinazione.getImporto()}`, 14, 66 + index * 6);
+		doc.text(`Totale elementi: ${ordinazione.getTotaleElementi()}\n\n`, 14, 72 + index * 6);
+		ordinazione.elementi.forEach((elemento, index2) => {
+			doc.text(`Elemento ${index2 + 1}`, 14, 78 + index * 6 + index2 * 6);
+			doc.text(`Nome: ${elemento.nome}`, 14, 84 + index * 6 + index2 * 6);
+			doc.text(`Prezzo: €${elemento.prezzo}`, 14, 90 + index * 6 + index2 * 6);
+			doc.text(`Quantità: ${elemento.quantita}`, 14, 96 + index * 6 + index2 * 6);
+		});
+	});
+
+	doc.save(`conto_${conto.codice_tavolo}_${conto.data.toISOString()}.pdf`);
+
 }
 
 export function rimuoviTokenDaCookie() {

@@ -7,7 +7,7 @@ import { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
 import { Conto } from "../entities/conto";
 import { Controller } from "../entities/controller";
-import { getOraMinutiDaDate } from "../utils/utils";
+import { getOraMinutiDaDate, scriviContoSuPDF } from "../utils/utils";
 
 const Container = styled.div`
     display: flex;
@@ -97,6 +97,7 @@ export default function GestisciContiRoute() {
 
     const chiudiEStampaConto = () => {
         controller.chiudiConto(contoSelezionato!);
+        scriviContoSuPDF(contoSelezionato!);
     }
 
     const query = useQuery(["conti"], () => {
