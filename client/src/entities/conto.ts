@@ -18,4 +18,12 @@ export class Conto {
         }
         return importo;
     }
+
+    getTotaleElementi(): number {
+        let totale = 0;
+        for (let ordinazione of this.ordini) {
+            totale += ordinazione.getTotaleElementi();
+        }
+        return totale;
+    }
 }

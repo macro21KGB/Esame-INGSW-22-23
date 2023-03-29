@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
@@ -25,6 +26,35 @@ padding: 0;
     padding: 0.5rem;
 }
 
+`;
+
+const AutoCompleteContainer = styled.button`
+    all: unset;    
+
+    cursor: pointer;
+    position: relative;
+    border-radius: 0.6rem;
+    padding: 0.1rem 1rem;
+    background-color: #fff;
+    color: gray;
+    margin-bottom: 0.5rem;
+
+    &:after {
+        content: "";
+        position: absolute;
+        bottom: -40%;
+        left: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        
+        border-left: 0.5rem solid transparent;
+        border-right: 0.5rem solid transparent;
+        border-top: 0.5rem solid white;
+    }
+    p {
+        margin: 0;
+    }
 `;
 
 const DashboardContent = styled.div`
@@ -71,6 +101,7 @@ export default function GestisciElementiCategoriaRoute() {
 		return controller.getCategoria(parseInt(idRistorante));
 	});
 
+	const [autoCompleteString, setAutoCompleteString] = useState<string>("AutoComplete");
 	const [isModifica, setIsModifica] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [itemAllergeni, setItemAllergeni] = useState<string[]>([]);
@@ -89,6 +120,7 @@ export default function GestisciElementiCategoriaRoute() {
 			costo: "",
 			allergeni: "",
 		});
+		setAutoCompleteString("AutoComplete");
 	};
 
 	const [informazioniElemento, setInformazioniElemento] = useState({
@@ -124,6 +156,31 @@ export default function GestisciElementiCategoriaRoute() {
 		return array;
 	};
 
+	const fetchSuggestions = async () => {
+		const response = await axios.get<string>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${informazioniElemento.nome.replace(" ", "_")}`);
+
+		const data = response.data;
+		console.log(data);
+		if (data["meals"]) {
+			setAutoCompleteString(data["meals"][0]["strMeal"]);
+		}
+	}
+
+	const selectAutoComplete = () => {
+		setInformazioniElemento({
+			...informazioniElemento,
+			nome: autoCompleteString,
+			descrizione: "",
+		})
+	}
+
+	useEffect(() => {
+		if (informazioniElemento.nome.length > 3) {
+			if (informazioniElemento.nome !== autoCompleteString)
+				fetchSuggestions();
+		}
+	}, [informazioniElemento.nome])
+
 	useEffect(() => {
 		setItemAllergeni(convertiStringaInArray(informazioniElemento.allergeni));
 	}, [informazioniElemento.allergeni]);
@@ -153,6 +210,9 @@ export default function GestisciElementiCategoriaRoute() {
 				onClose={() => resettaCampi()}
 			>
 				<p>{isModifica ? "Modifica Elemento" : "Nuovo Elemento"}</p>
+				<AutoCompleteContainer onClick={selectAutoComplete}>
+					<p>{autoCompleteString}</p>
+				</AutoCompleteContainer>
 				<InputBox
 					placeholder="Nome Elemento"
 					value={informazioniElemento.nome}
@@ -169,7 +229,7 @@ export default function GestisciElementiCategoriaRoute() {
 					placeholder="Costo"
 					type="number"
 					value={informazioniElemento.costo}
-					name="nome"
+					name="costo"
 					onChange={handleOnChange}
 				/>
 				<InputBox
@@ -185,10 +245,10 @@ export default function GestisciElementiCategoriaRoute() {
 					<br />
 				</AllergeniContainer>
 				{isModifica && (
-					<BigButton onClick={() => {}} color="red" text="Elimina Elemento" />
+					<BigButton onClick={() => { }} color="red" text="Elimina Elemento" />
 				)}
 
-				<BigButton onClick={() => {}} text="Crea" />
+				<BigButton onClick={() => { }} text="Crea" />
 			</SlideUpModal>
 		</DashboardContainer>
 	);

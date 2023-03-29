@@ -13,6 +13,7 @@ import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 
 export class Controller {
+
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
 	private utenteDAO: UtenteDAO;
@@ -78,6 +79,8 @@ export class Controller {
 	public async getCategoria(id: number): Promise<Categoria> {
 		return wait(1000).then(() => this.categoriaDAO.getCategoria(id));
 	}
+	
+	// CONTI
 
 	public async getContiTavoliUltime24h(): Promise<Result<Conto[]>>
 	{
@@ -89,4 +92,14 @@ export class Controller {
 
 		});
 	}
+
+	public async chiudiConto(conto: Conto): Promise<Result<string>> {
+		return wait(1000).then(() => {
+			return {
+				success: true,
+				data: "Conto chiuso"
+			}
+		});
+	}
+	
 }

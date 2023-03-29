@@ -21,7 +21,7 @@ const dummyResturant = new Ristorante(
 	{ camerieri: [], addettiAllaCucina: [] },
 );
 
-const dummyConto = new Conto(new Date(), "Tavolo 23", []);
+
 
 const dummyAdmin = UtenteFactory.creaUtente(
 	"Mario",
@@ -55,6 +55,10 @@ const dummyOrdinazione = new Ordinazione("23").setElementi([
 const dummyOrdinazioneEvasa = new Ordinazione("23")
 	.setElementi([dummyElementoConQuantita])
 	.setEvasaDa(dummyAdmin as Cameriere);
+
+const dummyConto = new Conto(new Date(), "Tavolo 23", [
+	dummyOrdinazione
+]);
 
 export {
 	dummyResturant,

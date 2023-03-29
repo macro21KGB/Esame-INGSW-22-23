@@ -49,12 +49,19 @@ class RistoranteDAO implements IRistoranteDAO {
 	async addRistorante(ristorante: Ristorante): Promise<Result<string>> {
 		try {
 			const token = getTokenDaCookie();
-			const response = await axios.post<Result<string>>(`${API_URL}/resturant`, ristorante, {
+			const dataToSend = {
+				nome: ristorante.nome,
+				indirizzo: ristorante.indirizzo,
+				telefono: ristorante.telefono,
+				sitoWeb: ristorante.sitoWeb,
+			}
+			const response = await axios.post<Result<string>>(`${API_URL}/resturant`, dataToSend, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
 			});
+			console.log(response.data);
 
 			if (response.status === 200) {
 				return response.data;

@@ -16,6 +16,7 @@ import PrendiOrdinazioneRoute from "./routes/PrendiOrdinazione";
 import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrdinazione";
 import DashboardSupervisore from "./routes/DashboardSupervisore";
 import GestisciContiRoute from "./routes/GestisciConti";
+import TestRoute from "./routes/TestRoute";
 
 const router = createBrowserRouter([
 	{
@@ -65,15 +66,21 @@ const router = createBrowserRouter([
 		errorElement: <ErrorPage />,
 	},
 	{
+		path: "/supervisore/cassa",
+		element: <GestisciContiRoute />,
+		errorElement: <ErrorPage />,
+	},
+	{
 		path: "/supervisore",
 		element: <DashboardSupervisore />,
 		errorElement: <ErrorPage />,
 	},
 	{
-		path: "/supervisore/cassa",
-		element: <GestisciContiRoute />,
+		path: "/test",
+		element: <TestRoute />,
 		errorElement: <ErrorPage />,
 	},
+
 ]);
 
 const queryClient = new QueryClient();

@@ -32,6 +32,10 @@ export class Ordinazione {
 		return this;
 	}
 
+	getTotaleElementi(): number {
+		return this.elementi.length;
+	}
+
 	getImporto(): number {
 		let importo = 0;
 		for (let elemento of this.elementi) {
