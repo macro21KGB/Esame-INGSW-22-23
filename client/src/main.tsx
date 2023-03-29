@@ -17,7 +17,7 @@ import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrd
 import DashboardSupervisore from "./routes/DashboardSupervisore";
 import GestisciContiRoute from "./routes/GestisciConti";
 import TestRoute from "./routes/TestRoute";
-
+import StatisticheRoute from "./routes/Statistiche";
 const router = createBrowserRouter([
 	{
 		path: "/",
@@ -73,6 +73,11 @@ const router = createBrowserRouter([
 	{
 		path: "/supervisore",
 		element: <DashboardSupervisore />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/dashboard/:id/statistiche",
+		element: <StatisticheRoute />,
 		errorElement: <ErrorPage />,
 	},
 	{

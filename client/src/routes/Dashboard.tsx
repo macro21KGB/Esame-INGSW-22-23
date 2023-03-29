@@ -10,8 +10,6 @@ import SlideUpModal from "../components/SlideUpModal";
 import InputBox from "../components/InputBox";
 import BigButton from "../components/BigButton";
 import { useStore } from "../stores/store";
-import { Elemento } from "../entities/menu";
-import { getTokenDaCookie } from "../utils/utils";
 import { useNavigate } from "react-router";
 import { Ristorante } from "../entities/ristorante";
 import { toast } from "react-toastify";
@@ -36,6 +34,7 @@ const ListaRistorantiContainer = styled.div`
 	justify-content: stretch;
 	align-items: center;
 	padding: 1rem;
+	gap: 1rem;
 
 	#no_resturants {
 		font-weight: 100;
@@ -207,3 +206,14 @@ function App() {
 }
 
 export default App;
+
+/*
+
+	GET utenti
+	GET utente/:email
+	UPDATE utente/:email
+	DELETE utente/:email
+
+	
+
+*/
