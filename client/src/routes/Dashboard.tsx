@@ -142,6 +142,7 @@ function App() {
 				queryClient.invalidateQueries("ristoranti");
 				setShowModal(false);
 				resettaCampi();
+				toast.success("Ristorante Creato con successo");
 			}
 		});
 	};
@@ -161,7 +162,7 @@ function App() {
 						<ItemRistorante
 							onClick={() => salvaIdRistoranteEAvanza(ristorante.id)}
 							ristorante={ristorante}
-							key={ristorante.nome + ristorante.indirizzo}
+							key={ristorante.nome + ristorante.id}
 						/>
 					))
 				)}
@@ -206,14 +207,3 @@ function App() {
 }
 
 export default App;
-
-/*
-
-	GET utenti
-	GET utente/:email
-	UPDATE utente/:email
-	DELETE utente/:email
-
-	
-
-*/

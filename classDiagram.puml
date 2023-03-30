@@ -1,51 +1,97 @@
 @startuml diagramma
 
 class CucinaRoute {
+	controller: Controller
+	query: useQuery()
 
+	filtraOrdini(tipoOrdine: string): void
+	checkScreenSize(): void
 }
 
 class Dashboard {
+	controller: Controller
+	query: useQuery()
 
+	resettaCampi(): void
+	salvaIdRistoranteENavigaVersoDashboard(): void
+	handleOnChangeInformazioniRistorante(): void
+	aggiungiRistorante(): void
 }
 
 class DashboardRistorante {
+	controller: Controller
+	query: useQuery()
 
 }
 
 class DashboardSupervisore {
-
+	idRistoranteSupervisore: int
 }
 
 class GestioneCategorie {
-
+	controller: Controller
+	idRistorante: int
+	query: useQuery()
 }
 
 class GestioneConti {
+	controller: Controller
+	idRistorante: int
 
+	query: useQuery()
 }
 
 class GestisciElementiCategoria {
+	idRistorante: int
+	nomeCategoria: string
+	controller: Controller
 
+	resettaCampi(): void
+	convertiStringaAllergeniInComponent(): void
+	fetchAutoCompleteSuggestions(): void
+	selectAutoCompleteSuggestion(): void
 }
 
 class InserimentoElementiOrdinazione {
-
+	controller: Controller
+	idRistorante: int
+	query: useQuery()
+	
+	goBackToPreviousCategory(): void
+	checkIfElementoIsPresentAndAssignQuantita():  void
 }
 
-class LoginRoute {
+class Login {
+	controller: Controller
+	query: useQuery()
 
+	resettaCampi(): void
+	handleInfoLogin(e: event): void
+	handleLoginRegister(): void
+	setTokenInStore(token: string): void
+	salvaTokenInCookie(token: string): void
 }
 
 class StatisticheRoute {
 
 }
 
+Login "1" - "1" Controller: usa
+Dashboard "1" - "1" Controller: usa
+GestioneCategorie "1" - "1" Controller: usa
+GestisciElementiCategoria "1" - "1" Controller: usa
+InserimentoElementiOrdinazione "1" - "1" Controller: usa
+GestioneConti "1" - "1" Controller: usa
+CucinaRoute "1" - "1" Controller: usa
+StatisticheRoute "1" - "1" Controller: usa
+
+
 abstract class Utente{
-nome : string
-cognome : string
-telefono: string 
-email : string
-supervisore : bool
+	nome : string
+	cognome : string
+	telefono: string 
+	email : string
+	supervisore : bool
 }
 
 interface ICanBeSupervisore {
@@ -53,6 +99,9 @@ interface ICanBeSupervisore {
 }
 
 class Admin extends Utente{
+	_ristoranti: Ristorante[]
+
+	getRistoranti(): Ristorante[]
 }
 
 class Cameriere extends Utente implements ICanBeSupervisore {

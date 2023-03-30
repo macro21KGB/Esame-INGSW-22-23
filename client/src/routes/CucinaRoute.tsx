@@ -116,30 +116,30 @@ export default function CucinaRoute() {
 
 			<div id="sections">
 				<MacroSection title="Ordinazioni da evadere" bgColor="red">
-					<ItemOrdinazione onDelete={() => {}} ordinazione={dummyOrdinazione} />
-					<ItemOrdinazione onDelete={() => {}} ordinazione={dummyOrdinazione} />
-					<ItemOrdinazione onDelete={() => {}} ordinazione={dummyOrdinazione} />
-					<ItemOrdinazione onDelete={() => {}} ordinazione={dummyOrdinazione} />
+					<ItemOrdinazione onDelete={() => { }} ordinazione={dummyOrdinazione} />
+					<ItemOrdinazione onDelete={() => { }} ordinazione={dummyOrdinazione} />
+					<ItemOrdinazione onDelete={() => { }} ordinazione={dummyOrdinazione} />
+					<ItemOrdinazione onDelete={() => { }} ordinazione={dummyOrdinazione} />
 				</MacroSection>
 				<MacroSection title="Ordinazioni già evase" bgColor="green">
 					<ItemOrdinazione
 						evasa={true}
-						onDelete={() => {}}
+						onDelete={() => { }}
 						ordinazione={dummyOrdinazioneEvasa}
 					/>
 					<ItemOrdinazione
 						evasa={true}
-						onDelete={() => {}}
+						onDelete={() => { }}
 						ordinazione={dummyOrdinazioneEvasa}
 					/>
 					<ItemOrdinazione
 						evasa={true}
-						onDelete={() => {}}
+						onDelete={() => { }}
 						ordinazione={dummyOrdinazioneEvasa}
 					/>
 					<ItemOrdinazione
 						evasa={true}
-						onDelete={() => {}}
+						onDelete={() => { }}
 						ordinazione={dummyOrdinazioneEvasa}
 					/>
 				</MacroSection>
@@ -147,3 +147,6 @@ export default function CucinaRoute() {
 		</CucinaRouteContainer>
 	);
 }
+
+
+

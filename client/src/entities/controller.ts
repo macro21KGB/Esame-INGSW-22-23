@@ -13,14 +13,14 @@ import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 
 export class Controller {
-    getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
-        return wait(1000).then(() => {
+	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
+		return wait(1000).then(() => {
 			return {
 				success: true,
 				data: generaFakeDataCharts(7),
 			}
 		});
-    }
+	}
 
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
@@ -56,8 +56,8 @@ export class Controller {
 		return this.ristoranteDAO.getRistoranti();
 	}
 
-	public async getRistorante(id: number): Promise<Ristorante> {
-		return wait(1000).then(() => this.ristoranteDAO.getRistorante(id));
+	public async getRistorante(id: number): Promise<Ristorante | null> {
+		return this.ristoranteDAO.getRistorante(id);
 	}
 
 	public async registraUtente(
@@ -80,18 +80,17 @@ export class Controller {
 
 	// CATEGORY
 
-	public async getCategorie(idRisotrante: number): Promise<Categoria[]> {
-		return wait(1000).then(() => this.categoriaDAO.getCategorie());
+	public async getCategorie(idRistorante: number): Promise<Categoria[]> {
+		return wait(1000).then(() => this.categoriaDAO.getCategorie(idRistorante));
 	}
 
 	public async getCategoria(idRistorante: number): Promise<Categoria> {
 		return wait(1000).then(() => this.categoriaDAO.getCategoria(idRistorante));
 	}
-	
+
 	// CONTI
 
-	public async getContiTavoliUltime24h(idRistorante: number): Promise<Result<Conto[]>>
-	{
+	public async getContiTavoliUltime24h(idRistorante: number): Promise<Result<Conto[]>> {
 		return wait(1000).then(() => {
 			return {
 				success: true,
@@ -109,5 +108,5 @@ export class Controller {
 			}
 		});
 	}
-	
+
 }

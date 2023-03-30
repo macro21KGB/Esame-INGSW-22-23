@@ -2,6 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components"
 import { NavbarFactory } from "../components/NavBar"
 import SoftButton from "../components/SoftButton";
+import { useStore } from "../stores/store";
 
 const Container = styled.div`
     display: flex;
@@ -22,13 +23,13 @@ const Content = styled.div`
 
 export default function DashboardSupervisore() {
 
-    const idRistoranteSupervisore = 0;
+    const idRistorante = useStore(state => state.idRistorante);
 
     return (
         <Container>
             {NavbarFactory.generateNavbarOnlyMenu()}
             <Content>
-                <Link to={`/dashboard/${idRistoranteSupervisore}/menu`} >
+                <Link to={`/dashboard/${idRistorante}/menu`} >
                     <SoftButton text="Gestisci Menu" />
                 </Link>
                 <Link to={`/supevisore/conti`}>

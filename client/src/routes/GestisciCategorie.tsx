@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
@@ -7,9 +7,9 @@ import ItemCategoria from "../components/ItemCategoria";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
-import SoftButton from "../components/SoftButton";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
+import { useStore } from "../stores/store";
 
 const AppContainer = styled.div`
 display: flex;
@@ -45,8 +45,10 @@ export default function GestisciMenuRoute() {
 	const [showModal, setShowModal] = useState(false);
 	const [nomeCategoria, setNomeCategoria] = useState("");
 
+	const idRistorante = useStore((state) => state.idRistorante);
+
 	const query = useQuery(["categorie"], () => {
-		return controller.getCategorie();
+		return controller.getCategorie(idRistorante);
 	});
 
 	// TODO aggiungere la possibilità di modificare l'ordine delle categorie
@@ -58,7 +60,7 @@ export default function GestisciMenuRoute() {
 			<p id="start_list_ristoranti">Il mio Menu</p>
 			<ListaCategorieContainer>
 				{query.isLoading ? (
-					<LoadingCircle position="absolute" />
+					<LoadingCircle loaderPosition="absolute" />
 				) : query.data?.length === 0 ? (
 					<p id="no_resturants">Non Hai ancora creato nessuna categoria</p>
 				) : (

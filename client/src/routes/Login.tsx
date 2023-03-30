@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { RUOLI, UtenteFactory } from "../entities/utente";
 import styled from "styled-components";
 import "../App.css";
 import BigButton from "../components/BigButton";
@@ -65,7 +64,7 @@ export default function Login() {
 		});
 	};
 
-	const handleLoginRegister = async () => {
+	const handleLoginRegister = async (email: string, password: string, passwordVerifica: string) => {
 		if (!verificaEmail(loginInfo.email)) {
 			toast.error("Email non valida");
 			return;
@@ -167,7 +166,9 @@ export default function Login() {
 
 			<div id="submit_container">
 				<BigButton
-					onClick={handleLoginRegister}
+					onClick={() => {
+						handleLoginRegister(loginInfo.email, loginInfo.password, loginInfo.confirmPassword || "");
+					}}
 					text={isLogging ? "Login" : "Registrati"}
 				/>
 				<br />

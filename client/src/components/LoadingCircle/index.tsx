@@ -2,13 +2,13 @@ import styled from "styled-components";
 import { COLORS } from "../../utils/constants";
 
 interface LoadingCircleProps {
-	position?: string;
+	loaderPosition?: string;
 }
 
-const LoadingCircleContainer = styled.div<{ position: string }>`
-	position: ${(props) => (props.position ? props.position : "relative")};
-	${(props) => (props.position ? "top: 50%; left: 50%;" : "")}
-	${(props) => (props.position ? "transform: translate(-50%, -50%);" : "")}
+const LoadingCircleContainer = styled.div<{ loaderPosition: string }>`
+	position: ${(props) => (props.loaderPosition ? props.loaderPosition : "relative")};
+	${(props) => (props.loaderPosition ? "top: 50%; left: 50%;" : "")}
+	${(props) => (props.loaderPosition ? "transform: translate(-50%, -50%);" : "")}
 
 	width: 3.5em;
 	display: flex;
@@ -46,9 +46,9 @@ const LoadingCircleContainer = styled.div<{ position: string }>`
   }
 `;
 
-export default function LoadingCircle({ position }: LoadingCircleProps) {
+export default function LoadingCircle({ loaderPosition }: LoadingCircleProps) {
 	return (
-		<LoadingCircleContainer position={position}>
+		<LoadingCircleContainer loaderPosition={loaderPosition || "absolute"}>
 			<div />
 			<div />
 			<div />

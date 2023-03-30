@@ -31,13 +31,17 @@ class UtenteDAO implements IUtenteDAO {
 
 	async registraUtente(email: string, password: string): Promise<boolean> {
 		try {
-			const result = await axios.post(`${API_URL}/register`, {
+			const result = await axios.post<Result<string>>(`${API_URL}/register`, {
 				username: email,
 				password: password,
 			});
 			const data: Result<string> = result.data;
+			if (data.success) {
+				console.log(data.success);
+				return handleSuccessRequest(data);
 
-			return handleSuccessRequest(data);
+			}
+
 			// rome-ignore lint/suspicious/noExplicitAny: <explanation>
 		} catch (error: any) {
 			return handleError(error);
@@ -45,19 +49,21 @@ class UtenteDAO implements IUtenteDAO {
 
 		// rome-ignore lint/suspicious/noExplicitAny: <explanation>
 		function handleError(error: any): boolean {
-			
+
 			toast.error("Non è stato possibile registrare l'utente");
 			return false;
 		}
 
 		function handleSuccessRequest(data: Result<string>): boolean {
-			if (!data.success) toast.error(data.data);
+			if (!data.success) {
+				toast.error("Non è stato possibile registrare l'utente");
+				return false;
+			}
 
 			toast.success("Registrazione effettuata con successo");
-
 			// salva data in un cookie chiamato token con scadenza di 1 ora
-			salvaTokenInCookie(data.data, 1);
-			return true;
+
+			return data.success;
 		}
 	}
 
