@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { Categoria } from "../../entities/menu";
 
 interface ItemCategoriaProps {
-	categoria: Categoria;
-	onClickUp: () => void;
-	onClickDown: () => void;
+    categoria: Categoria;
 }
 
 const ItemCategoriaContainer = styled.div`
@@ -41,25 +39,15 @@ const ItemCategoriaContainer = styled.div`
     `;
 
 export default function ItemCategoria({
-	categoria,
-	onClickDown,
-	onClickUp,
+    categoria,
 }: ItemCategoriaProps) {
-	const params = useParams<{ id: string }>();
+    const params = useParams<{ id: string }>();
 
-	return (
-		<ItemCategoriaContainer>
-			<Link to={`/dashboard/${params.id}/menu/${categoria.nome}`}>
-				<p>{categoria.nome}</p>
-			</Link>
-			<div id="buttons">
-				<button onClick={onClickUp} type="button">
-					⬆️
-				</button>
-				<button onClick={onClickDown} type="button">
-					⬇️
-				</button>
-			</div>
-		</ItemCategoriaContainer>
-	);
+    return (
+        <Link to={`/dashboard/${params.id}/menu/${categoria.id_categoria}`}>
+            <ItemCategoriaContainer>
+                <p>{categoria.nome}</p>
+            </ItemCategoriaContainer>
+        </Link>
+    );
 }

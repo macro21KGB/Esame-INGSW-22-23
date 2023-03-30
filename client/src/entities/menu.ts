@@ -21,12 +21,14 @@ class Menu {
 class Categoria {
 	nome: string;
 	elementi: Elemento[];
-	ordine: number;
+	id_categoria: number;
+	id_ristorante: number;
 
-	constructor(nome: string, elementi: Elemento[], ordine: number = 0) {
+	constructor(nome: string, elementi: Elemento[], id_categoria: number = 0, id_ristorante: number = 0) {
 		this.nome = nome;
 		this.elementi = elementi;
-		this.ordine = ordine;
+		this.id_categoria = id_categoria;
+		this.id_ristorante = id_ristorante;
 	}
 }
 
@@ -37,6 +39,7 @@ interface OpzioniElemento {
 }
 
 class Elemento {
+	id_elemento: number;
 	nome: string;
 	descrizione: string;
 	prezzo: number;
@@ -49,6 +52,7 @@ class Elemento {
 		descrizione: string,
 		prezzo: number,
 		opzioni: OpzioniElemento,
+		id: number = 0,
 	) {
 		this.nome = nome;
 		this.descrizione = descrizione;
@@ -56,6 +60,7 @@ class Elemento {
 		this.ingredienti = opzioni.ingredienti;
 		this.allergeni = opzioni.allergeni;
 		this.ordine = opzioni.ordine;
+		this.id_elemento = id;
 	}
 
 	public getOrdine(): number {
@@ -106,3 +111,4 @@ class ElementoConQuantita extends Elemento {
 }
 
 export { Menu, Elemento, ElementoConQuantita, Categoria };
+export type { OpzioniElemento };

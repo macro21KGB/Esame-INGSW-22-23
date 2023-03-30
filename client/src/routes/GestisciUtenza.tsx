@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import { useParams } from "react-router";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
+import DropDownItem from "../components/DropDownItem";
 import InputBox from "../components/InputBox";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
@@ -11,7 +14,8 @@ import UtenzaItem from "../components/UtenzaItem";
 import StarBadge from "../components/UtenzaItem/StarBadge";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
-import { Ruolo, Utente } from "../entities/utente";
+import { Ruolo, Utente, UtenteFactory } from "../entities/utente";
+import { useStore } from "../stores/store";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -44,21 +48,6 @@ const ListaUtenze = styled.div`
 
 `;
 
-const AssegnaRuoloSelect = styled.select`
-	all: unset;
-	position: relative;
-	margin: 0.5rem;
-	border-radius: 0.5rem;
-	cursor: pointer;
-	padding: 0.5rem;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 80%;
-	text-align: center;
-	background-color: #1A1515;
-`;
 
 const AssegnaSupervisoreButton = styled.button<{ isSupervisore: boolean }>`
 	all: unset;
@@ -72,15 +61,16 @@ const AssegnaSupervisoreButton = styled.button<{ isSupervisore: boolean }>`
 	align-items: center;
 	width: 80%;
 	text-align: center;
-	background-color: ${(props) => (props.isSupervisore ? "#1183C2" : "1A1515")};
+	background-color: ${(props) => (props.isSupervisore ? "#1183C2" : "#1A1515")};
 	
 `;
 
-interface InformazioniUtente {
+export interface InformazioniUtente {
 	nome: string;
 	cognome: string;
-	numeroTelefono: string;
-	passwordPrimoAccesso?: string;
+	telefono: string;
+	email: string;
+	password?: string;
 	ruolo: string;
 	supervisore: boolean;
 }
@@ -88,13 +78,15 @@ interface InformazioniUtente {
 export default function GestisciUtenzaRoute() {
 	const [showModal, setShowModal] = useState(false);
 	const controller = Controller.getInstance();
+	const { id } = useParams();
 
 	const [informazioniUtente, setInformazioniUtente] =
 		useState<InformazioniUtente>({
 			nome: "",
 			cognome: "",
-			numeroTelefono: "",
-			passwordPrimoAccesso: "",
+			telefono: "",
+			email: "",
+			password: "",
 			ruolo: "",
 			supervisore: false,
 		});
@@ -107,14 +99,33 @@ export default function GestisciUtenzaRoute() {
 	};
 
 	const query = useQuery(["utenti"], () => {
-		return controller.getUtenti();
+		return controller.getUtenti(parseInt(id) || -1);
 	});
 
-	const impostaInformazioniUtente = (utente: Utente) => {
+	const mutation = useMutation((infoUtente: InformazioniUtente) => {
+		return controller.creaUtenteConInformazioniUtente(infoUtente, parseInt(id) || -1);
+	}, {
+		onSuccess: () => {
+			toast.success("Utente creato con successo");
+			setShowModal(false);
+			query.refetch();
+		}
+		,
+		onError: (error: any) => {
+			toast.error(error.message);
+		}
+	});
+
+	const handleCreaUtente = () => {
+		mutation.mutate(informazioniUtente);
+	}
+
+	const impostaInformazioniUtente = (utente: InformazioniUtente) => {
 		setInformazioniUtente({
 			nome: utente.nome,
 			cognome: utente.cognome,
-			numeroTelefono: utente.telefono,
+			telefono: utente.telefono,
+			email: utente.email,
 			ruolo: utente.ruolo || "",
 			supervisore: false,
 		});
@@ -139,7 +150,7 @@ export default function GestisciUtenzaRoute() {
 							key={utente.email + utente.telefono}
 							utente={utente}
 							onModifica={() => {
-								impostaInformazioniUtente(utente);
+								impostaInformazioniUtente(utente as InformazioniUtente);
 								setShowModal(true);
 							}}
 						/>
@@ -150,6 +161,12 @@ export default function GestisciUtenzaRoute() {
 			</ListaUtenze>
 			<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
 				<p>Nuovo Utente</p>
+				<InputBox
+					placeholder="Email"
+					value={informazioniUtente.email}
+					name="email"
+					onChange={defaultHandleOnChange}
+				/>
 				<InputBox
 					placeholder="Nome"
 					value={informazioniUtente.nome}
@@ -165,30 +182,39 @@ export default function GestisciUtenzaRoute() {
 				<InputBox
 					placeholder="Numero di telefono"
 					type="number"
-					value={informazioniUtente.numeroTelefono}
-					name="numeroTelefono"
+					value={informazioniUtente.telefono}
+					name="telefono"
 					onChange={defaultHandleOnChange}
 				/>
 				<InputBox
 					placeholder="Password di primo accesso"
-					value={informazioniUtente.passwordPrimoAccesso}
-					name="passwordPrimoAccesso"
+					value={informazioniUtente.password}
+					name="password"
 					onChange={defaultHandleOnChange}
 				/>
-				<AssegnaRuoloSelect name="ruolo">
-					<option value={Ruolo.ADMIN}>Admin</option>
+				<DropDownItem bgColor="gray" onChange={(e) => {
+					setInformazioniUtente({
+						...informazioniUtente,
+						ruolo: e.target.value
+					})
+				}}>
 					<option value={Ruolo.ADDETTO_CUCINA}>Addetto alla Cucina</option>
 					<option value={Ruolo.CAMERIERE}>Cameriere</option>
-				</AssegnaRuoloSelect>
+				</DropDownItem>
 
-				<AssegnaSupervisoreButton isSupervisore={true}>
-					<StarBadge isOn={true} />
-					<p>Assegna come supervisore</p>
+				<AssegnaSupervisoreButton isSupervisore={informazioniUtente.supervisore} onClick={() => {
+					setInformazioniUtente({
+						...informazioniUtente,
+						supervisore: !informazioniUtente.supervisore
+					})
+				}} >
+					<StarBadge isOn={informazioniUtente.supervisore} />
+					<p>{informazioniUtente.supervisore ? "Rimuovi Supervisore" : "Rendi Supervisore"}</p>
 				</AssegnaSupervisoreButton>
 
 				<br />
-				<BigButton onClick={() => { }} text="Crea" />
+				<BigButton onClick={handleCreaUtente} text="Crea" />
 			</SlideUpModal>
-		</DashboardContainer>
+		</DashboardContainer >
 	);
 }

@@ -28,8 +28,7 @@ padding: 0;
 
 `;
 
-const AutoCompleteContainer = styled.button`
-    all: unset;    
+const AutoCompleteContainer = styled.div`
 
     cursor: pointer;
     position: relative;
@@ -71,9 +70,10 @@ const ListaElementi = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+
+	gap: 1rem;
     margin: 0;
-    padding: 0;
+    padding: 1rem;
 `;
 
 const AllergeniContainer = styled.div`
@@ -94,14 +94,11 @@ const AllergeniContainer = styled.div`
 	`;
 
 export default function GestisciElementiCategoriaRoute() {
-	const { nomeCategoria } = useParams();
+	const { idCategoria } = useParams();
 	const controller = Controller.getInstance();
 
-	const idRistorante = useStore((state) => state.idRistorante);
-
-	const query = useQuery(["categoria", nomeCategoria], () => {
-		//@ts-ignore
-		return controller.getCategoria(idRistorante);
+	const query = useQuery(["elementi", idCategoria], () => {
+		return controller.getElementiCategoria(parseInt(idCategoria) || -1);
 	});
 
 	const [autoCompleteString, setAutoCompleteString] = useState<string>("AutoComplete");
@@ -141,14 +138,8 @@ export default function GestisciElementiCategoriaRoute() {
 
 		for (let i = 0; i < stringa.length; i++) {
 			if (stringa[i] === ",") {
-				// se dopo la virgola non ce nulla non mettere nulla
-				// e ritorna l'array
-				if (stringa[i + 1] === " ") {
-					return array;
-				} else {
-					array.push(stringaTemporanea);
-					stringaTemporanea = "";
-				}
+				array.push(stringaTemporanea);
+				stringaTemporanea = "";
 			} else {
 				stringaTemporanea += stringa[i];
 			}
@@ -160,10 +151,9 @@ export default function GestisciElementiCategoriaRoute() {
 	};
 
 	const fetchSuggestions = async () => {
-		const response = await axios.get<any>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${informazioniElemento.nome.replace(" ", "_")}`);
+		const response = await axios.get<{ meals: { strMeal: string }[] }>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${informazioniElemento.nome.replace(" ", "_")}`);
 
 		const data = response.data;
-		console.log(data);
 		if (data["meals"]) {
 			//@ts-ignore
 			setAutoCompleteString(data["meals"][0]["strMeal"]);
@@ -194,7 +184,7 @@ export default function GestisciElementiCategoriaRoute() {
 			{NavbarFactory.generateNavbarAll(() => {
 				setShowModal(true);
 			})}
-			<WelcomePanel title="Gestione" subtitle={nomeCategoria || "Categoria"} />
+			<WelcomePanel title="Gestione" subtitle="Categoria" />
 			{query.isLoading ? (
 				<DashboardContent>
 					<LoadingCircle />
@@ -202,8 +192,12 @@ export default function GestisciElementiCategoriaRoute() {
 			) : (
 				<>
 					<ListaElementi>
-						{query.data?.elementi.map((elemento: Elemento) => (
-							<ItemElementoCategoria key={elemento.nome} elemento={elemento} />
+						{query.data?.map((elemento: Elemento) => (
+							<ItemElementoCategoria
+								onClickElemento={() => { console.log("ciao") }}
+								onClickDown={() => { }}
+								onClickUp={() => { }}
+								key={elemento.nome} elemento={elemento} />
 						))}
 					</ListaElementi>
 				</>

@@ -10,6 +10,17 @@ const utenteDAO = new UtenteDAO();
 describe('L utenteDAO dovrebbe permettere di registrare e loggare un utente', () => {
 
     describe('registraUtente()', () => {
+
+
+        it("dovrebbe ritornare false se l'email o la password sono vuoti ('')", async () => {
+            const email = '';
+            const password = '';
+
+            const response = await utenteDAO.registraUtente(email, password);
+
+            expect(response).toBe(false)
+        });
+
         it("dovrebbe ritornare true se l'utente è stato registrato con successo", async () => {
             const email = `test${randomInt(8000)}@test.com}`;
             const password = 'password';

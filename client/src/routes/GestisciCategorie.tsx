@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { useParams } from "react-router";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
@@ -30,6 +31,7 @@ const ListaCategorieContainer = styled.div`
 	flex-direction: column;
 	justify-content: stretch;
 	padding: 1rem;
+	gap: 0.5rem;
 
 	#no_resturants {
 		font-weight: 100;
@@ -42,17 +44,15 @@ const ListaCategorieContainer = styled.div`
 export default function GestisciMenuRoute() {
 	const controller = Controller.getInstance();
 
+	const { id , idCategoria} = useParams();
+
 	const [showModal, setShowModal] = useState(false);
 	const [nomeCategoria, setNomeCategoria] = useState("");
 
-	const idRistorante = useStore((state) => state.idRistorante);
-
 	const query = useQuery(["categorie"], () => {
-		return controller.getCategorie(idRistorante);
+		return controller.getCategorie(parseInt(id) || -1);
 	});
 
-	// TODO aggiungere la possibilità di modificare l'ordine delle categorie
-	// TODO aggiungere l'ordine delle categorie sul backend
 	return (
 		<AppContainer>
 			{NavbarFactory.generateNavbarAll(() => setShowModal(true))}
@@ -67,8 +67,6 @@ export default function GestisciMenuRoute() {
 					query.data?.map((categoria) => (
 						<ItemCategoria
 							categoria={categoria}
-							onClickUp={() => { }}
-							onClickDown={() => { }}
 							key={categoria.nome}
 						/>
 					))

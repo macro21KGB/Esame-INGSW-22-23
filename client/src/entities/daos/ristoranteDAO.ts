@@ -25,7 +25,8 @@ class RistoranteDAO implements IRistoranteDAO {
 				},
 			});
 
-			return JSON.parse(response.data);
+			const data = JSON.parse(response.data);
+			return data;
 		} catch (error) {
 			toast.error("Errore nel recupero dei ristoranti");
 			return [];

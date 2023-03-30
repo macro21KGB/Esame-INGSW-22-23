@@ -45,7 +45,7 @@ const router = createBrowserRouter([
 		errorElement: <ErrorPage />,
 	},
 	{
-		path: "/dashboard/:id/menu/:nomeCategoria",
+		path: "/dashboard/:id/menu/:idCategoria",
 		element: <GestisciElementiCategoriaRoute />,
 		errorElement: <ErrorPage />,
 	},

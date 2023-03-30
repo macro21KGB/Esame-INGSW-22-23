@@ -8,19 +8,11 @@ import { OrdinazioneDAO } from "./daos/ordinazioneDAO";
 import { ElementoDAO } from "./daos/elementoDAO";
 import { CategoriaDAO } from "./daos/categoriaDAO";
 import { Utente } from "./utente";
-import { Categoria } from "./menu";
+import { Categoria, Elemento } from "./menu";
 import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 
 export class Controller {
-	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
-		return wait(1000).then(() => {
-			return {
-				success: true,
-				data: generaFakeDataCharts(7),
-			}
-		});
-	}
 
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
@@ -74,20 +66,27 @@ export class Controller {
 		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
 	}
 
-	public async getUtenti(): Promise<Utente[]> {
-		return wait(1000).then(() => this.utenteDAO.getUtenti());
+	creaUtenteConInformazioniUtente(infoUtente: any, id: number): Promise<unknown> {
+		return this.utenteDAO.addUtente(infoUtente, id);
+	}
+
+	public async getUtenti(idRistorante: number): Promise<Utente[]> {
+		return this.utenteDAO.getUtenti(idRistorante);
 	}
 
 	// CATEGORY
 
 	public async getCategorie(idRistorante: number): Promise<Categoria[]> {
-		return wait(1000).then(() => this.categoriaDAO.getCategorie(idRistorante));
+		return this.categoriaDAO.getCategorie(idRistorante);
 	}
 
 	public async getCategoria(idRistorante: number): Promise<Categoria> {
-		return wait(1000).then(() => this.categoriaDAO.getCategoria(idRistorante));
+		return this.categoriaDAO.getCategoria(idRistorante);
 	}
 
+	public async getElementiCategoria(idCategoria: number): Promise<Elemento[]> {
+		return this.elementoMenuDAO.getElementi(idCategoria);
+	}
 	// CONTI
 
 	public async getContiTavoliUltime24h(idRistorante: number): Promise<Result<Conto[]>> {
@@ -105,6 +104,15 @@ export class Controller {
 			return {
 				success: true,
 				data: "Conto chiuso"
+			}
+		});
+	}
+
+	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
+		return wait(1000).then(() => {
+			return {
+				success: true,
+				data: generaFakeDataCharts(7),
 			}
 		});
 	}

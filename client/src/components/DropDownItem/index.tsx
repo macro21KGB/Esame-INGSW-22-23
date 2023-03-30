@@ -1,14 +1,14 @@
-import { useState } from "react";
 import styled from "styled-components"
 
-const DropDownItemContainer = styled.select`
+const DropDownItemContainer = styled.select<{ bgColor?: string }>`
     position: relative;
     
+    width: 80%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: #263657;
+    background-color: ${props => props.bgColor || "#263657"};
     padding: 0.5rem 1rem;
     border-radius: 0.7rem;
     margin: 0.5rem;
@@ -34,11 +34,12 @@ const DropDownItemContainer = styled.select`
 interface DropDownItemProps {
     children: React.ReactNode;
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    bgColor?: string;
 }
-export default function DropDownItem({ children, onChange }: DropDownItemProps) {
+export default function DropDownItem({ children, onChange, bgColor }: DropDownItemProps) {
 
     return (
-        <DropDownItemContainer onChange={onChange}>
+        <DropDownItemContainer bgColor={bgColor} onChange={onChange}>
             {children}
         </DropDownItemContainer>
     )
