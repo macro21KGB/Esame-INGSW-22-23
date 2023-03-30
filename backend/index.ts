@@ -4,14 +4,15 @@ import cors from 'cors';
 import { Utente, RUOLI, UtenteFactory, Admin, Cameriere, AddettoAllaCucina } from './shared/entities/utente'
 import { UtenteDAOPostgresDB } from './db_dao/utente';
 import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
-import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB } from './db_dao/menu';
+import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB, AllergeneDAOPostgresDB } from './db_dao/menu';
 import { Ristorante } from './shared/entities/ristorante';
-import { Categoria,Elemento } from './shared/entities/menu';
+import { Categoria,Elemento,Allergene } from './shared/entities/menu';
 
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
 const ElementoDAO = new ElementoDAOPostgresDB();
 const CategoriaDAO = new CategoriaDAOPostgresDB();
+const AllergeneDAO = new AllergeneDAOPostgresDB();
 
 const app = express();
 const router = Router();
@@ -161,7 +162,7 @@ router.post('/register',async (req: Request, res: Response) => {
   res.status(200).send({ success: true, data: "Registrazione avvenuta con successo" });
 });
 
-// TODO testare
+
 router.post('/utenza', authenticateToken,requiresAdminRole, async (req: Request, res: Response) => {
   if( !req.body['nome'] || !req.body['cognome'] || !req.body['email'] || !req.body['password']
       || !req.body['ruolo'] || !req.body['telefono'] || !req.body['supervisore'] )
@@ -468,13 +469,14 @@ router.put('/elemento/:id_elemento', authenticateToken,requiresSupervisor, async
   const prezzo = req.body['prezzo'];
   const descrizione = req.body['descrizione'];
   const ingredienti = req.body['ingredienti'];
+  const allergeni = req.body['allergeni'];
   if(nome == null || prezzo == null || descrizione == null || ingredienti == null){
     res.status(400).json({success:false, data: 'Bad request' });
     return;
   }
   const elemento = new Elemento(nome,descrizione,prezzo,{
     ingredienti: ingredienti.split(',') ,
-    allergeni: [],// TODO
+    allergeni: [],
     ordine: 0,
   });
   try {
@@ -489,15 +491,22 @@ router.put('/elemento/:id_elemento', authenticateToken,requiresSupervisor, async
   }
 });
 
-// post elemento
+
 router.post('/elemento', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
-  if (!req.body['nome'] || !req.body['prezzo'] || !req.body['descrizione'] || !req.body['ingredienti'] || !req.body['id_categoria']){
+  if (!req.body['nome'] || !req.body['prezzo'] || !req.body['descrizione'] || !req.body['id_categoria']){
     res.status(400).json({success:false, data: 'Bad request' });
     return;
   }
+  const ingredienti = req.body['ingredienti'] || "";
+  const array = req.body['allergeni'].split(",") || [];
+  // trasforma allergeni in Allergenti[]
+  let allergeni: Allergene[] = [];
+  for (let i = 0; i < array.length; i++)
+    allergeni.push(new Allergene(array[i],0));
+
   const elemento = new Elemento(req.body['nome'],req.body['descrizione'],req.body['prezzo'],{
-    ingredienti: req.body['ingredienti'].split(',') ,
-    allergeni: [], // TODO
+    ingredienti: ingredienti.split(',') || [] ,
+    allergeni: allergeni,
     ordine: 0,
   });
   try {
@@ -507,7 +516,50 @@ router.post('/elemento', authenticateToken,requiresSupervisor, async(req: Reques
       res.status(400).send({success:false, data: 'Elemento non aggiunto' });
   }
   catch(err) {
+    console.log(err);
     res.status(400).send({success:false, data: 'Elemento non aggiunto' });
+  }
+});
+
+
+router.post('/allergene', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
+  if (!req.body['nome'] || !req.body['id_elemento']){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  try {
+    if(await AllergeneDAO.addAllergene(new Allergene(req.body['nome'],+req.body['id_elemento'])))
+      res.status(200).send({success:true, data: 'Allergene aggiunto' });
+    else
+      res.status(400).send({success:false, data: 'Allergene non aggiunto' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Allergene non aggiunto' });
+  }
+});
+
+router.get('/allergeni/:id_elemento' , authenticateToken, async(req: Request, res: Response) => {
+  if (!req.params.id_elemento){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const allergeni = await AllergeneDAO.getAllergeni(+req.params.id_elemento);
+  res.status(200).json(JSON.stringify(allergeni));
+});
+
+router.delete('/allergene/:id_allergene', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
+  if (!req.params.id_allergene){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  try {
+    if(await AllergeneDAO.deleteAllergene(+req.params.id_allergene))
+      res.status(200).send({success:true, data: 'Allergene cancellato' });
+    else
+      res.status(400).send({success:false, data: 'Allergene non cancellato' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Allergene non cancellato' });
   }
 });
 

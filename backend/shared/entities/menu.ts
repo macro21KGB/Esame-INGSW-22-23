@@ -110,5 +110,5 @@ class ElementoConQuantita extends Elemento {
 	}
 }
 
-export { Menu, Elemento, ElementoConQuantita, Categoria };
+export { Menu, Elemento, ElementoConQuantita, Categoria, Allergene };
 export type { OpzioniElemento };
