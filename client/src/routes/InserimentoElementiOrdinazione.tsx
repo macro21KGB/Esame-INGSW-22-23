@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
-import ItemCategoria from "../components/ItemCategoria";
 import ItemElementoConQuantita from "../components/ItemElementoConQuantita";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
@@ -10,7 +9,8 @@ import SlideUpModal from "../components/SlideUpModal";
 import SoftButton from "../components/SoftButton";
 import { Controller } from "../entities/controller";
 import { dummyElemento } from "../entities/dummyObjects";
-import { Categoria, Elemento, ElementoConQuantita } from "../entities/menu";
+import { Categoria, Elemento } from "../entities/menu";
+import { useStore } from "../stores/store";
 
 const Container = styled.div`
 	position: relative;
@@ -71,8 +71,10 @@ export default function InserimentoElementiOrdinazioneRoute() {
 		{ elemento: Elemento; quantita: number }[]
 	>([]);
 
+	const idRistorante = useStore((state) => state.idRistorante);
+
 	const [categoriaScelta, setCategoriaScelta] = useState<Categoria>();
-	const query = useQuery(["categorie"], () => controller.getCategorie());
+	const query = useQuery(["categorie"], () => controller.getCategorie(idRistorante));
 	const queryElementi = useQuery(
 		["elementi", categoriaScelta?.nome],
 		() => {
@@ -96,15 +98,11 @@ export default function InserimentoElementiOrdinazioneRoute() {
 		}
 	};
 
-	useEffect(() => {
-		console.log(elementiScelti);
-	}, [elementiScelti]);
-
 	return (
 		<Container>
 			{NavbarFactory.generateNavbarBackAndMenu(goBackToPreviousCategory)}
 			<Content>
-				{query.isLoading && <LoadingCircle position="absolute" />}
+				{query.isLoading && <LoadingCircle loaderPosition="absolute" />}
 				{!categoriaScelta &&
 					query.data?.map((categoria) => (
 						<SoftButton

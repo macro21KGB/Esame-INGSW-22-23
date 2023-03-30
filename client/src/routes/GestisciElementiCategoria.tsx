@@ -9,10 +9,10 @@ import ItemElementoCategoria from "../components/ItemElementoCategoria";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
-import SoftButton from "../components/SoftButton";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Elemento } from "../entities/menu";
+import { useStore } from "../stores/store";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -94,11 +94,14 @@ const AllergeniContainer = styled.div`
 	`;
 
 export default function GestisciElementiCategoriaRoute() {
-	const { idRistorante, nomeCategoria } = useParams();
+	const { nomeCategoria } = useParams();
 	const controller = Controller.getInstance();
 
+	const idRistorante = useStore((state) => state.idRistorante);
+
 	const query = useQuery(["categoria", nomeCategoria], () => {
-		return controller.getCategoria(parseInt(idRistorante));
+		//@ts-ignore
+		return controller.getCategoria(idRistorante);
 	});
 
 	const [autoCompleteString, setAutoCompleteString] = useState<string>("AutoComplete");
@@ -157,11 +160,12 @@ export default function GestisciElementiCategoriaRoute() {
 	};
 
 	const fetchSuggestions = async () => {
-		const response = await axios.get<string>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${informazioniElemento.nome.replace(" ", "_")}`);
+		const response = await axios.get<any>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${informazioniElemento.nome.replace(" ", "_")}`);
 
 		const data = response.data;
 		console.log(data);
 		if (data["meals"]) {
+			//@ts-ignore
 			setAutoCompleteString(data["meals"][0]["strMeal"]);
 		}
 	}
@@ -190,7 +194,7 @@ export default function GestisciElementiCategoriaRoute() {
 			{NavbarFactory.generateNavbarAll(() => {
 				setShowModal(true);
 			})}
-			<WelcomePanel title="Gestione" subtitle={nomeCategoria} />
+			<WelcomePanel title="Gestione" subtitle={nomeCategoria || "Categoria"} />
 			{query.isLoading ? (
 				<DashboardContent>
 					<LoadingCircle />

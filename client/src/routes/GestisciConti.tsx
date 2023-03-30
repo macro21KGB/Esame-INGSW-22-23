@@ -7,6 +7,7 @@ import { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
 import { Conto } from "../entities/conto";
 import { Controller } from "../entities/controller";
+import { useStore } from "../stores/store";
 import { getOraMinutiDaDate, scriviContoSuPDF } from "../utils/utils";
 
 const Container = styled.div`
@@ -94,6 +95,7 @@ export default function GestisciContiRoute() {
     const controller = Controller.getInstance();
 
     const [contoSelezionato, setContoSelezionato] = useState<Conto | undefined>(undefined);
+    const idRistorante = useStore(state => state.idRistorante)
 
     const chiudiEStampaConto = () => {
         controller.chiudiConto(contoSelezionato!);
@@ -101,7 +103,7 @@ export default function GestisciContiRoute() {
     }
 
     const query = useQuery(["conti"], () => {
-        return controller.getContiTavoliUltime24h();
+        return controller.getContiTavoliUltime24h(idRistorante ?? 0);
     })
 
     return (
@@ -116,9 +118,9 @@ export default function GestisciContiRoute() {
                     <Content>
                         <p id="start_paragraph">Gestione conti tavoli ultime 24h</p>
                         {
-                            query.isLoading ? <LoadingCircle position="absolute" /> :
+                            query.isLoading ? <LoadingCircle loaderPosition="absolute" /> :
                                 (
-                                    query.data.data?.map((conto) => (<ItemOrdineTavolo onClick={() => setContoSelezionato(conto)}
+                                    query.data?.data.map((conto) => (<ItemOrdineTavolo onClick={() => setContoSelezionato(conto)}
                                         conto={conto} chiuso={true} key={conto.data.toString()} />))
                                 )
                         }

@@ -15,7 +15,7 @@ interface ICategoriaDAO {
 }
 
 export class CategoriaDAO implements ICategoriaDAO {
-	getCategorie(): Promise<Categoria[]> {
+	getCategorie(idRistorante: number): Promise<Categoria[]> {
 		return Promise.resolve([dummyCategoria]);
 	}
 	getCategoria(idRistorante: number): Promise<Categoria> {

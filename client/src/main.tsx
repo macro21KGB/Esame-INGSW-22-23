@@ -16,7 +16,6 @@ import PrendiOrdinazioneRoute from "./routes/PrendiOrdinazione";
 import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrdinazione";
 import DashboardSupervisore from "./routes/DashboardSupervisore";
 import GestisciContiRoute from "./routes/GestisciConti";
-import TestRoute from "./routes/TestRoute";
 import StatisticheRoute from "./routes/Statistiche";
 const router = createBrowserRouter([
 	{
@@ -79,12 +78,7 @@ const router = createBrowserRouter([
 		path: "/dashboard/:id/statistiche",
 		element: <StatisticheRoute />,
 		errorElement: <ErrorPage />,
-	},
-	{
-		path: "/test",
-		element: <TestRoute />,
-		errorElement: <ErrorPage />,
-	},
+	}
 
 ]);
 

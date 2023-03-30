@@ -51,10 +51,12 @@ export function verificaEmail(email: string) {
 // I parametri sono:
 // - token: il token da salvare nella cookie;
 // - tempoDiScadenza: la durata in secondi della cookie dopo la quale il token scade.
-export function salvaTokenInCookie(token: string, tempoDiScadenza: number) {
+export function salvaTokenInCookie(token: string, tempoDiScadenza: number): boolean {
 	const dataDiScadenza = new Date();
 	dataDiScadenza.setTime(dataDiScadenza.getTime() + tempoDiScadenza * 1000);
 	document.cookie = `token=${token}; expires=${dataDiScadenza.toUTCString()}; path=/`;
+
+	return true;
 }
 
 export function getTokenDaCookie(): string {
@@ -95,7 +97,7 @@ export function scriviContoSuPDF(conto: Conto) {
 
 }
 
-export function generaFakeDataCharts(maxDays: number) : {giorno: string, evasi: number}[] {
+export function generaFakeDataCharts(maxDays: number): { giorno: string, evasi: number }[] {
 	const data = [];
 	for (let i = 0; i < maxDays; i++) {
 		data.push({
@@ -106,13 +108,13 @@ export function generaFakeDataCharts(maxDays: number) : {giorno: string, evasi: 
 	return data;
 }
 
-export const prendiInizioEFine = (lassoTemporale: "week" | "month" | "year") : {from: Date, to: Date} => {
+export const prendiInizioEFine = (lassoTemporale: "week" | "month" | "year"): { from: Date, to: Date } => {
 	const from = dayjs().startOf(lassoTemporale).toDate();
 	const to = dayjs().endOf(lassoTemporale).toDate();
 
-	return { from, to};
+	return { from, to };
 }
-	
+
 
 export function rimuoviTokenDaCookie() {
 	document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

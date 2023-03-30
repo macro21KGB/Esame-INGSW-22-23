@@ -87,7 +87,7 @@ export default function StatisticheRoute() {
             <>
                 {NavbarFactory.generateNavbarBackAndMenu()}
                 <WelcomePanel title="Visualizza" subtitle="Statistiche" />
-                {query.isLoading ? <LoadingCircle position="absolute" /> : (
+                {query.isLoading ? <LoadingCircle loaderPosition="absolute" /> : (
                     <>
                         <DropDownItem onChange={(e) => { setSelected(e.target.value) }}>
                             <option value="0">Seleziona Addetto alla cucina</option>
@@ -101,7 +101,7 @@ export default function StatisticheRoute() {
                 )
                 }
 
-                {queryOrdiniEvasi.isLoading && <LoadingCircle position="absolute" />}
+                {queryOrdiniEvasi.isLoading && <LoadingCircle loaderPosition="absolute" />}
 
                 {queryOrdiniEvasi.data?.data &&
                     <>
@@ -116,15 +116,15 @@ export default function StatisticheRoute() {
                                 <input ref={fromInputRef} onChange={(e) => {
                                     setTimeSpan({
                                         from: new Date(e.target.value),
-                                        ...timeSpan
+                                        to: timeSpan.to
                                     })
                                 }} name="from" type="date" />
 
                                 <label htmlFor="to">To</label>
                                 <input ref={toInputRef} onChange={(e) => {
                                     setTimeSpan({
+                                        from: timeSpan.from,
                                         to: new Date(e.target.value),
-                                        ...timeSpan
                                     })
                                 }} name="to" type="date" />
                             </div>

@@ -28,6 +28,7 @@ class RistoranteDAO implements IRistoranteDAO {
 			return JSON.parse(response.data);
 		} catch (error) {
 			toast.error("Errore nel recupero dei ristoranti");
+			return [];
 		}
 	}
 
@@ -44,6 +45,7 @@ class RistoranteDAO implements IRistoranteDAO {
 			return JSON.parse(response.data);
 		} catch (error) {
 			toast.error("Errore nel recupero del ristorante");
+			return null;
 		}
 	}
 	async addRistorante(ristorante: Ristorante): Promise<Result<string>> {
@@ -61,22 +63,25 @@ class RistoranteDAO implements IRistoranteDAO {
 					"Content-Type": "application/json",
 				},
 			});
-			console.log(response.data);
 
 			if (response.status === 200) {
 				return response.data;
 			}
-			
+
 			return {
 				success: false,
 				data: "Errore nell'aggiunta del ristorante",
 			};
- 
+
 		} catch (error) {
 			toast.error("Errore nell'aggiunta del ristorante");
+			return {
+				success: false,
+				data: "Errore nell'aggiunta del ristorante",
+			};
 		}
 	}
-	
+
 	updateRistorante(ristorante: Ristorante): Promise<Ristorante> {
 		return Promise.resolve(dummyResturant);
 	}
