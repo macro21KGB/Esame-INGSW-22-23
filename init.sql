@@ -14,7 +14,8 @@ CREATE TABLE "Utente" (
   "telefono" VARCHAR(13),
   "email" VARCHAR(50) NOT NULL UNIQUE,
   "ruolo" "Ruolo" NOT NULL,
-  "supervisore" bool DEFAULT false
+  "supervisore" bool DEFAULT false,
+  "pw_changed" bool DEFAULT false
 );
 
 CREATE TABLE "UtenteRistorante" (
@@ -102,6 +103,8 @@ INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore) VALUES (
 INSERT INTO "Ristorante" ( nome, indirizzo, telefono, sito_web, foto_path) VALUES ( 'Ristorante 1', 'Via Roma 1', '3333333333', 'www.ristorante1.it', 'foto1.jpg');
 
 INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 1, 1, true);
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 2, 1, false);
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 3, 1, false);
 
 INSERT INTO "Categoria" ( id_ristorante, nome) VALUES ( 1, 'Primi');
 INSERT INTO "Categoria" ( id_ristorante, nome) VALUES ( 1, 'Secondi');
@@ -119,6 +122,19 @@ INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) V
 INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 4, 'Coca Cola', 'descrizione coca cola', 2.00, 'coca cola');
 INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 5, 'Tiramisù', 'descrizione tiramisù', 4.00, 'caffe, panna, biscotti');
 INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 5, 'Cheesecake', 'descrizione tiramisù', 6.00, 'biscotti, panna, berry');
+
+/*Ristorante 2*/
+
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo) VALUES ( 'Pier', 'Nicolini', 'pier@gmail.com','$2a$12$FQ1jKNMjzBK74v5PMwBtj.pBZwrJaZbFMMSJz8KsHhVOza7va0eXy','ADMIN');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore) VALUES ( 'Roberto', 'Renzi', 'renzi@gmail.com','$2a$12$DisoKBmDure4Fb4z/uWE7O6qnPAxNCuRx7dCXLQRpmgnKe19mVc/2','CAMERIERE',true);
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo) VALUES ( 'Gino', 'Lupo', 'lupo@gmail.com','$2a$12$V43G2ubbkxGbUxnLDXDeaOqW6hUt5luZZ9h3foLS28W59C3OzKSLi','ADDETTO_CUCINA');
+
+INSERT INTO "Ristorante" ( nome, indirizzo, telefono, sito_web, foto_path) VALUES ( 'Ristorante 2', 'Via acquaviva 1', '444444', 'www.ristorante2.it', 'foto2.jpg');
+
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 4, 2, true);
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 5, 2, false);
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 6, 2, false);
+
 
 /*
 SELECT * FROM (

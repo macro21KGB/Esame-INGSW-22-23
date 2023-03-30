@@ -39,6 +39,48 @@ function authenticateToken(req : Request, res : Response, next : NextFunction) {
   })
 }
 
+function requiresAdminRole(req : Request, res : Response, next : NextFunction){
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({success:false,data:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({success:false,data:"Invalid token"});
+    const ruolo = decoded.ruolo;
+    if(ruolo!=RUOLI.ADMIN){
+      res.status(403).json({success:false,data:"Non sei autorizzato ad accedere a questa risorsa"});
+      return;
+    }
+    next();
+  });
+}
+
+function blockAccessToOtherResturantsEmployees(req : Request, res : Response, next : NextFunction) {
+  if (req.params.email == null) 
+    return res.status(400).json({success:false,data:"Employee email not provided"});
+  const emailEmployee = req.params.email;
+
+  // spacchetta il token e controlla che tu sia admin
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({success:false,data:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({success:false,data:"Invalid token"});
+    
+    // ottieni l'admin dell'utente che si vuole modificare e controlla che tu sia admin
+    const admin = await UtenteDAO.getAdmin(emailEmployee);
+    if( admin == null )
+    {
+      res.status(401).json({success:false, data: 'Non sei autorizzato a modificare questo utente' });
+      return;
+    }
+    else if(admin.email != decoded.email){
+      res.status(401).json({success:false, data: 'Non sei autorizzato a modificare questo utente' });
+      return;
+    }
+    next();
+  });
+}
+
 
 // Middleware
 app.use(cors())
@@ -96,38 +138,9 @@ router.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'Server is up and running!' });
 });
 
-router.get('/test', (req: Request, res: Response) => {
-  // crea un utente cameriere usando la factory
-  const cameriere = UtenteFactory.creaUtente(" ", " ", " ", " ", RUOLI.CAMERIERE,true);
-  let user : Cameriere;
-  if(cameriere.ruolo == RUOLI.CAMERIERE)
-  {
-    user = cameriere as Cameriere;
-    // stampa il campa supervisore
-    console.log("supervisor cameriere: "+user.supervisore);
-  }
+router.get('/testt', (req: Request, res: Response) => {
 
-  // crea un utente addetto alla cucina 
-  const addetto = UtenteFactory.creaUtente(" ", " ", " ", " ", RUOLI.ADDETTO_CUCINA,false);
-  let user2 : AddettoAllaCucina;
-  if(addetto.ruolo == RUOLI.ADDETTO_CUCINA)
-  {
-    user2 = addetto as AddettoAllaCucina;
-    // stampa il campa supervisore
-    console.log("supervisor addetto: "+user2.supervisore);
-  }
-
-  // crea un utente admin
-  const admin = UtenteFactory.creaUtente(" ", " ", " ", " ", RUOLI.ADMIN);
-  let user3 : Admin;
-  if(admin.ruolo == RUOLI.ADMIN)
-  {
-    user3 = admin as Admin;
-    // stampa il campo supervisore
-    console.log("admin ristoranti: "+user3.getRistoranti().length);
-  }
-     
-  res.status(200).send({ message: 'Test!' });
+  res.status(200).send({ message: 'Testt!' });
 });
 
 router.get('/resturants', authenticateToken, async (req: Request, res: Response) => {
@@ -176,8 +189,111 @@ router.post('/resturant', authenticateToken, async(req: Request, res: Response) 
       res.status(400).send({success:false, data: 'Ristorante già esistente' });
     }
   });
-  
 });
+
+router.post('/edit-utente/:email', authenticateToken,requiresAdminRole,blockAccessToOtherResturantsEmployees, async(req: Request, res: Response) => {
+  if (!req.body['nome'] || !req.body['cognome'] || !req.body['telefono']){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const emailKey = req.params.email;
+
+  const utente = await UtenteDAO.getUtente(emailKey);
+  if(utente==null){
+    res.status(400).json({success:false, data: 'Utente non trovato' });
+    return;
+  }
+  utente.nome = req.body['nome'];
+  utente.cognome = req.body['cognome'];
+  utente.telefono = req.body['telefono'];
+  try {
+    if(await UtenteDAO.updateUtente(utente,utente.email)) 
+      res.status(200).send({success:true, data: 'Utente aggiornato' });
+    else
+      res.status(400).send({success:false, data: 'Utente non aggiornato' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Utente non aggiornato' });
+  }
+
+});
+
+
+router.post('/del-utente/:email', authenticateToken,requiresAdminRole,blockAccessToOtherResturantsEmployees, async(req: Request, res: Response) => {
+  const emailKey = req.params.email;
+  // ottieni email da token
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({message:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({message:"Invalid token"});
+    const email = decoded.email;
+    if(email==emailKey){
+      res.status(400).json({success:false, data: 'Non puoi cancellare te stesso' });
+      return;
+    }
+  });
+  
+  const utente = await UtenteDAO.getUtente(emailKey);
+  if(utente==null){
+    res.status(400).json({success:false, data: 'Utente non trovato' });
+    return;
+  }
+  try {
+    if(await UtenteDAO.deleteUtente(utente.email)) 
+      res.status(200).send({success:true, data: 'Utente cancellato' });
+    else
+      res.status(400).send({success:false, data: 'Utente non cancellato' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Utente non cancellato' });
+  }
+
+});
+
+router.get('/pw-changed', authenticateToken, async(req: Request, res: Response) => {
+  // ottieni email dal token
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({message:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({message:"Invalid token"});
+    const email = decoded.email;
+    res.status(200).json(JSON.stringify(await UtenteDAO.isPasswordChanged(email)));
+  }
+  )
+});
+
+router.post('/pw-change', authenticateToken, async(req: Request, res: Response) => {
+  const newPassword = req.body['password'];
+  if( newPassword == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  // ottieni email utente dal token
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({message:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({message:"Invalid token"});
+    const email = decoded.email;
+    try {
+      if(await UtenteDAO.updatePassword(email,newPassword)) 
+        res.status(200).send({success:true, data: 'Password cambiata' });
+      else
+        res.status(400).send({success:false, data: 'Password non cambiata' });
+    }
+    catch(err) {
+      res.status(400).send({success:false, data: 'Password non cambiata' });
+    }
+  }
+  );
+
+
+
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
