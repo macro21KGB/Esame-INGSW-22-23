@@ -71,8 +71,9 @@ CREATE TABLE "ElementoConQuantita" (
 );
 
 CREATE TABLE "Allergene" (
+  "id" SERIAL PRIMARY KEY,
   "id_elemento" int NOT NULL,
-  "nome" VARCHAR(50) PRIMARY KEY NOT NULL
+  "nome" VARCHAR(50) NOT NULL
 );
 
 ALTER TABLE "UtenteRistorante" ADD FOREIGN KEY ("id_utente") REFERENCES "Utente" ("id_utente");

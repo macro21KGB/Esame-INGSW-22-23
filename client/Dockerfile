@@ -1,4 +1,4 @@
-# TODO - configure dockerfile for client
+
 FROM node
 EXPOSE 3001
 

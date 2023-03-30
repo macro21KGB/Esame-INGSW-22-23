@@ -14,6 +14,19 @@ class UtenteMapper implements IMapper<Utente> {
 }
 
 class UtenteDAOPostgresDB implements IUtenteDAO {
+	registraUtenza(utente: Utente, plain_password : string): Promise<Boolean> {
+		return new Promise((resolve, reject) => {
+			if( utente.ruolo == RUOLI.ADMIN) {
+				return resolve(false);
+			}
+			conn.query('INSERT INTO public."Utente" (nome, cognome, email, password, telefono, ruolo) VALUES ($1, $2, $3, $4, $5, $6);', [utente.nome, utente.cognome, utente.email, hashPassword(plain_password), utente.telefono, utente.ruolo], (err : any, results : any) => {
+				if (err) {
+					return reject(err);
+				}
+				resolve(true);
+			});
+		});
+	}
 	isPasswordChanged(email: string): Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			conn.query('SELECT pw_changed FROM public."Utente" WHERE email = $1;', [email], (err : any, results : any) => {

@@ -3,14 +3,13 @@ import { Categoria, Elemento } from "../menu";
 import { Ristorante } from "../ristorante";
 
 interface ICategoriaDAO {
-	getCategoria(idCategoria: number): Promise<Categoria>;
-	getCategorie(): Promise<Categoria[]>;
+	getElementiCategoria(id_categoria : number): Promise<Elemento[]>;
+	getCategoria(idCategoria: number): Promise<Categoria | null>;
+	getCategorie(id_ristorante : number): Promise<Categoria[]>;
 
-	addCategoria(categoria: Categoria): Promise<Categoria>;
-	updateCategoria(categoria: Categoria): Promise<Categoria>;
-	deleteCategoria(categoria: Categoria): Promise<Categoria>;
-
-	getCategorieRistorante(ristorante: Ristorante): Promise<Categoria[]>;
-	getElementiCategoria(categoria: Categoria): Promise<Elemento>;
+	addCategoria(categoria: Categoria): Promise<Boolean>;
+	updateCategoria(id_categoria : number,nuovo_nome : string): Promise<Boolean>;
+	deleteCategoria(id_categoria : number): Promise<Boolean>;
+	getElementiCategoria(id_categoria : number): Promise<Elemento[]>;
 }
 export type { ICategoriaDAO };

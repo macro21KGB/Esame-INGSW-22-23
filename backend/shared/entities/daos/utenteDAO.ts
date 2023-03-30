@@ -17,6 +17,7 @@ interface IUtenteDAO {
 	updateUtente(new_utente: Utente, email:string): Promise<Boolean>;
 	updatePassword(email: string, plain_password: string): Promise<Boolean>;
 	deleteUtente(email: string): Promise<Boolean>;
+	registraUtenza(utente : Utente, plain_password : string) : Promise<Boolean>;
 }
 
 export type { IUtenteDAO };

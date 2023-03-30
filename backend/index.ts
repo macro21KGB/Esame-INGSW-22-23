@@ -1,13 +1,17 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
-import { Utente,RUOLI,UtenteFactory, Admin, Cameriere, AddettoAllaCucina } from './shared/entities/utente'
+import { Utente, RUOLI, UtenteFactory, Admin, Cameriere, AddettoAllaCucina } from './shared/entities/utente'
 import { UtenteDAOPostgresDB } from './db_dao/utente';
 import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
+import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB } from './db_dao/menu';
 import { Ristorante } from './shared/entities/ristorante';
+import { Categoria } from './shared/entities/menu';
 
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
+const ElementoDAO = new ElementoDAOPostgresDB();
+const CategoriaDAO = new CategoriaDAOPostgresDB();
 
 const app = express();
 const router = Router();
@@ -134,13 +138,37 @@ router.post('/register',async (req: Request, res: Response) => {
   res.status(200).send({ success: true, data: "Registrazione avvenuta con successo" });
 });
 
+// TODO testare
+router.post('/utenza', authenticateToken,requiresAdminRole, async (req: Request, res: Response) => {
+  if( !req.body['nome'] || !req.body['cognome'] || !req.body['email'] || !req.body['password']
+      || !req.body['ruolo'] || !req.body['telefono'] || !req.body['supervisore'] )
+    return res.status(400).send({ message: 'Wrong parameters' });
+  
+  const [nome, cognome, email, password, ruolo, telefono,supervisore] = [req.body['nome'] as string, 
+  req.body['cognome'] as string, req.body['email'] as string, req.body['password'] as string,
+   req.body['ruolo'] as RUOLI,req.body['telefono'] as string, req.body['supervisore'] as boolean] ;
+
+  // verifica che non esista utente
+  const utenti = await UtenteDAO.getUtenti();
+  if(utenti.find(u => u.email === email))
+    return res.status(400).send({ success: false, data: "Utente già registrato" });
+
+  // crea utente con factory
+  const utente = UtenteFactory.creaUtente( nome, cognome, telefono, email, ruolo, supervisore);
+  // crea user nel db
+  if (await UtenteDAO.registraUtenza(utente,password))
+    return res.status(200).send({ success: true, data: "Registrazione avvenuta con successo" });
+  else
+    return res.status(400).send({ success: false, data: "Errore durante la registrazione" });
+
+});
+
 router.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'Server is up and running!' });
 });
 
-router.get('/testt', (req: Request, res: Response) => {
-
-  res.status(200).send({ message: 'Testt!' });
+router.get('/autodestroy', (req: Request, res: Response) => {
+  throw new Error('Boom!');
 });
 
 router.get('/resturants', authenticateToken, async (req: Request, res: Response) => {
@@ -191,7 +219,7 @@ router.post('/resturant', authenticateToken, async(req: Request, res: Response) 
   });
 });
 
-router.post('/edit-utente/:email', authenticateToken,requiresAdminRole,blockAccessToOtherResturantsEmployees, async(req: Request, res: Response) => {
+router.put('/utente/:email', authenticateToken,requiresAdminRole,blockAccessToOtherResturantsEmployees, async(req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['cognome'] || !req.body['telefono']){
     res.status(400).json({success:false, data: 'Bad request' });
     return;
@@ -219,7 +247,7 @@ router.post('/edit-utente/:email', authenticateToken,requiresAdminRole,blockAcce
 });
 
 
-router.post('/del-utente/:email', authenticateToken,requiresAdminRole,blockAccessToOtherResturantsEmployees, async(req: Request, res: Response) => {
+router.delete('/utente/:email', authenticateToken,requiresAdminRole,blockAccessToOtherResturantsEmployees, async(req: Request, res: Response) => {
   const emailKey = req.params.email;
   // ottieni email da token
   const authHeader = req.headers['authorization']
@@ -233,7 +261,7 @@ router.post('/del-utente/:email', authenticateToken,requiresAdminRole,blockAcces
       return;
     }
   });
-  
+
   const utente = await UtenteDAO.getUtente(emailKey);
   if(utente==null){
     res.status(400).json({success:false, data: 'Utente non trovato' });
@@ -288,12 +316,75 @@ router.post('/pw-change', authenticateToken, async(req: Request, res: Response) 
     }
   }
   );
-
-
-
 });
 
 
+router.get('/categorie/:id_ristorante' , authenticateToken, async(req: Request, res: Response) => {
+  const id_ristorante = req.params.id_ristorante;
+  if(id_ristorante == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  res.status(200).json(JSON.stringify(await CategoriaDAO.getCategorie(+id_ristorante)));
+});
+
+
+router.post('/categoria', authenticateToken, async(req: Request, res: Response) => {
+  if (!req.body['nome'] || !req.body['id_ristorante']){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const categoria = new Categoria(req.body['nome'],[],0,+req.body['id_ristorante']);
+  try {
+    if(await CategoriaDAO.addCategoria(categoria))
+      res.status(200).send({success:true, data: 'Categoria aggiunta' });
+    else
+      res.status(400).send({success:false, data: 'Categoria non aggiunta' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Categoria non aggiunta' });
+  }
+});
+
+
+router.delete('/categoria/:id_categoria', authenticateToken, async(req: Request, res: Response) => {
+  const id_categoria = req.params.id_categoria;
+  if(id_categoria == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  try {
+    if(await CategoriaDAO.deleteCategoria(+id_categoria))
+      res.status(200).send({success:true, data: 'Categoria cancellata' });
+    else
+      res.status(400).send({success:false, data: 'Categoria non vuota' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Categoria non cancellata' });
+  }
+});
+
+router.put('/categoria/:id_categoria', authenticateToken, async(req: Request, res: Response) => {
+  const id_categoria = req.params.id_categoria;
+  if(id_categoria == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const nome = req.body['nome'];
+  if(nome == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  try {
+    if(await CategoriaDAO.updateCategoria(+id_categoria,nome))
+      res.status(200).send({success:true, data: 'Categoria aggiornata' });
+    else
+      res.status(400).send({success:false, data: 'Categoria non aggiornata' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Categoria non aggiornata' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
