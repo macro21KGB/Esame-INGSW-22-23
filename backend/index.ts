@@ -309,7 +309,7 @@ router.delete('/utente/:email', authenticateToken,requiresAdminRole,blockAccessT
 // get utenti 
 router.get('/utenti/:id_ristorante', authenticateToken,requiresAdminRole, async(req: Request, res: Response) => {
   const id_ristorante = +req.params.id_ristorante;
-  res.status(200).json(JSON.stringify(await UtenteDAO.getUtentiRistorante(id_ristorante)));
+  res.status(200).json(await UtenteDAO.getUtentiRistorante(id_ristorante));
 });
 
 router.get('/pw-changed', authenticateToken, async(req: Request, res: Response) => {
