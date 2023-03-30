@@ -9,7 +9,7 @@ import { Ristorante } from '@shared/entities/ristorante';
 import { RistoranteMapper } from './ristorante';
 class UtenteMapper implements IMapper<Utente> {
 	map(data : any) : Utente {
-		return UtenteFactory.creaUtente(data.nome, data.cognome, data.telefono, data.email, data.ruolo);
+		return UtenteFactory.creaUtente(data.nome, data.cognome, data.telefono, data.email, data.ruolo,data.supervisore);
 	}
 }
 

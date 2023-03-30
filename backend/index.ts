@@ -25,6 +25,7 @@ interface TokenPayload {
   cognome : string,
   email: string,
   ruolo : RUOLI
+  supervisore : boolean
 }
 
 function generateToken(payload: TokenPayload): string {
@@ -56,6 +57,23 @@ function requiresAdminRole(req : Request, res : Response, next : NextFunction){
     }
     next();
   });
+}
+
+function requiresSupervisor(req : Request, res : Response, next : NextFunction){
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({success:false,data:"Token not provided"});
+  jwt.verify(token, secret, async(err: any, decoded: any) => {
+    if (err) return res.status(403).json({success:false,data:"Invalid token"});
+    const supervisore = decoded.supervisore;
+    const ruolo = decoded.ruolo;
+    if(!supervisore && ruolo!=RUOLI.ADMIN){
+      res.status(403).json({success:false,data:"Non sei autorizzato ad accedere a questa risorsa"});
+      return;
+    }
+    next();
+  }
+  );
 }
 
 function blockAccessToOtherResturantsEmployees(req : Request, res : Response, next : NextFunction) {
@@ -108,13 +126,18 @@ router.post('/login', async (req: Request, res: Response) => {
   }
   const id = await UtenteDAO.getIdUtente(username);
   if (id == null) return res.status(400).send({ message: 'Unexpected error' });
+  let supervisore = false;
+  if(user instanceof Cameriere || user instanceof AddettoAllaCucina){
+    supervisore = (user as Cameriere).supervisore || (user as AddettoAllaCucina).supervisore;
+  }
   console.log("utente id: "+id);
   const payload: TokenPayload = {
     id: id,
     nome: user.nome,
     cognome : user.cognome,
     email :user.email,
-    ruolo :user.ruolo?user.ruolo:RUOLI.ADMIN
+    ruolo :user.ruolo?user.ruolo:RUOLI.ADMIN,
+    supervisore : supervisore
   }
   const response = { success: true, data: generateToken(payload) };
 
@@ -165,6 +188,10 @@ router.post('/utenza', authenticateToken,requiresAdminRole, async (req: Request,
 
 router.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'Server is up and running!' });
+});
+
+router.get('/super',requiresSupervisor, (req: Request, res: Response) => {
+  res.status(200).send({ message: 'You are super!' });
 });
 
 router.get('/autodestroy', (req: Request, res: Response) => {
@@ -335,7 +362,7 @@ router.get('/categorie/:id_ristorante' , authenticateToken, async(req: Request, 
 });
 
 
-router.post('/categoria', authenticateToken, async(req: Request, res: Response) => {
+router.post('/categoria', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['id_ristorante']){
     res.status(400).json({success:false, data: 'Bad request' });
     return;
@@ -353,7 +380,7 @@ router.post('/categoria', authenticateToken, async(req: Request, res: Response) 
 });
 
 
-router.delete('/categoria/:id_categoria', authenticateToken, async(req: Request, res: Response) => {
+router.delete('/categoria/:id_categoria', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
   const id_categoria = req.params.id_categoria;
   if(id_categoria == null){
     res.status(400).json({success:false, data: 'Bad request' });
@@ -370,7 +397,7 @@ router.delete('/categoria/:id_categoria', authenticateToken, async(req: Request,
   }
 });
 
-router.put('/categoria/:id_categoria', authenticateToken, async(req: Request, res: Response) => {
+router.put('/categoria/:id_categoria', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
   const id_categoria = req.params.id_categoria;
   if(id_categoria == null){
     res.status(400).json({success:false, data: 'Bad request' });
@@ -413,7 +440,7 @@ router.get('/elemento/:id_elemento' , authenticateToken, async(req: Request, res
   res.status(200).json(JSON.stringify(elemento));
 });
 
-router.delete('/elemento/:id_elemento', authenticateToken, async(req: Request, res: Response) => {
+router.delete('/elemento/:id_elemento', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
   const id_elemento = req.params.id_elemento;
   if(id_elemento == null){
     res.status(400).json({success:false, data: 'Bad request' });
@@ -431,7 +458,7 @@ router.delete('/elemento/:id_elemento', authenticateToken, async(req: Request, r
 });
 
 
-router.put('/elemento/:id_elemento', authenticateToken, async(req: Request, res: Response) => {
+router.put('/elemento/:id_elemento', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
   const id_elemento = req.params.id_elemento;
   if(id_elemento == null){
     res.status(400).json({success:false, data: 'Bad request' });
@@ -447,7 +474,7 @@ router.put('/elemento/:id_elemento', authenticateToken, async(req: Request, res:
   }
   const elemento = new Elemento(nome,descrizione,prezzo,{
     ingredienti: ingredienti.split(',') ,
-    allergeni: [],
+    allergeni: [],// TODO
     ordine: 0,
   });
   try {
@@ -463,14 +490,14 @@ router.put('/elemento/:id_elemento', authenticateToken, async(req: Request, res:
 });
 
 // post elemento
-router.post('/elemento', authenticateToken, async(req: Request, res: Response) => {
+router.post('/elemento', authenticateToken,requiresSupervisor, async(req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['prezzo'] || !req.body['descrizione'] || !req.body['ingredienti'] || !req.body['id_categoria']){
     res.status(400).json({success:false, data: 'Bad request' });
     return;
   }
   const elemento = new Elemento(req.body['nome'],req.body['descrizione'],req.body['prezzo'],{
     ingredienti: req.body['ingredienti'].split(',') ,
-    allergeni: [],
+    allergeni: [], // TODO
     ordine: 0,
   });
   try {

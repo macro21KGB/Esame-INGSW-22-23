@@ -81,14 +81,14 @@ class CategoriaDAOPostgresDB implements ICategoriaDAO {
     }
 }
 
-//INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 1, 'Pasta al pomodoro', 'descrizione pasta al pomodoro', 5.00, 'Pasta, pomodoro');
+
 // TODO implementare metodi elemento
 class ElementoMapper implements IMapper<Elemento>{
     map(data : any) : Elemento {
         return new Elemento(data.nome, data.descrizione, data.prezzo,
             {
                 ingredienti: data.ingredienti.split(',').map((s : string) => s.replace(' ', '').replace(',', '')),
-                allergeni: [],
+                allergeni: [], // TODO
                 ordine: 0,
             }, data.id_elemento);
     }
