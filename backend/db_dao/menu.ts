@@ -1,7 +1,7 @@
 import { ICategoriaDAO } from '../shared/entities/daos/categoriaDAO'
 import { IElementoDAO } from '../shared/entities/daos/elementoDAO'
 import { IAllergeneDAO } from '../shared/entities/daos/allergeneDAO'
-import { Categoria, Elemento } from '../shared/entities/menu'
+import { Categoria, Elemento,OpzioniElemento } from '../shared/entities/menu'
 import {conn} from '../db_connection'
 import { IMapper } from './mapper';
 import { Ristorante } from '@shared/entities/ristorante';
@@ -81,30 +81,89 @@ class CategoriaDAOPostgresDB implements ICategoriaDAO {
     }
 }
 
-
+//INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 1, 'Pasta al pomodoro', 'descrizione pasta al pomodoro', 5.00, 'Pasta, pomodoro');
 // TODO implementare metodi elemento
 class ElementoMapper implements IMapper<Elemento>{
     map(data : any) : Elemento {
-        throw new Error("Method not implemented.");
+        return new Elemento(data.nome, data.descrizione, data.prezzo,
+            {
+                ingredienti: data.ingredienti.split(',').map((s : string) => s.replace(' ', '').replace(',', '')),
+                allergeni: [],
+                ordine: 0,
+            }, data.id_elemento);
     }
 }
 
 class ElementoDAOPostgresDB implements IElementoDAO {
-    getElemento(id: number): Promise<Elemento> {
-        throw new Error('Method not implemented.');
+    getElementi(id_categoria: number): Promise<Elemento[]> {
+        return new Promise((resolve, reject) => {
+            conn.query('SELECT * FROM  "Elemento" where id_categoria = $1;',[id_categoria], (err : any, results : any) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results.rows.map((data : any) => this.elementoMapper.map(data)));
+            }
+            );
+        });
     }
-    addElemento(elemento: Elemento): Promise<Elemento> {
-        throw new Error('Method not implemented.');
+    elementoMapper : ElementoMapper = new ElementoMapper();
+    addElemento(elemento: Elemento, id_categoria : number): Promise<Boolean> {
+        return new Promise((resolve, reject) => {
+            conn.query('INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( $1, $2, $3, $4, $5);',
+            [id_categoria, elemento.nome, elemento.descrizione, elemento.prezzo,
+                elemento.ingredienti.join(',')
+               ], (err : any, results : any) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(true);
+            }
+            );
+        });
     }
-    updateElemento(elemento: Elemento): Promise<Elemento> {
-        throw new Error('Method not implemented.');
+    updateElemento(id: number, elemento: Elemento): Promise<Boolean> {
+        return new Promise((resolve, reject) => {
+            conn.query('UPDATE "Elemento" SET nome = $1, descrizione = $2, prezzo = $3, ingredienti = $4 WHERE id_elemento = $5;',
+            [ elemento.nome, elemento.descrizione, elemento.prezzo,
+                elemento.ingredienti.join(','), id
+               ], (err : any, results : any) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(true);
+            }
+            );
+        });
     }
-    deleteElemento(elemento: Elemento): Promise<Elemento> {
-        throw new Error('Method not implemented.');
+    deleteElemento(id: number): Promise<Boolean> {
+        return new Promise((resolve, reject) => {
+            conn.query('DELETE FROM "Elemento" WHERE id_elemento = $1;',[id], (err : any, results : any) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(true);
+            }
+            );
+        });
     }
-    getAllergeniElemento(elemento: Elemento): Promise<Allergene[]> {
-        throw new Error('Method not implemented.');
+    getAllergeniElemento(id: number): Promise<Allergene[]> { // TODO
+        throw new Error('Method not implemented.')
     }
+    getElemento(id: number): Promise<Elemento | null> {
+        return new Promise((resolve, reject) => {
+            conn.query('SELECT * FROM  "Elemento" where id_elemento = $1;',[id], (err : any, results : any) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.rows.length == 0) {
+                    return resolve(null);
+                }
+                resolve(this.elementoMapper.map(results.rows[0]));
+            }
+            );
+        });
+    }
+    
     
 }
 // TODO implementare metodi allergene

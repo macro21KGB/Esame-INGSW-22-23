@@ -10,6 +10,7 @@ interface IUtenteDAO {
 	getUtente(email: string): Promise<Utente | null>;
 	getIdUtente(email: string): Promise<number | null>;
 	getUtenti(): Promise<Utente[]>;
+	getUtentiRistorante(id_ristorante : number): Promise<Utente[]>;
 	getRistoranti(email: string) : Promise<Ristorante[]>;
 	promuoviASupervisore(utente: Utente): Promise<Utente>;
 	getAdmin(email: string): Promise<Utente | null>;

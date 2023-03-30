@@ -39,6 +39,7 @@ interface OpzioniElemento {
 }
 
 class Elemento {
+	id_elemento: number;
 	nome: string;
 	descrizione: string;
 	prezzo: number;
@@ -51,6 +52,7 @@ class Elemento {
 		descrizione: string,
 		prezzo: number,
 		opzioni: OpzioniElemento,
+		id : number = 0,
 	) {
 		this.nome = nome;
 		this.descrizione = descrizione;
@@ -58,6 +60,7 @@ class Elemento {
 		this.ingredienti = opzioni.ingredienti;
 		this.allergeni = opzioni.allergeni;
 		this.ordine = opzioni.ordine;
+		this.id_elemento = id;
 	}
 
 	public getOrdine(): number {
@@ -108,3 +111,4 @@ class ElementoConQuantita extends Elemento {
 }
 
 export { Menu, Elemento, ElementoConQuantita, Categoria };
+export type { OpzioniElemento };

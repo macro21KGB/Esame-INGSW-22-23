@@ -14,6 +14,16 @@ class UtenteMapper implements IMapper<Utente> {
 }
 
 class UtenteDAOPostgresDB implements IUtenteDAO {
+	getUtentiRistorante(id_ristorante : number): Promise<Utente[]>{
+		return new Promise((resolve, reject) => {
+			conn.query('SELECT * FROM "Utente" natural join "UtenteRistorante" WHERE id_ristorante = $1;', [id_ristorante], (err : any, results : any) => {
+				if (err) {
+					return reject(err);
+				}
+				resolve(results.rows.map((data : any) => new UtenteMapper().map(data)));
+			});
+		});
+	}
 	registraUtenza(utente: Utente, plain_password : string): Promise<Boolean> {
 		return new Promise((resolve, reject) => {
 			if( utente.ruolo == RUOLI.ADMIN) {

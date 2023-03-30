@@ -6,7 +6,7 @@ import { UtenteDAOPostgresDB } from './db_dao/utente';
 import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
 import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB } from './db_dao/menu';
 import { Ristorante } from './shared/entities/ristorante';
-import { Categoria } from './shared/entities/menu';
+import { Categoria,Elemento } from './shared/entities/menu';
 
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
@@ -279,6 +279,12 @@ router.delete('/utente/:email', authenticateToken,requiresAdminRole,blockAccessT
 
 });
 
+// get utenti 
+router.get('/utenti/:id_ristorante', authenticateToken,requiresAdminRole, async(req: Request, res: Response) => {
+  const id_ristorante = +req.params.id_ristorante;
+  res.status(200).json(JSON.stringify(await UtenteDAO.getUtentiRistorante(id_ristorante)));
+});
+
 router.get('/pw-changed', authenticateToken, async(req: Request, res: Response) => {
   // ottieni email dal token
   const authHeader = req.headers['authorization']
@@ -383,6 +389,98 @@ router.put('/categoria/:id_categoria', authenticateToken, async(req: Request, re
   }
   catch(err) {
     res.status(400).send({success:false, data: 'Categoria non aggiornata' });
+  }
+});
+
+router.get('/elementi/:id_categoria' , authenticateToken, async(req: Request, res: Response) => {
+  const id_categoria = req.params.id_categoria;
+  if(id_categoria == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  res.status(200).json(JSON.stringify(await ElementoDAO.getElementi(+id_categoria)));
+});
+
+router.get('/elemento/:id_elemento' , authenticateToken, async(req: Request, res: Response) => {
+  const id_elemento = req.params.id_elemento;
+  if(id_elemento == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const elemento = await ElementoDAO.getElemento(+id_elemento);
+  if(elemento == null)
+    res.status(400).json({success:false, data: 'Elemento non trovato' });
+  res.status(200).json(JSON.stringify(elemento));
+});
+
+router.delete('/elemento/:id_elemento', authenticateToken, async(req: Request, res: Response) => {
+  const id_elemento = req.params.id_elemento;
+  if(id_elemento == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  try {
+    if(await ElementoDAO.deleteElemento(+id_elemento))
+      res.status(200).send({success:true, data: 'Elemento cancellato' });
+    else
+      res.status(400).send({success:false, data: 'Elemento non cancellato' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Elemento non cancellato' });
+  }
+});
+
+
+router.put('/elemento/:id_elemento', authenticateToken, async(req: Request, res: Response) => {
+  const id_elemento = req.params.id_elemento;
+  if(id_elemento == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const nome = req.body['nome'];
+  const prezzo = req.body['prezzo'];
+  const descrizione = req.body['descrizione'];
+  const ingredienti = req.body['ingredienti'];
+  if(nome == null || prezzo == null || descrizione == null || ingredienti == null){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const elemento = new Elemento(nome,descrizione,prezzo,{
+    ingredienti: ingredienti.split(',') ,
+    allergeni: [],
+    ordine: 0,
+  });
+  try {
+    if(await ElementoDAO.updateElemento(+id_elemento,elemento))
+      res.status(200).send({success:true, data: 'Elemento aggiornato' });
+    else
+      res.status(400).send({success:false, data: 'Elemento non aggiornato' });
+  }
+  catch(err) {
+    console.log(err);
+    res.status(400).send({success:false, data: 'Elemento non aggiornato' });
+  }
+});
+
+// post elemento
+router.post('/elemento', authenticateToken, async(req: Request, res: Response) => {
+  if (!req.body['nome'] || !req.body['prezzo'] || !req.body['descrizione'] || !req.body['ingredienti'] || !req.body['id_categoria']){
+    res.status(400).json({success:false, data: 'Bad request' });
+    return;
+  }
+  const elemento = new Elemento(req.body['nome'],req.body['descrizione'],req.body['prezzo'],{
+    ingredienti: req.body['ingredienti'].split(',') ,
+    allergeni: [],
+    ordine: 0,
+  });
+  try {
+    if(await ElementoDAO.addElemento(elemento,+req.body['id_categoria']))
+      res.status(200).send({success:true, data: 'Elemento aggiunto' });
+    else
+      res.status(400).send({success:false, data: 'Elemento non aggiunto' });
+  }
+  catch(err) {
+    res.status(400).send({success:false, data: 'Elemento non aggiunto' });
   }
 });
 
