@@ -172,16 +172,6 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 	}
 	deleteUtente(email: string): Promise<Boolean> {
 		// cancella a cascata
-		/*
-		return new Promise((resolve, reject) => {
-			conn.query('DELETE FROM public."Utente" WHERE email = $1;', [email], (error : any, results : any) => {
-				if (error) {
-					return reject(false);
-				}
-				resolve(true);
-			});
-		});
-		*/
 		return new Promise((resolve, reject) => {
 			conn.query('DELETE FROM public."UtenteRistorante" WHERE id_utente = (SELECT id_utente FROM public."Utente" WHERE email = $1);', [email], (error : any, results : any) => {
 				if (error) {
