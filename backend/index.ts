@@ -163,7 +163,7 @@ router.post('/register',async (req: Request, res: Response) => {
 });
 
 
-router.post('/utenza', authenticateToken,requiresAdminRole, async (req: Request, res: Response) => {
+router.post('/utenza/:id_ristorante', authenticateToken,requiresAdminRole, async (req: Request, res: Response) => {
   if( !req.body['nome'] || !req.body['cognome'] || !req.body['email'] || !req.body['password']
       || !req.body['ruolo'] || !req.body['telefono'] || !req.body['supervisore'] )
     return res.status(400).send({ message: 'Wrong parameters' });
@@ -172,6 +172,9 @@ router.post('/utenza', authenticateToken,requiresAdminRole, async (req: Request,
   req.body['cognome'] as string, req.body['email'] as string, req.body['password'] as string,
    req.body['ruolo'] as RUOLI,req.body['telefono'] as string, req.body['supervisore'] as boolean] ;
 
+  const id_ristorante = req.params.id_ristorante;
+  if(id_ristorante == null)
+    return res.status(400).send({ message: 'id ristorante missing' });
   // verifica che non esista utente
   const utenti = await UtenteDAO.getUtenti();
   if(utenti.find(u => u.email === email))
@@ -180,7 +183,7 @@ router.post('/utenza', authenticateToken,requiresAdminRole, async (req: Request,
   // crea utente con factory
   const utente = UtenteFactory.creaUtente( nome, cognome, telefono, email, ruolo, supervisore);
   // crea user nel db
-  if (await UtenteDAO.registraUtenza(utente,password))
+  if (await UtenteDAO.registraUtenza(utente,password,+id_ristorante))
     return res.status(200).send({ success: true, data: "Registrazione avvenuta con successo" });
   else
     return res.status(400).send({ success: false, data: "Errore durante la registrazione" });

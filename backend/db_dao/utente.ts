@@ -24,7 +24,7 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 			});
 		});
 	}
-	registraUtenza(utente: Utente, plain_password : string): Promise<Boolean> {
+	registraUtenza(utente: Utente, plain_password : string, id_ristorante : number): Promise<Boolean> {
 		return new Promise((resolve, reject) => {
 			if( utente.ruolo == RUOLI.ADMIN) {
 				return resolve(false);
@@ -33,8 +33,17 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 				if (err) {
 					return reject(err);
 				}
-				resolve(true);
+
+				// crea utente ristorante
+				conn.query('INSERT INTO public."UtenteRistorante" (id_utente, id_ristorante) VALUES ($1, $2);', [results.rows[0].id_utente, id_ristorante], (err : any, results : any) => {
+					if (err) {
+						return reject(err);
+					}
+					resolve(true);
+				});
+
 			});
+
 		});
 	}
 	isPasswordChanged(email: string): Promise<boolean> {
