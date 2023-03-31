@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 import styled from "styled-components"
 import { NavbarFactory } from "../components/NavBar"
 import SoftButton from "../components/SoftButton";
@@ -23,13 +23,13 @@ const Content = styled.div`
 
 export default function DashboardSupervisore() {
 
-    const idRistorante = useStore(state => state.idRistorante);
+    const { id } = useParams();
 
     return (
         <Container>
             {NavbarFactory.generateNavbarOnlyMenu()}
             <Content>
-                <Link to={`/dashboard/${idRistorante}/menu`} >
+                <Link to={`/dashboard/${id}/menu`} >
                     <SoftButton text="Gestisci Menu" />
                 </Link>
                 <Link to={`/supevisore/conti`}>

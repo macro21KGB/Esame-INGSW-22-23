@@ -17,6 +17,7 @@ import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrd
 import DashboardSupervisore from "./routes/DashboardSupervisore";
 import GestisciContiRoute from "./routes/GestisciConti";
 import StatisticheRoute from "./routes/Statistiche";
+
 const router = createBrowserRouter([
 	{
 		path: "/",
@@ -87,7 +88,7 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<ToastContainer />
+			<ToastContainer  />
 			<RouterProvider router={router} />
 		</QueryClientProvider>
 	</React.StrictMode>,

@@ -10,7 +10,7 @@ const COLORS = {
 	dangerColor: "#EF3636",
 };
 
-const ALLERGENI = {
+export const ALLERGENI = {
 	GLUTINE: "glutine",
 	LATTOSIO: "lattosio",
 	UOVO: "uovo",

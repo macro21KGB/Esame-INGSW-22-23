@@ -2,10 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import "../App.css";
 import BigButton from "../components/BigButton";
 import InputBox from "../components/InputBox";
 import { Controller } from "../entities/controller";
+import "../App.css";
 
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
@@ -65,39 +65,47 @@ export default function Login() {
 	};
 
 	const handleLoginRegister = async (email: string, password: string, passwordVerifica: string) => {
-		if (!verificaEmail(loginInfo.email)) {
+		if (!verificaEmail(email)) {
 			toast.error("Email non valida");
 			return;
 		}
 
-		if (loginInfo.email === "" || loginInfo.password === "") {
+		if (email === "" || password === "") {
 			toast.error("Inserisci email e password");
 			return;
 		}
 
 		// se è in fase di REGISTRZIONE
 		if (!isLogging) {
+
+			if (password !== passwordVerifica) {
+				toast.error("Le password non coincidono");
+				return;
+			}
+
 			const isUserCreatedSuccessfully = await controller.registraUtente(
-				loginInfo.email,
-				loginInfo.password,
+				email,
+				password,
 			);
 
 			if (isUserCreatedSuccessfully) {
 				toast.success("Utente creato con successo");
 				setIsLogging(true);
+				return;
 			}
 
+			toast.error("Utente già esistente");
 			// se è in fase di LOGIN
 		} else {
-			const loggedInUser = await controller.accediUtente(
-				loginInfo.email,
-				loginInfo.password,
+			const result = await controller.accediUtente(
+				email,
+				password,
 			);
 
-			if (loggedInUser.success) {
+			if (result.success) {
 				toast.success("Accesso eseguito con successo");
-				setTokenInStore(loggedInUser.data);
-				salvaTokenInCookie(loggedInUser.data, 3600);
+				setTokenInStore(result.data);
+				salvaTokenInCookie(result.data, 3600);
 				navigate("/dashboard");
 			} else {
 				toast.error("Email o password errati");

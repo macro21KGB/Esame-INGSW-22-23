@@ -13,6 +13,7 @@ import { useStore } from "../stores/store";
 import { useNavigate } from "react-router";
 import { Ristorante } from "../entities/ristorante";
 import { toast } from "react-toastify";
+import ResettaPasswordPopup from "../components/ResettaPasswordPopup";
 
 const AppContainer = styled.div`
 display: flex;
@@ -44,36 +45,6 @@ const ListaRistorantiContainer = styled.div`
 	}
 `;
 
-const FileInput = styled.div`
-	.file {
-		opacity: 0;
-		width: 0.1px;
-		height: 0.1px;
-		position: absolute;
-	}
-
-
-	label {
-		display: flex;
-		flex-direction: column;
-		position: relative;
-		height: 50px;
-		margin: 0;
-		padding: 1rem;
-		line-height: 0.5rem;
-		border-radius: 0.5rem;
-		background: transparent;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #fff;
-		border: 1px dashed #fff;
-		font-weight: bold;
-		cursor: pointer;
-		transition: transform .2s ease-out;
-	}
-`;
-
 function App() {
 	const controller = Controller.getInstance();
 
@@ -81,8 +52,9 @@ function App() {
 	const utenteCorrente = useStore((state) => state.user);
 	const query = useQuery(["ristoranti"], () => controller.getRistoranti());
 
-	const saveIdRistorante = useStore((state) => state.setIdRistorante);
+	const queryCambioPassword = useQuery<boolean>(["cambioPassword"], () => controller.isUtenteUsingDefaultPassword());
 
+	const saveIdRistorante = useStore((state) => state.setIdRistorante);
 	const [showModal, setShowModal] = useState(false);
 	const [informazioniRistorante, setInformazioniRistorante] = useState({
 		nome: "",
@@ -117,6 +89,16 @@ function App() {
 	const mutation = useMutation((newResturant: Ristorante) => controller.creaRistorante(newResturant));
 	const queryClient = useQueryClient();
 
+	const mutationCambiaPassword = useMutation((nuovaPassword: string) => controller.cambiaPasswordDefault(nuovaPassword), {
+		onSuccess: () => {
+			queryClient.invalidateQueries("cambioPassword");
+			toast.success("Password cambiata con successo");
+		},
+		onError: () => {
+			toast.error("Errore nel cambiare la password");
+		}
+	});
+
 	const aggiungiRistorante = () => {
 
 		// check if all fields are filled
@@ -144,6 +126,9 @@ function App() {
 				resettaCampi();
 				toast.success("Ristorante Creato con successo");
 			}
+			, onError: (error: any) => {
+				toast.error(error);
+			}
 		});
 	};
 
@@ -152,7 +137,13 @@ function App() {
 			{NavbarFactory.generateNavbarAddAndMenu(() => setShowModal(true))}
 			<WelcomePanel title="Benvenuto," subtitle={utenteCorrente?.nome || "Utente"} />
 			<p id="start_list_ristoranti">I Miei Ristoranti</p>
+
+			{(queryCambioPassword.isSuccess && !queryCambioPassword.data) && (
+				<ResettaPasswordPopup onConfirm={(pwd) => { mutationCambiaPassword.mutate(pwd) }} />
+			)}
+
 			<ListaRistorantiContainer>
+
 				{query.isLoading ? (
 					<LoadingCircle />
 				) : query.data?.length === 0 ? (

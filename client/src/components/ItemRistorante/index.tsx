@@ -1,5 +1,3 @@
-import React from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Ristorante } from "../../entities/ristorante";
 
@@ -42,26 +40,26 @@ const ItemRistoranteContainer = styled.button`
     `;
 
 interface ItemRistoranteProps {
-	ristorante: Ristorante;
-	onClick: () => void;
+    ristorante: Ristorante;
+    onClick: () => void;
 }
 
 export default function ItemRistorante({
-	ristorante,
-	onClick,
+    ristorante,
+    onClick,
 }: ItemRistoranteProps) {
-	return (
-		<ItemRistoranteContainer
-			onClick={() => {
-				onClick();
-			}}
-			type="button"
-		>
-			<div id="infos">
-				<p>{ristorante.nome}</p>
-				<sub>{ristorante.indirizzo}</sub>
-			</div>
-			<img src="https://picsum.photos/100?blur4" alt="" />
-		</ItemRistoranteContainer>
-	);
+    return (
+        <ItemRistoranteContainer
+            onClick={() => {
+                onClick();
+            }}
+            type="button"
+        >
+            <div id="infos">
+                <p>{ristorante.nome}</p>
+                <sub>{ristorante.indirizzo}</sub>
+            </div>
+            <img src="https://picsum.photos/100?blur4" alt="" />
+        </ItemRistoranteContainer>
+    );
 }

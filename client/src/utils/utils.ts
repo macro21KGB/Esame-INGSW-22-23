@@ -2,6 +2,7 @@ import { Conto } from './../entities/conto';
 import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
+import { Elemento } from '../entities/menu';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -43,20 +44,18 @@ export function verificaEmail(email: string) {
 	}
 }
 
-// salvaTokenInCookie salva il token nella cookie del browser dell'utente.
-// Il token viene salvato nella cookie per una durata pari al tempo di scadenza del token
-// che viene passato come parametro.
-// Il token è salvato in formato testo semplice.
-// Il token è salvato nel path di root del sito web (path="/").
-// I parametri sono:
-// - token: il token da salvare nella cookie;
-// - tempoDiScadenza: la durata in secondi della cookie dopo la quale il token scade.
-export function salvaTokenInCookie(token: string, tempoDiScadenza: number): boolean {
+/**
+ * Salva il token nel cookie
+ * @param token token da salvare nel cookie
+ * @param tempoDiScadenza tempo di scadenza del token in secondi
+ * @returns il token salvato nel cookie
+ */
+export function salvaTokenInCookie(token: string, tempoDiScadenza: number): string {
 	const dataDiScadenza = new Date();
 	dataDiScadenza.setTime(dataDiScadenza.getTime() + tempoDiScadenza * 1000);
 	document.cookie = `token=${token}; expires=${dataDiScadenza.toUTCString()}; path=/`;
 
-	return true;
+	return token;
 }
 
 export function getTokenDaCookie(): string {
@@ -134,4 +133,32 @@ export function getDifferenzaInMinuti(date1: Date, date2: Date) {
 	const ore = Math.floor(diffInMinuti / 60);
 	const minuti = diffInMinuti % 60;
 	return `${ore < 10 ? `0${ore}` : ore}:${minuti < 10 ? `0${minuti}` : minuti}`;
+}
+
+export function isValoriNonSettati(obj: Record<string, any>): boolean {
+	for (let key in obj) {
+		if (typeof obj[key] === 'string' && obj[key] === '') {
+			return true;
+		} else if (Array.isArray(obj[key]) && obj[key].length === 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+export class ElementiOrderSaver {
+
+	public static salvaOrdineElementi(elementi: Elemento[]): void {
+		localStorage.setItem("elementiOrdinati", JSON.stringify(elementi));
+	}
+
+	public static prendiOrdineElementi(): Elemento[] {
+		const elementi = localStorage.getItem("elementiOrdinati");
+		if (elementi) {
+			const elementiConOrdine: Elemento[] = JSON.parse(elementi);
+			const elementiOrdinati = elementiConOrdine.sort((a, b) => a.ordine - b.ordine);
+			return elementiOrdinati;
+		}
+		return [];
+	}
 }

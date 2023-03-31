@@ -10,6 +10,7 @@ import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Result } from "../utils/constants";
 import { prendiInizioEFine } from "../utils/utils";
+import { useParams } from "react-router";
 
 const DashboardContainer = styled.div`
     display: flex;
@@ -48,6 +49,8 @@ export default function StatisticheRoute() {
     const [selectedEmailUser, setSelected] = useState("");
     const queryClient = useQueryClient();
 
+    const { id } = useParams();
+
     const fromInputRef = useRef<HTMLInputElement>(null);
     const toInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +61,8 @@ export default function StatisticheRoute() {
     })
 
     const query = useQuery(["utenti", "cucina"], () => {
-        return controller.getUtenti();
+        if (id === undefined) return [];
+        return controller.getUtenti(+id);
     });
 
     useEffect(() => {
