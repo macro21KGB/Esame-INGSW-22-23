@@ -99,7 +99,7 @@ class ElementoMapper implements IMapper<Elemento>{
     map(data : any) : Elemento {
         return new Elemento(data.nome, data.descrizione, data.prezzo,
             {
-                ingredienti: data.ingredienti.split(',').map((s : string) => s.replace(' ', '').replace(',', '')) || [],
+                ingredienti:  data.ingredienti || [],
                 allergeni: data.allergeni || [], 
                 ordine: 0,
             }, data.id_elemento);
@@ -107,12 +107,13 @@ class ElementoMapper implements IMapper<Elemento>{
 }
 
 class ElementoDAOPostgresDB implements IElementoDAO {
-    allergeneDAO : IAllergeneDAO = new AllergeneDAOPostgresDB();
     allergeneMapper : AllergeneMapper = new AllergeneMapper();
     elementoMapper : ElementoMapper = new ElementoMapper();
     getElementi(id_categoria: number): Promise<Elemento[]> {
         return new Promise((resolve, reject) => {
-              conn.query('SELECT "Elemento".*, "Allergene".nome as nome_allergene, id as id_allergene FROM ("Elemento" inner join "Allergene" on "Elemento".id_elemento = "Allergene".id_elemento) where id_categoria = $1;',[id_categoria], (err : any, results : any) => {
+              conn.query(`SELECT "Elemento".*, "Allergene".nome as nome_allergene, id as id_allergene FROM 
+              ("Elemento" inner join "Allergene" on "Elemento".id_elemento = "Allergene".id_elemento)
+               where id_categoria = $1;`,[id_categoria], (err : any, results : any) => {
                 if (err) {
                     return reject(err);
                 }
@@ -147,13 +148,16 @@ class ElementoDAOPostgresDB implements IElementoDAO {
                 }
                 
                 const id = results.rows[0].id_elemento as number;
-                console.log("ID"+results.rows[0].id_elemento);
-                // for allergene in elemento.allergeni
-                elemento.allergeni.forEach(async (allergene : Allergene) => {
-                    allergene.id_elemento = id;
-                    await this.allergeneDAO.addAllergene(allergene);
+                
+                // inserisci gli allergeni dell'elemento
+                elemento.allergeni.forEach( (allergene : Allergene) => {
+                    conn.query('INSERT INTO "Allergene" (id_elemento, nome) VALUES ($1, $2);',[id, allergene.nome], (err : any, results : any) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                    }
+                    );
                 });
-
                 resolve(true);
             });
             
@@ -217,11 +221,31 @@ class ElementoDAOPostgresDB implements IElementoDAO {
                 if (results.rows.length == 0) {
                     return resolve(null);
                 }
-                results.rows.forEach(async (elemento : any) => {
-                    elemento.allergeni = await this.allergeneDAO.getAllergeni(elemento.id_elemento);
+
+                conn.query(`SELECT "Elemento".*, "Allergene".nome as nome_allergene, id as id_allergene FROM
+                ("Elemento" inner join "Allergene" on "Elemento".id_elemento = "Allergene".id_elemento) 
+                where "Elemento".id_elemento = $1;`,[id], (err : any, results : any) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    if(results.rows.length == 0) {
+                        return resolve(null);
+                    }
+
+                    let elementi : Elemento[] = [];
+                    results.rows.map((result : any) => {
+                        elementi.push(this.elementoMapper.map(result));
+                        const e = elementi.find((e : Elemento) => e.id_elemento == result.id_elemento);
+                        if (e) {
+                            e.allergeni.push(new Allergene(result.nome_allergene,e.id_elemento, result.id_allergene));
+                        }
+                    });
+                    console.table(elementi);
+                    resolve(this.elementoMapper.map(elementi[0]));
                 });
                 
-                resolve(this.elementoMapper.map(results.rows[0]));
+                
+                //resolve(this.elementoMapper.map(results.rows[0]));
             }
             );
         });
