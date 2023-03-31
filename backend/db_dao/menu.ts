@@ -99,8 +99,8 @@ class ElementoMapper implements IMapper<Elemento>{
     map(data : any) : Elemento {
         return new Elemento(data.nome, data.descrizione, data.prezzo,
             {
-                ingredienti: data.ingredienti.split(',').map((s : string) => s.replace(' ', '').replace(',', '')),
-                allergeni: data.allergeni, 
+                ingredienti: data.ingredienti.split(',').map((s : string) => s.replace(' ', '').replace(',', '')) || [],
+                allergeni: data.allergeni || [], 
                 ordine: 0,
             }, data.id_elemento);
     }
@@ -112,15 +112,19 @@ class ElementoDAOPostgresDB implements IElementoDAO {
     elementoMapper : ElementoMapper = new ElementoMapper();
     getElementi(id_categoria: number): Promise<Elemento[]> {
         return new Promise((resolve, reject) => {
-            conn.query('SELECT * FROM  "Elemento" where id_categoria = $1;',[id_categoria], (err : any, results : any) => {
+              conn.query('SELECT "Elemento".*, "Allergene".nome as nome_allergene, id as id_allergene FROM ("Elemento" inner join "Allergene" on "Elemento".id_elemento = "Allergene".id_elemento) where id_categoria = $1;',[id_categoria], (err : any, results : any) => {
                 if (err) {
                     return reject(err);
                 }
-                results.rows.forEach(async (elemento : any) => {
-                    elemento.allergeni = await this.allergeneDAO.getAllergeni(elemento.id_elemento);
+                let elementi : Elemento[] = [];
+                results.rows.map((result : any) => {
+                    elementi.push(this.elementoMapper.map(result));
+                    const e = elementi.find((e : Elemento) => e.id_elemento == result.id_elemento);
+                    if (e) {
+                        e.allergeni.push(new Allergene(result.nome_allergene,e.id_elemento, result.id_allergene));
+                    } 
                 });
-
-                resolve(results.rows.map((data : any) => this.elementoMapper.map(data)));
+                resolve(elementi);
             }
             );
         });
