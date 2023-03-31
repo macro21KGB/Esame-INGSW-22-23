@@ -168,10 +168,12 @@ router.post('/utenza/:id_ristorante', authenticateToken,requiresAdminRole, async
       || !req.body['ruolo'] || !req.body['telefono'] || !req.body['supervisore'] )
     return res.status(400).send({ message: 'Wrong parameters' });
   
-  const [nome, cognome, email, password, ruolo, telefono,supervisore] = [req.body['nome'] as string, 
+  const [nome, cognome, email, password, ruolo, telefono] = [req.body['nome'] as string, 
   req.body['cognome'] as string, req.body['email'] as string, req.body['password'] as string,
-   req.body['ruolo'] as RUOLI,req.body['telefono'] as string, req.body['supervisore'] as boolean] ;
+   req.body['ruolo'] as RUOLI,req.body['telefono'] as string] ;
 
+  const supervisore = req.body['supervisore'] as boolean;
+  
   const id_ristorante = req.params.id_ristorante;
   if(id_ristorante == null)
     return res.status(400).send({ message: 'id ristorante missing' });

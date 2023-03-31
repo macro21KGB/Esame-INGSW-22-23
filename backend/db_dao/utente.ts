@@ -1,6 +1,6 @@
 import { rejects } from 'assert';
 import { IUtenteDAO } from '../shared/entities/daos/utenteDAO'
-import { RUOLI, Ruolo, Utente,UtenteFactory} from '../shared/entities/utente'
+import { Cameriere,AddettoAllaCucina, RUOLI, Ruolo, Utente,UtenteFactory} from '../shared/entities/utente'
 import { hashPassword } from '../utils';
 import {conn} from '../db_connection'
 import { verifyPassword } from '../utils';
@@ -29,11 +29,19 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 			if( utente.ruolo == RUOLI.ADMIN) {
 				return resolve(false);
 			}
-			conn.query('INSERT INTO public."Utente" (nome, cognome, email, password, telefono, ruolo) VALUES ($1, $2, $3, $4, $5, $6);', [utente.nome, utente.cognome, utente.email, hashPassword(plain_password), utente.telefono, utente.ruolo], (err : any, results : any) => {
+			// ottieni supervisore cast utente a cameriere o addetto
+			let supervisore : boolean;
+			if(utente.ruolo == RUOLI.CAMERIERE) {
+				supervisore = (utente as Cameriere).supervisore;
+			} else if(utente.ruolo == RUOLI.ADDETTO_CUCINA) {
+				supervisore = (utente as AddettoAllaCucina).supervisore;
+			} else {
+				return resolve(false);
+			}
+			conn.query('INSERT INTO public."Utente" (nome, cognome, email, password, telefono, ruolo,supervisore) VALUES ($1, $2, $3, $4, $5, $6,$7);', [utente.nome, utente.cognome, utente.email, hashPassword(plain_password), utente.telefono, utente.ruolo,supervisore], (err : any, results : any) => {
 				if (err) {
 					return reject(err);
 				}
-				//(SELECT id_utente FROM "Utente" ORDER BY id_utente DESC)
 				conn.query('SELECT id_utente FROM "Utente" ORDER BY id_utente DESC LIMIT 1;', (err : any, results : any) => {
 					if (err) {
 						return reject(err);
