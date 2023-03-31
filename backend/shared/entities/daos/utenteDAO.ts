@@ -15,7 +15,7 @@ interface IUtenteDAO {
 	promuoviASupervisore(utente: Utente): Promise<Utente>;
 	getAdmin(email: string): Promise<Utente | null>;
 	addUtenteImpiegato(utente: Utente, id_ristorante_impiegato:number): Promise<Boolean>;
-	updateUtente(new_utente: Utente, email:string): Promise<Boolean>;
+	updateUtente(new_utente: Utente, email:string, supervisore : boolean): Promise<Boolean>;
 	updatePassword(email: string, plain_password: string): Promise<Boolean>;
 	deleteUtente(email: string): Promise<Boolean>;
 	registraUtenza(utente : Utente, plain_password : string) : Promise<Boolean>;

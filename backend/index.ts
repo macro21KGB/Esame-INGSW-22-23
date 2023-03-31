@@ -262,8 +262,9 @@ router.put('/utente/:email', authenticateToken,requiresAdminRole,blockAccessToOt
   utente.nome = req.body['nome'];
   utente.cognome = req.body['cognome'];
   utente.telefono = req.body['telefono'];
+  const supervisore = req.body['supervisore'] as boolean || false;
   try {
-    if(await UtenteDAO.updateUtente(utente,utente.email)) 
+    if(await UtenteDAO.updateUtente(utente,utente.email,supervisore)) 
       res.status(200).send({success:true, data: 'Utente aggiornato' });
     else
       res.status(400).send({success:false, data: 'Utente non aggiornato' });

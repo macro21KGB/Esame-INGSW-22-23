@@ -182,10 +182,10 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 	addUtenteImpiegato(utente: Utente,id_ristorante_impiegato:number): Promise<Boolean> {
 		throw new Error("Method not implemented.");
 	}
-	updateUtente(new_utente: Utente, email:string): Promise<Boolean> {
+	updateUtente(new_utente: Utente, email:string, supervisore : boolean = false): Promise<Boolean> {
 		return new Promise((resolve, reject) => {
-			conn.query('UPDATE public."Utente" SET nome = $1, cognome = $2, telefono = $3, email = $4 WHERE email = $5;',
-			 [new_utente.nome, new_utente.cognome, new_utente.telefono, new_utente.email, email], (error : any, results : any) => {
+			conn.query('UPDATE public."Utente" SET nome = $1, cognome = $2, telefono = $3, email = $4, supervisore = $5 WHERE email = $6;',
+			 [new_utente.nome, new_utente.cognome, new_utente.telefono, new_utente.email,supervisore, email], (error : any, results : any) => {
 				if (error) {
 					return reject(false);
 				}
