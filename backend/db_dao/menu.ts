@@ -17,6 +17,7 @@ class CategoriaMapper implements IMapper<Categoria>{
 
 class CategoriaDAOPostgresDB implements ICategoriaDAO {
     categoriaMapper : CategoriaMapper = new CategoriaMapper();
+    elementoDAO : IElementoDAO = new ElementoDAOPostgresDB();
     getCategoria(idCategoria: number): Promise<Categoria | null> {
         return new Promise((resolve, reject) => {
 			conn.query('SELECT * FROM  "Categoria" where id_categoria = $1;',[idCategoria], (err : any, results : any) => {
@@ -68,14 +69,22 @@ class CategoriaDAOPostgresDB implements ICategoriaDAO {
     }
     deleteCategoria(id_categoria: number): Promise<Boolean> {
         return new Promise((resolve, reject) => {
-            conn.query('DELETE FROM "Categoria" WHERE id_categoria = $1;',[id_categoria], (err : any, results : any) => {
+            conn.query('SELECT id_elemento FROM "Elemento" WHERE id_categoria = $1;',[id_categoria], (err : any, results : any) => {
                 if (err) {
                     return reject(err);
                 }
-                
-                resolve(true);
-            }
-            );
+                results.rows.forEach(async (elemento : any) => {
+                    await this.elementoDAO.deleteElemento(elemento.id_elemento as number);
+                });
+                conn.query('DELETE FROM "Categoria" WHERE id_categoria = $1;',[id_categoria], (err : any, results : any) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    
+                    resolve(true);
+                }
+                );
+            });
         });
 
     }
@@ -166,14 +175,21 @@ class ElementoDAOPostgresDB implements IElementoDAO {
     }
     deleteElemento(id: number): Promise<Boolean> {
         return new Promise((resolve, reject) => {
-            conn.query('DELETE FROM "Elemento" WHERE id_elemento = $1;',[id], (err : any, results : any) => {
+            // cancella gli allergeni dell'elemento prima di cancellare l'elemento
+        conn.query('DELETE FROM "Allergene" WHERE id_elemento = $1;',[id], (err : any, results : any) => {
                 if (err) {
                     return reject(err);
                 }
-                
-                resolve(true);
-            }
-            );
+
+                conn.query('DELETE FROM "Elemento" WHERE id_elemento = $1;',[id], (err : any, results : any) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    
+                    resolve(true);
+                }
+                );
+            });
         });
     }
     getAllergeniElemento(id: number): Promise<Allergene[]> { 
