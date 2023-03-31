@@ -11,6 +11,7 @@ import { Utente } from "./utente";
 import { Categoria, Elemento } from "./menu";
 import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
+import { InformazioniUtente } from "../routes/GestisciUtenza";
 
 export class Controller {
 
@@ -66,11 +67,25 @@ export class Controller {
 		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
 	}
 
-	creaUtenteConInformazioniUtente(infoUtente: any, id: number): Promise<unknown> {
-		return this.utenteDAO.addUtente(infoUtente, id);
+
+	modificaUtenteConInformazioniUtente(infoUtente: InformazioniUtente): Promise<Result<string>> {
+		return this.utenteDAO.updateUtente(infoUtente);
 	}
 
-	public async getUtenti(idRistorante: number): Promise<Utente[]> {
+
+	cambiaPasswordDefault(nuovaPassword: string) {
+		return this.utenteDAO.cambiaPasswordDefault(nuovaPassword);
+	}
+
+	isUtenteUsingDefaultPassword(): Promise<boolean> {
+		return this.utenteDAO.isUtenteUsingDefaultPassword();
+	}
+
+	creaUtenteConInformazioniUtente(infoUtente: any, idRistorante: number): Promise<Result<string>> {
+		return this.utenteDAO.addUtente(infoUtente, idRistorante);
+	}
+
+	public async getUtenti(idRistorante: number): Promise<InformazioniUtente[]> {
 		return this.utenteDAO.getUtenti(idRistorante);
 	}
 
@@ -87,6 +102,17 @@ export class Controller {
 	public async getElementiCategoria(idCategoria: number): Promise<Elemento[]> {
 		return this.elementoMenuDAO.getElementi(idCategoria);
 	}
+
+	eliminaElementoCategoria(idElemento: number): Promise<Result<string>> {
+		return this.elementoMenuDAO.deleteElemento(idElemento);
+	}
+	aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): Promise<Result<string>> {
+		return this.elementoMenuDAO.addElemento(elemento, idCategoria)
+	}
+	modificaElementoCategoria(elemento: Elemento, idCategoria: number): Promise<Result<string>> {
+		throw new Error("Method not implemented.");
+	}
+
 	// CONTI
 
 	public async getContiTavoliUltime24h(idRistorante: number): Promise<Result<Conto[]>> {

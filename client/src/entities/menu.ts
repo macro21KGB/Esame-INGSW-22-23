@@ -71,6 +71,10 @@ class Elemento {
 		return this.prezzo;
 	}
 
+	public setOrdine(ordine: number): void {
+		this.ordine = ordine;
+	}
+
 	public getAllergeni(): Allergene[] {
 		return this.allergeni;
 	}

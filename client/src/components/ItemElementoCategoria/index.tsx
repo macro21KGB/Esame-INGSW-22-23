@@ -6,11 +6,10 @@ interface ItemElementoCategoriaProps {
 	onClickUp?: () => void;
 	onClickDown?: () => void;
 	onClickElemento: (elemento: Elemento) => void;
+	ordine?: number;
 }
 
-const ItemElementoCategoriaContainer = styled.button`
-	all: unset;
-
+const ItemElementoCategoriaContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -25,6 +24,8 @@ const ItemElementoCategoriaContainer = styled.button`
 		flex-direction: column;
 		line-height: 1.2rem;
 		flex-wrap: wrap;
+		cursor: pointer;
+		width: 100%;
 	}
 
 	.prezzo {
@@ -88,7 +89,7 @@ const ButtonsContainer = styled.div`
 
 
 export default function ItemElementoCategoria({
-	elemento, onClickDown, onClickUp, onClickElemento
+	elemento, onClickDown, onClickUp, onClickElemento, ordine
 }: ItemElementoCategoriaProps) {
 	return (
 		<ItemElementoCategoriaContainer >
@@ -97,7 +98,7 @@ export default function ItemElementoCategoria({
 			}}>
 				<strong>{elemento.nome}</strong>
 				<sub>{elemento.descrizione}</sub>
-				{elemento.allergeni.map((allergene) => (
+				{elemento.allergeni?.map((allergene) => (
 					<div>
 						<strong>{allergene.nome}</strong>
 					</div>

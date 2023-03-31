@@ -57,7 +57,7 @@ export const UtenzaItemContainer = styled.div`
 `;
 
 interface UtenzaItemProps {
-	utente: Utente;
+	utente: any;
 	onModifica: () => void;
 }
 
@@ -167,7 +167,7 @@ export default function UtenzaItem({ utente, onModifica }: UtenzaItemProps) {
 					</svg>
 				</a>
 			</div>
-			{utente.ruolo !== RUOLI.ADMIN && <StarBadge isOn={true} />}
+			{utente.ruolo !== RUOLI.ADMIN && <StarBadge isOn={utente.supervisore} />}
 		</UtenzaItemContainer>
 	);
 }

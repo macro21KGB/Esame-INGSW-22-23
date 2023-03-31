@@ -10,7 +10,6 @@ import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
-import { useStore } from "../stores/store";
 
 const AppContainer = styled.div`
 display: flex;
@@ -44,13 +43,13 @@ const ListaCategorieContainer = styled.div`
 export default function GestisciMenuRoute() {
 	const controller = Controller.getInstance();
 
-	const { id , idCategoria} = useParams();
+	const { id } = useParams();
 
 	const [showModal, setShowModal] = useState(false);
 	const [nomeCategoria, setNomeCategoria] = useState("");
 
 	const query = useQuery(["categorie"], () => {
-		return controller.getCategorie(parseInt(id) || -1);
+		return controller.getCategorie(parseInt(id || "-1") || -1);
 	});
 
 	return (

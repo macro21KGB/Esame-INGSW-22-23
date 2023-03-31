@@ -13,7 +13,9 @@ const PopupContainer = styled.div`
     background-color: #465375;
     border-radius: 1rem;
     padding: 0.5rem 2rem;
-    
+
+    width: 100%;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -38,7 +40,7 @@ const PopupBackground = styled.div`
 `;
 
 interface ResettaPasswordPopupProps {
-    onConfirm: () => void;
+    onConfirm: (nuovaPassword: string) => void;
 }
 
 const ResettaPasswordPopup = ({ onConfirm }: ResettaPasswordPopupProps) => {
@@ -51,7 +53,7 @@ const ResettaPasswordPopup = ({ onConfirm }: ResettaPasswordPopupProps) => {
             return;
         }
 
-        onConfirm();
+        onConfirm(password);
     }
 
     return (
@@ -62,6 +64,7 @@ const ResettaPasswordPopup = ({ onConfirm }: ResettaPasswordPopupProps) => {
                     onChange={(e) => {
                         setPassword(e.target.value);
                     }} />
+                <br />
                 <BigButton text="Cambia Password" onClick={handleClickOnConfirm} />
             </PopupContainer>
         </PopupBackground>

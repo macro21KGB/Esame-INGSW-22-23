@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
@@ -12,7 +12,10 @@ import SlideUpModal from "../components/SlideUpModal";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Elemento } from "../entities/menu";
-import { useStore } from "../stores/store";
+import { ElementiOrderSaver, isValoriNonSettati } from "../utils/utils";
+import { ALLERGENI } from "../utils/constants";
+import { toast } from "react-toastify";
+import { Allergene } from "../entities/allergene";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -82,6 +85,8 @@ const AllergeniContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
+	gap: 0.3rem;
+	padding: 1rem;
 
 	p {
 		margin: 0.5rem;
@@ -93,18 +98,53 @@ const AllergeniContainer = styled.div`
 
 	`;
 
+const AllergeneItem = styled.button`
+	all: unset;
+
+	margin: 0;
+
+	border-radius: 0.5rem;
+	padding: 0.2rem 1rem;
+	background-color: #465375;
+	color: white;
+	margin-bottom: 1rem;
+	cursor: pointer;
+
+	&:hover {
+		background-color: white;
+		color: #465375;
+	}
+
+	&:active {
+		background-color: #465375;
+		color: white;
+	}
+
+	${(props: { selected: boolean }) => props.selected && `
+		background-color: white;
+		color: #465375;
+	`}
+`;
+
+interface InformazioniElemento {
+	nome: string;
+	descrizione: string;
+	costo: string;
+	allergeni: string[];
+}
+
 export default function GestisciElementiCategoriaRoute() {
 	const { idCategoria } = useParams();
 	const controller = Controller.getInstance();
 
 	const query = useQuery(["elementi", idCategoria], () => {
-		return controller.getElementiCategoria(parseInt(idCategoria) || -1);
+		return controller.getElementiCategoria(parseInt(idCategoria || "-1"));
 	});
 
 	const [autoCompleteString, setAutoCompleteString] = useState<string>("AutoComplete");
 	const [isModifica, setIsModifica] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [itemAllergeni, setItemAllergeni] = useState<string[]>([]);
+	const [IdElementoCancellare, setIdElementoCancellare] = useState<number>(-1);
 
 	const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setInformazioniElemento({
@@ -118,36 +158,34 @@ export default function GestisciElementiCategoriaRoute() {
 			nome: "",
 			descrizione: "",
 			costo: "",
-			allergeni: "",
+			allergeni: [],
 		});
 		setAutoCompleteString("AutoComplete");
 	};
 
-	const [informazioniElemento, setInformazioniElemento] = useState({
+	const [informazioniElemento, setInformazioniElemento] = useState<InformazioniElemento>({
 		nome: "",
 		descrizione: "",
 		costo: "",
-		allergeni: "",
+		allergeni: [],
 	});
 
-	const convertiStringaInArray = (stringa: string) => {
-		let array: string[] = [];
-		let stringaTemporanea = "";
-
-		if (stringa === "") return array;
-
-		for (let i = 0; i < stringa.length; i++) {
-			if (stringa[i] === ",") {
-				array.push(stringaTemporanea);
-				stringaTemporanea = "";
-			} else {
-				stringaTemporanea += stringa[i];
-			}
+	const toggleAllergene = (allergene: string) => {
+		if (informazioniElemento.allergeni.includes(allergene)) {
+			setInformazioniElemento({
+				...informazioniElemento,
+				allergeni: informazioniElemento.allergeni.filter((a) => a !== allergene),
+			});
+		} else {
+			setInformazioniElemento({
+				...informazioniElemento,
+				allergeni: [...informazioniElemento.allergeni, allergene],
+			});
 		}
+	};
 
-		array.push(stringaTemporanea);
-
-		return array;
+	const isAllergeneSelected = (allergene: string) => {
+		return informazioniElemento.allergeni.includes(allergene);
 	};
 
 	const fetchSuggestions = async () => {
@@ -175,9 +213,82 @@ export default function GestisciElementiCategoriaRoute() {
 		}
 	}, [informazioniElemento.nome])
 
-	useEffect(() => {
-		setItemAllergeni(convertiStringaInArray(informazioniElemento.allergeni));
-	}, [informazioniElemento.allergeni]);
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation((elemento: Elemento) => {
+		if (idCategoria === undefined) return Promise.reject(
+			new Error("Non è stato possibile recuperare l'id della categoria")
+		);
+
+		if (isModifica) {
+			return controller.modificaElementoCategoria(elemento, +idCategoria);
+		} else {
+			return controller.aggiungiElementoCategoria(elemento, +idCategoria);
+		}
+	}, {
+		onSuccess: () => {
+			toast.success("Elemento aggiunto/modificato con successo");
+			queryClient.invalidateQueries(["elementi", idCategoria]);
+			setShowModal(false);
+			resettaCampi();
+		},
+		onError: (error: any) => {
+			toast.error(error);
+		}
+
+	});
+
+	const mutationDelete = useMutation((idElemento: number) => {
+		if (idCategoria === undefined) return Promise.reject(
+			new Error("Non è stato possibile recuperare l'id della categoria")
+		);
+
+		return controller.eliminaElementoCategoria(idElemento);
+	},
+		{
+			onSuccess: () => {
+				toast.success("Elemento eliminato con successo");
+				queryClient.invalidateQueries(["elementi", idCategoria]);
+			},
+			onError: (error: any) => {
+				toast.error(error);
+			}
+		}
+	);
+
+	const creaNuovoElemento = (informazioniElemento: InformazioniElemento) => {
+
+		if (isValoriNonSettati(informazioniElemento)) {
+			toast.error("Non tutti i campi sono stati compilati");
+			return;
+
+		}
+
+		const allergeni = informazioniElemento.allergeni.map((allergene) => {
+			return new Allergene(allergene, 0);
+		});
+		const nuovoElemento = new Elemento(informazioniElemento.nome,
+			informazioniElemento.descrizione,
+			+informazioniElemento.costo,
+			{
+				allergeni: allergeni,
+				ingredienti: [],
+				ordine: 0,
+			});
+
+		mutation.mutate(nuovoElemento);
+	}
+
+	const cancellaElemento = (idElemento: number) => {
+		mutationDelete.mutate(idElemento);
+	}
+
+	const closeModal = () => {
+		setShowModal(false);
+		resettaCampi();
+		setIsModifica(false);
+		setIdElementoCancellare(-1);
+	}
 
 	return (
 		<DashboardContainer>
@@ -194,10 +305,24 @@ export default function GestisciElementiCategoriaRoute() {
 					<ListaElementi>
 						{query.data?.map((elemento: Elemento) => (
 							<ItemElementoCategoria
-								onClickElemento={() => { console.log("ciao") }}
-								onClickDown={() => { }}
+								onClickElemento={() => {
+									setIsModifica(true)
+									setShowModal(true);
+									setIdElementoCancellare(elemento.id_elemento);
+									console.log(elemento);
+									setInformazioniElemento({
+										nome: elemento.nome,
+										descrizione: elemento.descrizione,
+										costo: elemento.prezzo.toString(),
+										allergeni: elemento.allergeni.map((allergene) => allergene.nome) || [],
+									});
+								}}
 								onClickUp={() => { }}
-								key={elemento.nome} elemento={elemento} />
+								onClickDown={() => { }}
+								key={elemento.id_elemento}
+								elemento={elemento}
+
+							/>
 						))}
 					</ListaElementi>
 				</>
@@ -205,7 +330,7 @@ export default function GestisciElementiCategoriaRoute() {
 			<SlideUpModal
 				showModal={showModal}
 				setShowModal={setShowModal}
-				onClose={() => resettaCampi()}
+				onClose={closeModal}
 			>
 				<p>{isModifica ? "Modifica Elemento" : "Nuovo Elemento"}</p>
 				<AutoCompleteContainer onClick={selectAutoComplete}>
@@ -230,23 +355,25 @@ export default function GestisciElementiCategoriaRoute() {
 					name="costo"
 					onChange={handleOnChange}
 				/>
-				<InputBox
-					placeholder="Allergeni (separati da virgola)"
-					value={informazioniElemento.allergeni}
-					name="allergeni"
-					onChange={handleOnChange}
-				/>
+
 				<AllergeniContainer>
-					{itemAllergeni.map((allergene) => (
-						<p>{allergene}</p>
-					))}
-					<br />
+					{Object.values(ALLERGENI).map((allergene) => {
+						return (
+							<AllergeneItem key={allergene} onClick={() => { toggleAllergene(allergene) }} selected={isAllergeneSelected(allergene)}>
+								{allergene}
+							</AllergeneItem>
+						);
+					})
+					}
 				</AllergeniContainer>
 				{isModifica && (
-					<BigButton onClick={() => { }} color="red" text="Elimina Elemento" />
+					<BigButton onClick={() => {
+						cancellaElemento(IdElementoCancellare);
+						closeModal();
+					}} color="red" text="Elimina Elemento" />
 				)}
-
-				<BigButton onClick={() => { }} text="Crea" />
+				<br />
+				<BigButton onClick={() => { creaNuovoElemento(informazioniElemento) }} text="Crea" />
 			</SlideUpModal>
 		</DashboardContainer>
 	);

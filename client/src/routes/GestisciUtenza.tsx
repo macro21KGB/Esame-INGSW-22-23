@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -9,13 +9,13 @@ import InputBox from "../components/InputBox";
 import LoadingCircle from "../components/LoadingCircle";
 import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
-import SoftButton from "../components/SoftButton";
 import UtenzaItem from "../components/UtenzaItem";
 import StarBadge from "../components/UtenzaItem/StarBadge";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
-import { Ruolo, Utente, UtenteFactory } from "../entities/utente";
-import { useStore } from "../stores/store";
+import { Ruolo } from "../entities/utente";
+import { Result } from "../utils/constants";
+import { isValoriNonSettati } from "../utils/utils";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -77,8 +77,11 @@ export interface InformazioniUtente {
 
 export default function GestisciUtenzaRoute() {
 	const [showModal, setShowModal] = useState(false);
+	const [isModifica, setIsModifica] = useState(false);
 	const controller = Controller.getInstance();
 	const { id } = useParams();
+
+	const queryClient = useQueryClient();
 
 	const [informazioniUtente, setInformazioniUtente] =
 		useState<InformazioniUtente>({
@@ -99,24 +102,60 @@ export default function GestisciUtenzaRoute() {
 	};
 
 	const query = useQuery(["utenti"], () => {
-		return controller.getUtenti(parseInt(id) || -1);
+		if (id == undefined) return [];
+		return controller.getUtenti(+id);
 	});
 
 	const mutation = useMutation((infoUtente: InformazioniUtente) => {
-		return controller.creaUtenteConInformazioniUtente(infoUtente, parseInt(id) || -1);
+		if (id == undefined) throw new Error("Id undefined");
+
+		if (isModifica)
+			return controller.modificaUtenteConInformazioniUtente(infoUtente);
+		else
+			return controller.creaUtenteConInformazioniUtente(infoUtente, +id);
 	}, {
-		onSuccess: () => {
-			toast.success("Utente creato con successo");
-			setShowModal(false);
-			query.refetch();
+		onSuccess: (result) => {
+
+			if (result.success) {
+				toast.success("Operazione completata");
+				onModalClose();
+				setIsModifica(false);
+				queryClient.invalidateQueries(["utenti"]);
+				return;
+			}
+
+			toast.error(result.data);
 		}
 		,
-		onError: (error: any) => {
-			toast.error(error.message);
+		onError: (error: Result<string>) => {
+			toast.error(error.data);
 		}
 	});
 
+	const onModalClose = () => {
+		setShowModal(false);
+		setIsModifica(false);
+		setInformazioniUtente({
+			nome: "",
+			cognome: "",
+			telefono: "",
+			email: "",
+			ruolo: "",
+			supervisore: false,
+		});
+	};
+
 	const handleCreaUtente = () => {
+
+		if (isValoriNonSettati(informazioniUtente)) {
+			toast.error("Compila tutti i campi");
+			return;
+		}
+
+		mutation.mutate(informazioniUtente);
+	}
+
+	const handleModificaUtente = () => {
 		mutation.mutate(informazioniUtente);
 	}
 
@@ -127,7 +166,7 @@ export default function GestisciUtenzaRoute() {
 			telefono: utente.telefono,
 			email: utente.email,
 			ruolo: utente.ruolo || "",
-			supervisore: false,
+			supervisore: utente.supervisore,
 		});
 	};
 
@@ -145,13 +184,14 @@ export default function GestisciUtenzaRoute() {
 						<LoadingCircle />
 					</div>
 				) : (
-					query.data?.map((utente: Utente) => (
+					query.data?.map((utente: InformazioniUtente) => (
 						<UtenzaItem
 							key={utente.email + utente.telefono}
 							utente={utente}
 							onModifica={() => {
-								impostaInformazioniUtente(utente as InformazioniUtente);
+								impostaInformazioniUtente(utente);
 								setShowModal(true);
+								setIsModifica(true);
 							}}
 						/>
 					))
@@ -159,14 +199,16 @@ export default function GestisciUtenzaRoute() {
 
 				{query.data?.length === 0 && <p>Non ci sono utenti</p>}
 			</ListaUtenze>
-			<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
+			<SlideUpModal showModal={showModal} setShowModal={setShowModal} onClose={onModalClose}>
 				<p>Nuovo Utente</p>
-				<InputBox
-					placeholder="Email"
-					value={informazioniUtente.email}
-					name="email"
-					onChange={defaultHandleOnChange}
-				/>
+				{!isModifica &&
+					<InputBox
+						placeholder="Email"
+						value={informazioniUtente.email}
+						name="email"
+						onChange={defaultHandleOnChange}
+					/>
+				}
 				<InputBox
 					placeholder="Nome"
 					value={informazioniUtente.nome}
@@ -186,21 +228,26 @@ export default function GestisciUtenzaRoute() {
 					name="telefono"
 					onChange={defaultHandleOnChange}
 				/>
-				<InputBox
-					placeholder="Password di primo accesso"
-					value={informazioniUtente.password}
-					name="password"
-					onChange={defaultHandleOnChange}
-				/>
-				<DropDownItem bgColor="gray" onChange={(e) => {
-					setInformazioniUtente({
-						...informazioniUtente,
-						ruolo: e.target.value
-					})
-				}}>
-					<option value={Ruolo.ADDETTO_CUCINA}>Addetto alla Cucina</option>
-					<option value={Ruolo.CAMERIERE}>Cameriere</option>
-				</DropDownItem>
+				{!isModifica &&
+					<InputBox
+						placeholder="Password di primo accesso"
+						value={informazioniUtente.password}
+						name="password"
+						onChange={defaultHandleOnChange}
+					/>
+				}
+				{!isModifica &&
+					<DropDownItem bgColor="gray" onChange={(e) => {
+						setInformazioniUtente({
+							...informazioniUtente,
+							ruolo: e.target.value
+						})
+					}}>
+						<option value="">Seleziona Ruolo</option>
+						<option value={Ruolo.ADDETTO_CUCINA}>Addetto alla Cucina</option>
+						<option value={Ruolo.CAMERIERE}>Cameriere</option>
+					</DropDownItem>
+				}
 
 				<AssegnaSupervisoreButton isSupervisore={informazioniUtente.supervisore} onClick={() => {
 					setInformazioniUtente({
@@ -213,7 +260,12 @@ export default function GestisciUtenzaRoute() {
 				</AssegnaSupervisoreButton>
 
 				<br />
-				<BigButton onClick={handleCreaUtente} text="Crea" />
+				<BigButton onClick={() => {
+					if (isModifica)
+						handleModificaUtente();
+
+					handleCreaUtente()
+				}} text={isModifica ? "Modifica" : "Crea"} />
 			</SlideUpModal>
 		</DashboardContainer >
 	);
