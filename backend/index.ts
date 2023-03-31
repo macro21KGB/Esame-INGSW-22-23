@@ -499,7 +499,6 @@ router.post('/elemento', authenticateToken,requiresSupervisor, async(req: Reques
   }
   const ingredienti = req.body['ingredienti'] || "";
   const array = req.body['allergeni'].split(",") || [];
-  // trasforma allergeni in Allergenti[]
   let allergeni: Allergene[] = [];
   for (let i = 0; i < array.length; i++)
     allergeni.push(new Allergene(array[i],0));
