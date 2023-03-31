@@ -33,15 +33,22 @@ class UtenteDAOPostgresDB implements IUtenteDAO {
 				if (err) {
 					return reject(err);
 				}
-
-				// crea utente ristorante
-				conn.query('INSERT INTO public."UtenteRistorante" (id_utente, id_ristorante) VALUES ($1, $2);', [results.rows[0].id_utente, id_ristorante], (err : any, results : any) => {
+				//(SELECT id_utente FROM "Utente" ORDER BY id_utente DESC)
+				conn.query('SELECT id_utente FROM "Utente" ORDER BY id_utente DESC LIMIT 1;', (err : any, results : any) => {
 					if (err) {
 						return reject(err);
 					}
-					resolve(true);
-				});
+					let id = results.rows[0].id_utente;
 
+					// crea utente ristorante
+					conn.query('INSERT INTO public."UtenteRistorante" (id_utente, id_ristorante) VALUES ( $1, $2);', [id, id_ristorante], (err : any, results : any) => {
+						if (err) {
+							return reject(err);
+						}
+						resolve(true);
+					});
+
+				});
 			});
 
 		});

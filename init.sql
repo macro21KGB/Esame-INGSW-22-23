@@ -8,10 +8,10 @@ CREATE TYPE "Ruolo" AS ENUM (
 
 CREATE TABLE "Utente" (
   "id_utente" SERIAL PRIMARY KEY,
-  "nome" VARCHAR(50) DEFAULT "",
-  "cognome" VARCHAR(50) DEFAULT "",
+  "nome" VARCHAR(50) ,
+  "cognome" VARCHAR(50) ,
   "password" VARCHAR(200) NOT NULL,
-  "telefono" VARCHAR(13) DEFAULT "",
+  "telefono" VARCHAR(13) ,
   "email" VARCHAR(50) NOT NULL UNIQUE,
   "ruolo" "Ruolo" NOT NULL,
   "supervisore" bool DEFAULT false,
@@ -21,7 +21,7 @@ CREATE TABLE "Utente" (
 CREATE TABLE "UtenteRistorante" (
   "id_utente" int NOT NULL,
   "id_ristorante" int NOT NULL,
-  "is_admin" bool
+  "is_admin" bool DEFAULT false
 );
 
 CREATE TABLE "Ristorante" (
