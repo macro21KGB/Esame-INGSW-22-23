@@ -97,9 +97,9 @@ ALTER TABLE "Ordinazione" ADD FOREIGN KEY ("evaso_da") REFERENCES "Utente" ("id_
 ALTER TABLE "Allergene" ADD FOREIGN KEY ("id_elemento") REFERENCES "Elemento" ("id_elemento");
 
 
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo) VALUES ( 'Mario', 'Rossi', 'mario.rossi@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADMIN');
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo) VALUES ( 'Salvatore', 'Esposito', 'salvo.espo@gmail.com','$2a$12$nzu1NWK7El1q9AeHsa7PFuy16lE740S/KYeGIemtzqcSeiSFfKI8u','CAMERIERE');
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore) VALUES ( 'Luigi', 'Verdi', 'luigi.verdi@gmail.com','$2a$12$yiZCgsjbcUuor2lbRk4fBeUjSAXHe4C/bvWExUJhBU8YUWFuw796m','ADDETTO_CUCINA',true);
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Mario', 'Rossi', 'mario.rossi@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADMIN','3333333333');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Salvatore', 'Esposito', 'salvo.espo@gmail.com','$2a$12$nzu1NWK7El1q9AeHsa7PFuy16lE740S/KYeGIemtzqcSeiSFfKI8u','CAMERIERE','3333333333');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore, telefono) VALUES ( 'Luigi', 'Verdi', 'luigi.verdi@gmail.com','$2a$12$yiZCgsjbcUuor2lbRk4fBeUjSAXHe4C/bvWExUJhBU8YUWFuw796m','ADDETTO_CUCINA',true,'3333333333');
 
 INSERT INTO "Ristorante" ( nome, indirizzo, telefono, sito_web, foto_path) VALUES ( 'Ristorante 1', 'Via Roma 1', '3333333333', 'www.ristorante1.it', 'foto1.jpg');
 
@@ -130,9 +130,9 @@ INSERT INTO "Allergene" (id_elemento, nome) VALUES (3,'Graminacee');
 INSERT INTO "Allergene" (id_elemento, nome) VALUES (4,'Frutta a guscio');
 /*Ristorante 2*/
 
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo) VALUES ( 'Pier', 'Nicolini', 'pier@gmail.com','$2a$12$FQ1jKNMjzBK74v5PMwBtj.pBZwrJaZbFMMSJz8KsHhVOza7va0eXy','ADMIN');
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore) VALUES ( 'Roberto', 'Renzi', 'renzi@gmail.com','$2a$12$DisoKBmDure4Fb4z/uWE7O6qnPAxNCuRx7dCXLQRpmgnKe19mVc/2','CAMERIERE',true);
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo) VALUES ( 'Gino', 'Lupo', 'lupo@gmail.com','$2a$12$V43G2ubbkxGbUxnLDXDeaOqW6hUt5luZZ9h3foLS28W59C3OzKSLi','ADDETTO_CUCINA');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,telefono) VALUES ( 'Pier', 'Nicolini', 'pier@gmail.com','$2a$12$FQ1jKNMjzBK74v5PMwBtj.pBZwrJaZbFMMSJz8KsHhVOza7va0eXy','ADMIN','3333333333');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore,telefono) VALUES ( 'Roberto', 'Renzi', 'renzi@gmail.com','$2a$12$DisoKBmDure4Fb4z/uWE7O6qnPAxNCuRx7dCXLQRpmgnKe19mVc/2','CAMERIERE',true,'3333333333');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,telefono) VALUES ( 'Gino', 'Lupo', 'lupo@gmail.com','$2a$12$V43G2ubbkxGbUxnLDXDeaOqW6hUt5luZZ9h3foLS28W59C3OzKSLi','ADDETTO_CUCINA','3333333333');
 
 INSERT INTO "Ristorante" ( nome, indirizzo, telefono, sito_web, foto_path) VALUES ( 'Ristorante 2', 'Via acquaviva 1', '444444', 'www.ristorante2.it', 'foto2.jpg');
 
