@@ -1,3 +1,5 @@
+import { RUOLI } from "../entities/utente";
+
 const COLORS = {
 	primaryBackgroundColor: "#14213D",
 	accentBackgroundColor: "#0E1933",
@@ -26,6 +28,12 @@ const API_URL = "http://localhost:3000/api";
 export interface Result<T> {
 	success: boolean;
 	data: T;
+}
+
+export interface LoginPayload {
+	token: string;
+	ruolo: RUOLI;
+	supervisore: boolean;
 }
 
 export { COLORS, API_URL };

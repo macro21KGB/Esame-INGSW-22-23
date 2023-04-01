@@ -11,6 +11,7 @@ import "../App.css";
 import logoIcon from "../public/logo.svg";
 import { useStore } from "../stores/store";
 import { salvaTokenInCookie, verificaEmail } from "../utils/utils";
+import { RUOLI } from "../entities/utente";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -50,8 +51,6 @@ export default function Login() {
 		email: "",
 		password: "",
 	});
-
-	const setTokenInStore = useStore((state) => state.setToken);
 
 	const controller = Controller.getInstance();
 	const navigate = useNavigate();
@@ -102,11 +101,32 @@ export default function Login() {
 				password,
 			);
 
+			//TODO per reindirizzare bene bisogna mandare anche il ruolo dell'utente
 			if (result.success) {
 				toast.success("Accesso eseguito con successo");
-				setTokenInStore(result.data);
-				salvaTokenInCookie(result.data, 3600);
-				navigate("/dashboard");
+
+				salvaTokenInCookie(result.data.token, 3600);
+
+				// route per il supervisore
+				if (result.data.supervisore) {
+					navigate("/supervisore", { replace: true });
+					return;
+				}
+
+				switch (result.data.ruolo) {
+					case RUOLI.ADMIN:
+						navigate("/dashboard", { replace: true });
+						break;
+					case RUOLI.CAMERIERE:
+						navigate("/ordinazione", { replace: true });
+						break;
+					case RUOLI.ADDETTO_CUCINA:
+						navigate("/cucina", { replace: true });
+						break;
+				}
+
+
+
 			} else {
 				toast.error("Email o password errati");
 			}

@@ -1,4 +1,4 @@
-import { Result } from "./../utils/constants";
+import { LoginPayload, Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
 import { generaFakeDataCharts, wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
@@ -63,8 +63,8 @@ export class Controller {
 	public async accediUtente(
 		email: string,
 		password: string,
-	): Promise<Result<string>> {
-		return wait(1000).then(() => this.utenteDAO.accediUtente(email, password));
+	): Promise<Result<LoginPayload>> {
+		return this.utenteDAO.accediUtente(email, password);
 	}
 
 

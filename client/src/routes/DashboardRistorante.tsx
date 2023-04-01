@@ -18,9 +18,8 @@ padding: 0;
 
 #buttons {
     display: flex;
-    flex-direction: row;
-	justify-content: space-evenly;
-    padding: 0.5rem;
+    flex-direction: column;
+	padding: 0.5rem;
 }
 
 `;
@@ -44,13 +43,8 @@ export default function DashboardRistoranteRoute() {
 			toast.error("ID non valido");
 			return;
 		}
-		const parsedInt = parseInt(id);
-		if (isNaN(parsedInt)) {
-			toast.error("ID non valido");
-			return;
-		}
 
-		return controller.getRistorante(parsedInt);
+		return controller.getRistorante(+id);
 	});
 
 	return (

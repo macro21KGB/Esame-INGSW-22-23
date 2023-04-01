@@ -38,10 +38,11 @@ const QRCodeScanner = (props: QRCodeScannerProps) => {
 		// when component mounts
 		const config = createConfig(props);
 		const verbose = props.verbose === true;
-		// Suceess callback is required.
+
 		if (!props.qrCodeSuccessCallback) {
 			throw "qrCodeSuccessCallback is required callback.";
 		}
+
 		const html5QrcodeScanner = new Html5QrcodeScanner(
 			qrcodeRegionId,
 			config,
@@ -50,6 +51,7 @@ const QRCodeScanner = (props: QRCodeScannerProps) => {
 		html5QrcodeScanner.render(
 			props.qrCodeSuccessCallback,
 			props.qrCodeErrorCallback,
+
 		);
 
 		// cleanup function when component will unmount
@@ -59,6 +61,7 @@ const QRCodeScanner = (props: QRCodeScannerProps) => {
 			});
 		};
 	}, []);
+
 
 	return <div id={qrcodeRegionId} />;
 };

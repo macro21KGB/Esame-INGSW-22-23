@@ -10,6 +10,14 @@ export function verifyPassword(passwordAttempted : string, hashedPassword : stri
     return compareSync(passwordAttempted, hashedPassword);
 }
 
+/**
+ * Checks if the request body has all required fields.
+ * @param request The request to check.
+ * @param requiredFields The fields that are required.
+ * @param allRequired If true, all required fields must be present. If false, at least one required field must be present.
+ * @returns True if the request body has all required fields, false otherwise.
+ */
+
 export function checkRequestBody(request: Request, requiredFields: string[], allRequired = true): boolean {
     if (allRequired)
 		return requiredFields.every(field => field in request.body);

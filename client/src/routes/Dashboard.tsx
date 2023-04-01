@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, lazy } from "react";
 import styled from "styled-components";
 import { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
@@ -13,7 +13,7 @@ import { useStore } from "../stores/store";
 import { useNavigate } from "react-router";
 import { Ristorante } from "../entities/ristorante";
 import { toast } from "react-toastify";
-import ResettaPasswordPopup from "../components/ResettaPasswordPopup";
+const ResettaPasswordPopup = lazy(() => import("../components/ResettaPasswordPopup"));
 
 const AppContainer = styled.div`
 display: flex;

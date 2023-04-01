@@ -1,83 +1,134 @@
-import React from "react";
+import React, { lazy, Suspense, startTransition } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./routes/Dashboard";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ErrorPage from "./error-page";
-import Login from "./routes/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DashboardRistoranteRoute from "./routes/DashboardRistorante";
-import GestisciUtenzaRoute from "./routes/GestisciUtenza";
-import GestisciMenuRoute from "./routes/GestisciCategorie";
-import GestisciElementiCategoriaRoute from "./routes/GestisciElementiCategoria";
-import CucinaRoute from "./routes/CucinaRoute";
-import PrendiOrdinazioneRoute from "./routes/PrendiOrdinazione";
-import InserimentoElementiOrdinazioneRoute from "./routes/InserimentoElementiOrdinazione";
-import DashboardSupervisore from "./routes/DashboardSupervisore";
-import GestisciContiRoute from "./routes/GestisciConti";
-import StatisticheRoute from "./routes/Statistiche";
+import LoadingCircle from "./components/LoadingCircle";
+
+const Login = lazy(() => import("./routes/Login"));
+const App = lazy(() => import("./routes/Dashboard"));
+const DashboardRistoranteRoute = lazy(() => import("./routes/DashboardRistorante"));
+const GestisciUtenzaRoute = lazy(() => import("./routes/GestisciUtenza"));
+const GestisciMenuRoute = lazy(() => import("./routes/GestisciCategorie"));
+const GestisciElementiCategoriaRoute = lazy(() => import("./routes/GestisciElementiCategoria"));
+const CucinaRoute = lazy(() => import("./routes/CucinaRoute"));
+const PrendiOrdinazioneRoute = lazy(() => import("./routes/PrendiOrdinazione"));
+const InserimentoElementiOrdinazioneRoute = lazy(() => import("./routes/InserimentoElementiOrdinazione"));
+const DashboardSupervisore = lazy(() => import("./routes/DashboardSupervisore"));
+const GestisciContiRoute = lazy(() => import("./routes/GestisciConti"));
+const StatisticheRoute = lazy(() => import("./routes/Statistiche"));
 
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <Login />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<Login />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 
 	{
 		path: "/dashboard",
-		element: <App />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<App />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/dashboard/:id",
-		element: <DashboardRistoranteRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<DashboardRistoranteRoute />
+			</Suspense>
+		,
+
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/dashboard/:id/utenze",
-		element: <GestisciUtenzaRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<GestisciUtenzaRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/dashboard/:id/menu",
-		element: <GestisciMenuRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<GestisciMenuRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/dashboard/:id/menu/:idCategoria",
-		element: <GestisciElementiCategoriaRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<GestisciElementiCategoriaRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/cucina",
-		element: <CucinaRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<CucinaRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/ordinazione",
-		element: <PrendiOrdinazioneRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<PrendiOrdinazioneRoute />,
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/ordinazione/:codiceTavolo",
-		element: <InserimentoElementiOrdinazioneRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<InserimentoElementiOrdinazioneRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/supervisore/cassa",
-		element: <GestisciContiRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<GestisciContiRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/supervisore",
-		element: <DashboardSupervisore />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<DashboardSupervisore />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	},
 	{
 		path: "/dashboard/:id/statistiche",
-		element: <StatisticheRoute />,
+		element:
+			<Suspense fallback={<LoadingCircle />}>
+				<StatisticheRoute />
+			</Suspense>
+		,
 		errorElement: <ErrorPage />,
 	}
 
@@ -88,7 +139,7 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<ToastContainer  />
+			<ToastContainer />
 			<RouterProvider router={router} />
 		</QueryClientProvider>
 	</React.StrictMode>,

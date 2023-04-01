@@ -1,14 +1,15 @@
 import { InformazioniUtente } from './../../routes/GestisciUtenza';
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { API_URL, Result } from "../../utils/constants";
+import { API_URL, LoginPayload, Result } from "../../utils/constants";
 import { getTokenDaCookie, salvaTokenInCookie, verificaEmail } from "../../utils/utils";
-import { Utente } from "../utente";
+import { RUOLI, Utente } from "../utente";
 
-type Token = string;
+
+
 interface IUtenteDAO {
 	registraUtente(email: string, password: string): Promise<boolean>;
-	accediUtente(email: string, password: string): Promise<Result<string>>;
+	accediUtente(email: string, password: string): Promise<Result<LoginPayload>>;
 
 	cambiaPasswordDefault(nuovaPassword: string): Promise<Result<string>>;
 	isUtenteUsingDefaultPassword(): Promise<boolean>;
@@ -108,18 +109,14 @@ class UtenteDAO implements IUtenteDAO {
 
 		function handleSuccessRequest(data: Result<string>): boolean {
 			if (!data.success) {
-				toast.error("Non è stato possibile registrare l'utente");
 				return false;
 			}
-
-			toast.success("Registrazione effettuata con successo");
-			// salva data in un cookie chiamato token con scadenza di 1 ora
 
 			return data.success;
 		}
 	}
 
-	async accediUtente(email: string, password: string): Promise<Result<string>> {
+	async accediUtente(email: string, password: string): Promise<Result<LoginPayload>> {
 		try {
 			if (email == "" || password == "")
 				throw new Error("Email o password non validi");
@@ -129,31 +126,38 @@ class UtenteDAO implements IUtenteDAO {
 				password: password,
 			});
 
-			const data: Result<string> = result.data;
+			const data: Result<LoginPayload> = result.data;
 			return handleSuccessRequest(data);
 		} catch (error: any) {
 			return handleError(error);
 		}
+		function handleSuccessRequest(data: Result<LoginPayload>): Result<LoginPayload> {
+			if (!data.success) toast.error("Errore sconosciuto");
+			console.log(data);
+			return {
+				data: {
+					token: data.data.token,
+					ruolo: data.data.ruolo,
+					supervisore: data.data.supervisore,
+				},
+				success: true,
+			};
+		}
 
-		function handleError(error: AxiosError<any>): Result<string> {
+		function handleError(error: AxiosError<any>): Result<LoginPayload> {
 			const errorMessage = error.message || "Errore sconosciuto";
 			toast.error(errorMessage);
 			return {
-				data: errorMessage,
+				data: {
+					token: "",
+					ruolo: RUOLI.ADMIN,
+					supervisore: false,
+				},
 				success: false,
 			};
 		}
 
-		function handleSuccessRequest(data: Result<string>): Result<string> {
-			if (!data.success) toast.error(data.data);
 
-			// salva data in un cookie chiamato token con scadenza di 1 ora
-
-			return {
-				data: data.data,
-				success: true,
-			};
-		}
 	}
 	getUtente(email: string, password: string): Promise<Utente> {
 		throw new Error("Method not implemented.");

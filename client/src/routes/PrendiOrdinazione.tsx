@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import QRCodeScanner from "../components/QRCodeScanner";
+import { toast } from "react-toastify";
 
 const PrendiOrdinazioneContainer = styled.div`
     display: flex;
@@ -38,22 +39,29 @@ export default function PrendiOrdinazioneRoute() {
 
 	const iniziaOrdinazione = () => {
 		console.log("Inizia ordinazione");
+
+		if (codiceTavolo === "") {
+			toast.error("Inserisci un codice tavolo");
+			return;
+		}
+
 		navigate(`/ordinazione/${codiceTavolo}`);
 	};
 
 	return (
 		<PrendiOrdinazioneContainer>
-			{NavbarFactory.generateNavbarAddAndMenu(() => {})}
+			{NavbarFactory.generateNavbarAddAndMenu(() => { })}
 			<Content>
 				<div>
 					{codiceTavolo === "" && (
 						<QRCodeScanner
+							key={codiceTavolo}
 							fps={30}
 							qrCodeSuccessCallback={(message) => {
-								console.log(message);
 								setCodiceTavolo(message);
 							}}
-							qrCodeErrorCallback={() => {}}
+							qrCodeErrorCallback={() => {
+							}}
 						/>
 					)}
 					<InputBox
