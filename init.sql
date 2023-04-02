@@ -45,7 +45,8 @@ CREATE TABLE "Elemento" (
   "nome" VARCHAR(50),
   "descrizione" VARCHAR(250),
   "prezzo" float,
-  "ingredienti" VARCHAR(250)
+  "ingredienti" VARCHAR(250),
+  "ordine" integer DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE "Conto" (
@@ -95,6 +96,18 @@ ALTER TABLE "ElementoConQuantita" ADD FOREIGN KEY ("id_elemento") REFERENCES "El
 ALTER TABLE "Ordinazione" ADD FOREIGN KEY ("evaso_da") REFERENCES "Utente" ("id_utente");
 
 ALTER TABLE "Allergene" ADD FOREIGN KEY ("id_elemento") REFERENCES "Elemento" ("id_elemento");
+
+CREATE OR REPLACE FUNCTION assegna_ordine() RETURNS TRIGGER AS $$
+BEGIN                                  
+    UPDATE "Elemento" SET ordine = COALESCE((SELECT MAX(ordine) FROM "Elemento" WHERE id_categoria = NEW.id_categoria), 0) + 1 WHERE id_elemento = NEW.id_elemento;              
+    RETURN NEW;
+END;                
+$$ LANGUAGE plpgsql;
+                                     
+CREATE TRIGGER assegna_ordine_trigger
+AFTER INSERT ON "Elemento"
+FOR EACH ROW
+EXECUTE FUNCTION assegna_ordine();
 
 
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Mario', 'Rossi', 'mario.rossi@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADMIN','3333333333');
@@ -153,4 +166,18 @@ SELECT "Utente".id_utente as id_utente, "Utente".email as email,
  "Utente".password as pw,"Utente".ruolo as ruolo, "UtenteRistorante".id_ristorante as id_ristorante
 FROM ("Utente" natural join "UtenteRistorante")
 ) as t natural join "Ristorante" where id_utente = 0;
+*/
+
+/*
+CREATE OR REPLACE FUNCTION assegna_ordine() RETURNS TRIGGER AS $$
+BEGIN                                  
+    UPDATE "Elemento" SET ordine = COALESCE((SELECT MAX(ordine) FROM "Elemento" WHERE id_categoria = NEW.id_categoria), 0) + 1 WHERE id_elemento = NEW.id_elemento;              
+    RETURN NEW;
+END;                
+$$ LANGUAGE plpgsql;
+                                     
+CREATE TRIGGER assegna_ordine_trigger
+AFTER INSERT ON "Elemento"
+FOR EACH ROW
+EXECUTE FUNCTION assegna_ordine();
 */

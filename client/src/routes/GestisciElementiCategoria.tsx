@@ -136,7 +136,9 @@ interface InformazioniElemento {
 export default function GestisciElementiCategoriaRoute() {
 	const { idCategoria } = useParams();
 	const controller = Controller.getInstance();
+	const queryClient = useQueryClient();
 
+	// get elementi
 	const query = useQuery(["elementi", idCategoria], () => {
 		return controller.getElementiCategoria(parseInt(idCategoria || "-1"));
 	});
@@ -162,6 +164,8 @@ export default function GestisciElementiCategoriaRoute() {
 		});
 		setAutoCompleteString("AutoComplete");
 	};
+
+
 
 	const [informazioniElemento, setInformazioniElemento] = useState<InformazioniElemento>({
 		nome: "",
@@ -213,7 +217,6 @@ export default function GestisciElementiCategoriaRoute() {
 		}
 	}, [informazioniElemento.nome])
 
-	const queryClient = useQueryClient();
 
 	const mutation = useMutation((elemento: Elemento) => {
 		if (idCategoria === undefined) return Promise.reject(
@@ -256,6 +259,73 @@ export default function GestisciElementiCategoriaRoute() {
 		}
 	);
 
+	const mutationSpostaElementi = useMutation({
+		mutationFn: (idElementi: { idElemento1: number, idElemento2: number }) => {
+			if (idCategoria === undefined) return Promise.reject(
+				new Error("Non è stato possibile recuperare l'id della categoria")
+			);
+
+			const { idElemento1, idElemento2 } = idElementi;
+
+			return controller.spostaElementiCategoria(idElemento1, idElemento2);
+		}, onError: (error: any, ids, context: any) => {
+			toast.error(error);
+			queryClient.setQueryData(["elementi", idCategoria], context.previousElementList);
+		}, onSuccess: (result) => {
+			queryClient.invalidateQueries(["elementi", idCategoria]);
+		}, onMutate: async (ids) => {
+			await queryClient.cancelQueries(["elementi", idCategoria]);
+			const previousElementList = queryClient.getQueryData<Elemento[]>(["elementi", idCategoria]) || [];
+
+			// update todo order
+			const firstElementToSwap = previousElementList.find((e: Elemento) => e.id_elemento === ids.idElemento1);
+			const secondElementToSwap = previousElementList.find((e: Elemento) => e.id_elemento === ids.idElemento2);
+
+			if (firstElementToSwap && secondElementToSwap) {
+				const firstElementToSwapIndex = previousElementList.indexOf(firstElementToSwap);
+				const secondElementToSwapIndex = previousElementList.indexOf(secondElementToSwap);
+
+				const newElementList = [...previousElementList];
+				newElementList[firstElementToSwapIndex] = secondElementToSwap;
+				newElementList[secondElementToSwapIndex] = firstElementToSwap;
+
+				queryClient.setQueryData(["elementi", idCategoria], newElementList);
+			}
+
+			return { previousElementList };
+		},
+		onSettled: () => {
+			queryClient.invalidateQueries(["elementi", idCategoria]);
+		}
+	});
+
+	const spostaElementoVerso = (elementi: Elemento[], elemento: Elemento, verso: "su" | "giu") => {
+		if (query.isError || query.isLoading) return;
+
+		const indexElementoDaSpostare = elementi.findIndex((e) => e.id_elemento === elemento.id_elemento);
+
+		if (verso === "su") {
+			if (indexElementoDaSpostare === 0) {
+				return;
+			}
+
+			mutationSpostaElementi.mutate({
+				idElemento1: elementi[indexElementoDaSpostare - 1].id_elemento,
+				idElemento2: elementi[indexElementoDaSpostare].id_elemento,
+			});
+		}
+		else {
+			if (indexElementoDaSpostare === elementi.length - 1) {
+				return;
+			}
+
+			mutationSpostaElementi.mutate({
+				idElemento1: elementi[indexElementoDaSpostare].id_elemento,
+				idElemento2: elementi[indexElementoDaSpostare + 1].id_elemento,
+			});
+		}
+	}
+
 	const creaNuovoElemento = (informazioniElemento: InformazioniElemento) => {
 
 		if (isValoriNonSettati(informazioniElemento)) {
@@ -277,6 +347,18 @@ export default function GestisciElementiCategoriaRoute() {
 			});
 
 		mutation.mutate(nuovoElemento);
+	}
+
+	const modificaElemento = (elemento: Elemento) => {
+		setIsModifica(true)
+		setShowModal(true);
+		setIdElementoCancellare(elemento.id_elemento);
+		setInformazioniElemento({
+			nome: elemento.nome,
+			descrizione: elemento.descrizione,
+			costo: elemento.prezzo.toString(),
+			allergeni: elemento.allergeni.map((allergene) => allergene.nome) || [],
+		});
 	}
 
 	const cancellaElemento = (idElemento: number) => {
@@ -305,21 +387,12 @@ export default function GestisciElementiCategoriaRoute() {
 					<ListaElementi>
 						{query.data?.map((elemento: Elemento) => (
 							<ItemElementoCategoria
-								onClickElemento={() => {
-									setIsModifica(true)
-									setShowModal(true);
-									setIdElementoCancellare(elemento.id_elemento);
-									console.log(elemento);
-									setInformazioniElemento({
-										nome: elemento.nome,
-										descrizione: elemento.descrizione,
-										costo: elemento.prezzo.toString(),
-										allergeni: elemento.allergeni.map((allergene) => allergene.nome) || [],
-									});
-								}}
-								onClickUp={() => { }}
-								onClickDown={() => { }}
 								key={elemento.id_elemento}
+								onClickElemento={() => {
+									modificaElemento(elemento);
+								}}
+								onClickUp={() => { spostaElementoVerso(query.data, elemento, "su") }}
+								onClickDown={() => { spostaElementoVerso(query.data, elemento, "giu") }}
 								elemento={elemento}
 
 							/>
@@ -359,7 +432,9 @@ export default function GestisciElementiCategoriaRoute() {
 				<AllergeniContainer>
 					{Object.values(ALLERGENI).map((allergene) => {
 						return (
-							<AllergeneItem key={allergene} onClick={() => { toggleAllergene(allergene) }} selected={isAllergeneSelected(allergene)}>
+							<AllergeneItem key={allergene}
+								onClick={() => { toggleAllergene(allergene) }}
+								selected={isAllergeneSelected(allergene)}>
 								{allergene}
 							</AllergeneItem>
 						);

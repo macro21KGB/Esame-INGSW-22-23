@@ -8,6 +8,8 @@ interface IElementoDAO {
     updateElemento(id : number, elemento : Elemento): Promise<Boolean>;
     deleteElemento(id : number): Promise<Boolean>;
 
+    // TODO: da aggiornare documentazione
+    scambiaOrdineElementi(id1 : number, id2 : number): Promise<Boolean>;
     getAllergeniElemento(id : number): Promise<Allergene[]>;
 }
 export type { IElementoDAO };

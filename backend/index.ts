@@ -78,7 +78,7 @@ function requiresSupervisor(req: Request, res: Response, next: NextFunction) {
   );
 }
 
-function blockAccessToOtherResturantsEmployees(req: Request, res: Response, next: NextFunction) {
+export function blockAccessToOtherResturantsEmployees(req: Request, res: Response, next: NextFunction) {
   if (req.params.email == null)
     return res.status(400).json({ success: false, data: "Employee email not provided" });
   const emailEmployee = req.params.email;
@@ -110,7 +110,7 @@ app.use(cors())
 app.use('/api', router);
 router.use(express.json());
 
-
+// UTENTU
 router.post('/login', async (req: Request, res: Response) => {
   if (!checkRequestBody(req, ['username', 'password']))
     return res.status(400).send({ message: 'Credentials not provided.' });
@@ -174,13 +174,13 @@ router.post('/utenza/:id_ristorante', authenticateToken, requiresAdminRole, asyn
   if (!req.body['nome'] || !req.body['cognome'] || !req.body['email'] || !req.body['password']
     || !req.body['ruolo'] || !req.body['telefono'] || !req.body['supervisore'])
     return res.status(400).send({ message: 'Wrong parameters' });
-  
-  const [nome, cognome, email, password, ruolo, telefono] = [req.body['nome'] as string, 
+
+  const [nome, cognome, email, password, ruolo, telefono] = [req.body['nome'] as string,
   req.body['cognome'] as string, req.body['email'] as string, req.body['password'] as string,
-   req.body['ruolo'] as RUOLI,req.body['telefono'] as string] ;
+  req.body['ruolo'] as RUOLI, req.body['telefono'] as string];
 
   const supervisore = req.body['supervisore'] as boolean;
-  
+
   const id_ristorante = req.params.id_ristorante;
   if (id_ristorante == null)
     return res.status(400).send({ message: 'id ristorante missing' });
@@ -211,6 +211,10 @@ router.get('/autodestroy', (req: Request, res: Response) => {
   throw new Error('Boom!');
 });
 
+
+// --------------------------------------------------------------------------------------
+// RISTORANTI
+// --------------------------------------------------------------------------------------
 router.get('/resturants', authenticateToken, async (req: Request, res: Response) => {
   // ottieni email dell'utente dal token
   const authHeader = req.headers['authorization']
@@ -259,6 +263,9 @@ router.post('/resturant', authenticateToken, async (req: Request, res: Response)
   });
 });
 
+// --------------------------------------------------------------------------------------
+// UTENTI
+// --------------------------------------------------------------------------------------
 router.put('/utente/:email', authenticateToken, requiresAdminRole, blockAccessToOtherResturantsEmployees, async (req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['cognome'] || !req.body['telefono']) {
     res.status(400).json({ success: false, data: 'Bad request' });
@@ -365,7 +372,9 @@ router.post('/pw-change', authenticateToken, async (req: Request, res: Response)
   );
 });
 
-
+// --------------------------------------------------------------------------------------
+// CATEGORIE MENU
+// --------------------------------------------------------------------------------------
 router.get('/categorie/:id_ristorante', authenticateToken, async (req: Request, res: Response) => {
   const id_ristorante = req.params.id_ristorante;
   if (id_ristorante == null) {
@@ -433,13 +442,16 @@ router.put('/categoria/:id_categoria', authenticateToken, requiresSupervisor, as
   }
 });
 
+// --------------------------------------------------------------------------------------
+// ELEMENTI MENU
+// --------------------------------------------------------------------------------------
 router.get('/elementi/:id_categoria', authenticateToken, async (req: Request, res: Response) => {
   const id_categoria = req.params.id_categoria;
   if (id_categoria == null) {
     res.status(400).json({ success: false, data: 'Bad request' });
     return;
   }
-  res.status(200).json(JSON.stringify(await ElementoDAO.getElementi(+id_categoria)));
+  res.status(200).json(await ElementoDAO.getElementi(+id_categoria));
 });
 
 router.get('/elemento/:id_elemento', authenticateToken, async (req: Request, res: Response) => {
@@ -452,6 +464,24 @@ router.get('/elemento/:id_elemento', authenticateToken, async (req: Request, res
   if (elemento == null)
     res.status(400).json({ success: false, data: 'Elemento non trovato' });
   res.status(200).json(JSON.stringify(elemento));
+});
+
+router.put('/scambia-elementi/:id_elemento1/:id_elemento2', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
+  const id_elemento1 = req.params.id_elemento1;
+  const id_elemento2 = req.params.id_elemento2;
+  if (id_elemento1 == null || id_elemento2 == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+  try {
+    if (await ElementoDAO.scambiaOrdineElementi(+id_elemento1, +id_elemento2))
+      res.status(200).send({ success: true, data: 'Elementi scambiati' });
+    else
+      res.status(400).send({ success: false, data: 'Elementi non scambiati' });
+  }
+  catch (err) {
+    res.status(400).send({ success: false, data: 'Elementi non scambiati' });
+  }
 });
 
 router.delete('/elemento/:id_elemento', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
@@ -533,7 +563,9 @@ router.post('/elemento', authenticateToken, requiresSupervisor, async (req: Requ
   }
 });
 
-
+// --------------------------------------------------------------------------------------
+// ALLERGENI
+// --------------------------------------------------------------------------------------
 router.post('/allergene', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['id_elemento']) {
     res.status(400).json({ success: false, data: 'Bad request' });

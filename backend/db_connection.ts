@@ -1,4 +1,4 @@
-const Pool = require('pg').Pool
+import { Pool } from 'pg';
 /*
 const conn = new Pool({ // for docker testing
   user: 'docker',
@@ -17,5 +17,4 @@ const conn = new Pool({ // for local testing
   port: 42069,
 })
 
-
-export {conn};
+export { conn };

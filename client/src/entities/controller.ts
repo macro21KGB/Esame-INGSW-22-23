@@ -14,6 +14,9 @@ import { dummyConto } from "./dummyObjects";
 import { InformazioniUtente } from "../routes/GestisciUtenza";
 
 export class Controller {
+	spostaElementiCategoria(idElemento1: number, idElemento2: number): Promise<Result<string>> {
+		return this.elementoMenuDAO.scambiaElementi(idElemento1, idElemento2);
+	}
 
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
