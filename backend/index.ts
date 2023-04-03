@@ -237,6 +237,24 @@ router.get('/resturant/:id', authenticateToken, async (req: Request, res: Respon
 
 });
 
+// get id resturant by id utente using the JWT token
+router.get('/resturant', authenticateToken, async (req: Request, res: Response) => {
+  // ottieni email dell'utente dal token
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.status(400).json({ message: "Token not provided" });
+
+  jwt.verify(token, secret, async (err: any, decoded: any) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
+    const email = decoded.email;
+    const ristorante = await UtenteDAO.getRistorante(email);
+    if (ristorante != null)
+      res.status(200).json(ristorante);
+    else
+      res.status(404).json({ "message": "nessun ristorante con questo id" });
+  })
+})
+
 router.post('/resturant', authenticateToken, async (req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['indirizzo'] || !req.body['telefono']) {
     res.status(400).json({ success: false, data: 'Bad request' });
@@ -332,6 +350,21 @@ router.get('/utenti/:id_ristorante', authenticateToken, requiresAdminRole, async
   const id_ristorante = +req.params.id_ristorante;
   res.status(200).json(JSON.stringify(await UtenteDAO.getUtentiRistorante(id_ristorante)));
 });
+
+// // TODO da contollare le autorizzazioni
+// // get utente by token
+// router.get('/utente/', (req: Request, res: Response) => {
+//   // ottieni email da token
+//   const authHeader = req.headers['authorization']
+//   const token = authHeader && authHeader.split(' ')[1]
+//   if (token == null) return res.status(400).json({ message: "Token not provided" });
+
+//   jwt.verify(token, secret, async (err: any, decoded: any) => {
+//     if (err) return res.status(403).json({ message: "Invalid token" });
+//     const email = decoded.email;
+//     res.status(200).json(JSON.stringify(await UtenteDAO.getUtente(email)));
+//   })
+// });
 
 router.get('/pw-changed', authenticateToken, async (req: Request, res: Response) => {
   // ottieni email dal token

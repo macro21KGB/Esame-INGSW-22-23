@@ -16,6 +16,7 @@ import { ElementiOrderSaver, isValoriNonSettati } from "../utils/utils";
 import { ALLERGENI } from "../utils/constants";
 import { toast } from "react-toastify";
 import { Allergene } from "../entities/allergene";
+import AutoCompleteComponent from "../components/AutoCompleteComponent";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -29,34 +30,6 @@ padding: 0;
     padding: 0.5rem;
 }
 
-`;
-
-const AutoCompleteContainer = styled.div`
-
-    cursor: pointer;
-    position: relative;
-    border-radius: 0.6rem;
-    padding: 0.1rem 1rem;
-    background-color: #fff;
-    color: gray;
-    margin-bottom: 0.5rem;
-
-    &:after {
-        content: "";
-        position: absolute;
-        bottom: -40%;
-        left: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        
-        border-left: 0.5rem solid transparent;
-        border-right: 0.5rem solid transparent;
-        border-top: 0.5rem solid white;
-    }
-    p {
-        margin: 0;
-    }
 `;
 
 const DashboardContent = styled.div`
@@ -143,7 +116,6 @@ export default function GestisciElementiCategoriaRoute() {
 		return controller.getElementiCategoria(parseInt(idCategoria || "-1"));
 	});
 
-	const [autoCompleteString, setAutoCompleteString] = useState<string>("AutoComplete");
 	const [isModifica, setIsModifica] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [IdElementoCancellare, setIdElementoCancellare] = useState<number>(-1);
@@ -162,10 +134,16 @@ export default function GestisciElementiCategoriaRoute() {
 			costo: "",
 			allergeni: [],
 		});
-		setAutoCompleteString("AutoComplete");
 	};
 
 
+	const acceptSuggestion = (suggestion: string, ingredienti: string) => {
+		setInformazioniElemento({
+			...informazioniElemento,
+			nome: suggestion,
+			descrizione: ingredienti,
+		})
+	}
 
 	const [informazioniElemento, setInformazioniElemento] = useState<InformazioniElemento>({
 		nome: "",
@@ -192,33 +170,8 @@ export default function GestisciElementiCategoriaRoute() {
 		return informazioniElemento.allergeni.includes(allergene);
 	};
 
-	const fetchSuggestions = async () => {
-		const response = await axios.get<{ meals: { strMeal: string }[] }>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${informazioniElemento.nome.replace(" ", "_")}`);
 
-		const data = response.data;
-		if (data["meals"]) {
-			//@ts-ignore
-			setAutoCompleteString(data["meals"][0]["strMeal"]);
-		}
-	}
-
-	const selectAutoComplete = () => {
-		setInformazioniElemento({
-			...informazioniElemento,
-			nome: autoCompleteString,
-			descrizione: "",
-		})
-	}
-
-	useEffect(() => {
-		if (informazioniElemento.nome.length > 3) {
-			if (informazioniElemento.nome !== autoCompleteString)
-				fetchSuggestions();
-		}
-	}, [informazioniElemento.nome])
-
-
-	const mutation = useMutation((elemento: Elemento) => {
+	const mutationAggiungiModifica = useMutation((elemento: Elemento) => {
 		if (idCategoria === undefined) return Promise.reject(
 			new Error("Non è stato possibile recuperare l'id della categoria")
 		);
@@ -346,7 +299,7 @@ export default function GestisciElementiCategoriaRoute() {
 				ordine: 0,
 			});
 
-		mutation.mutate(nuovoElemento);
+		mutationAggiungiModifica.mutate(nuovoElemento);
 	}
 
 	const modificaElemento = (elemento: Elemento) => {
@@ -406,9 +359,9 @@ export default function GestisciElementiCategoriaRoute() {
 				onClose={closeModal}
 			>
 				<p>{isModifica ? "Modifica Elemento" : "Nuovo Elemento"}</p>
-				<AutoCompleteContainer onClick={selectAutoComplete}>
-					<p>{autoCompleteString}</p>
-				</AutoCompleteContainer>
+				<AutoCompleteComponent onClick={acceptSuggestion}
+					valueToSearch={informazioniElemento.nome}
+					placeholder="Suggestion Here" />
 				<InputBox
 					placeholder="Nome Elemento"
 					value={informazioniElemento.nome}

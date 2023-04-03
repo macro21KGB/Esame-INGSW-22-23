@@ -14,6 +14,9 @@ import { dummyConto } from "./dummyObjects";
 import { InformazioniUtente } from "../routes/GestisciUtenza";
 
 export class Controller {
+	getRistoranteAttuale(): Promise<Ristorante> {
+		return this.ristoranteDAO.getRistoranteAttuale();
+	}
 	spostaElementiCategoria(idElemento1: number, idElemento2: number): Promise<Result<string>> {
 		return this.elementoMenuDAO.scambiaElementi(idElemento1, idElemento2);
 	}

@@ -8,9 +8,7 @@ import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
 import SoftButton from "../components/SoftButton";
 import { Controller } from "../entities/controller";
-import { dummyElemento } from "../entities/dummyObjects";
 import { Categoria, Elemento } from "../entities/menu";
-import { useStore } from "../stores/store";
 
 const Container = styled.div`
 	position: relative;
@@ -24,6 +22,7 @@ const Content = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	gap: 0.5rem;
 	margin: 0;
 	padding: 1rem;
 `;
@@ -62,6 +61,18 @@ const InviaAllaCucinaButton = styled.button`
 
 `;
 
+const ElementiRiepilogoContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0.5rem;
+	min-height: 15rem;
+	overflow-y: auto;
+	`;
+
 export default function InserimentoElementiOrdinazioneRoute() {
 	const controller = Controller.getInstance();
 
@@ -71,14 +82,28 @@ export default function InserimentoElementiOrdinazioneRoute() {
 		{ elemento: Elemento; quantita: number }[]
 	>([]);
 
-	const idRistorante = useStore((state) => state.idRistorante);
 
 	const [categoriaScelta, setCategoriaScelta] = useState<Categoria>();
-	const query = useQuery(["categorie"], () => controller.getCategorie(idRistorante));
+
+	// get ristorante attuale dell'utente
+	const queryRistorante = useQuery(["ristorante"], () => {
+		return controller.getRistoranteAttuale();
+	});
+
+	// get categorie del ristorante
+	const queryCategorie = useQuery(["categorie"], () => {
+		return controller.getCategorie(queryRistorante.data?.id!);
+	},
+		{
+			enabled: !!queryRistorante.data,
+		}
+	);
+
+	// get elementi della categoria scelta
 	const queryElementi = useQuery(
-		["elementi", categoriaScelta?.nome],
+		["elementi", categoriaScelta?.id_categoria],
 		() => {
-			return [dummyElemento];
+			return controller.getElementiCategoria(categoriaScelta?.id_categoria!);
 		},
 		{
 			enabled: !!categoriaScelta,
@@ -88,6 +113,23 @@ export default function InserimentoElementiOrdinazioneRoute() {
 	const goBackToPreviousCategory = () => {
 		setCategoriaScelta(undefined);
 	};
+
+	const aggiornaElementiScelti = (elemento: Elemento, quantita: number) => {
+		setElementiScelti((prev) => {
+			const index = prev.findIndex(
+				(e) => e.elemento === elemento,
+			);
+			if (index === -1) {
+				return [...prev, { elemento, quantita }].filter(
+					(e) => e.quantita > 0,
+				);
+			} else {
+				const newElementi = [...prev];
+				newElementi[index].quantita = quantita;
+				return newElementi.filter((e) => e.quantita > 0);
+			}
+		});
+	}
 
 	const checkIfElementoIsPresentAndAssignQuantita = (elemento: Elemento) => {
 		const index = elementiScelti.findIndex((e) => e.elemento === elemento);
@@ -102,9 +144,9 @@ export default function InserimentoElementiOrdinazioneRoute() {
 		<Container>
 			{NavbarFactory.generateNavbarBackAndMenu(goBackToPreviousCategory)}
 			<Content>
-				{query.isLoading && <LoadingCircle loaderPosition="absolute" />}
+				{queryCategorie.isLoading && <LoadingCircle loaderPosition="absolute" />}
 				{!categoriaScelta &&
-					query.data?.map((categoria) => (
+					queryCategorie.data?.map((categoria) => (
 						<SoftButton
 							key={categoria.nome}
 							text={categoria.nome}
@@ -120,25 +162,10 @@ export default function InserimentoElementiOrdinazioneRoute() {
 					) : (
 						queryElementi.data?.map((elemento) => (
 							<ItemElementoConQuantita
-								key={elemento.nome}
+								key={elemento.id_elemento}
 								elemento={elemento}
 								quantita={checkIfElementoIsPresentAndAssignQuantita(elemento)}
-								onChangeQuantita={(elemento, quantita) => {
-									setElementiScelti((prev) => {
-										const index = prev.findIndex(
-											(e) => e.elemento === elemento,
-										);
-										if (index === -1) {
-											return [...prev, { elemento, quantita }].filter(
-												(e) => e.quantita > 0,
-											);
-										} else {
-											const newElementi = [...prev];
-											newElementi[index].quantita = quantita;
-											return newElementi.filter((e) => e.quantita > 0);
-										}
-									});
-								}}
+								onChangeQuantita={aggiornaElementiScelti}
 							/>
 						))
 					))}
@@ -146,13 +173,14 @@ export default function InserimentoElementiOrdinazioneRoute() {
 
 			<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
 				<p>Visualizza Ordine</p>
-
-				{elementiScelti.map((elementoConQuantita) => (
-					<p key={elementoConQuantita.elemento.nome}>
-						<strong>{elementoConQuantita.quantita}x</strong>{" "}
-						{elementoConQuantita.elemento.nome}
-					</p>
-				))}
+				<ElementiRiepilogoContainer>
+					{elementiScelti.map((elementoConQuantita) => (
+						<span key={elementoConQuantita.elemento.nome}>
+							<strong>{elementoConQuantita.quantita}x</strong>{" "}
+							{elementoConQuantita.elemento.nome}
+						</span>
+					))}
+				</ElementiRiepilogoContainer>
 				<InviaAllaCucinaButton onClick={() => { }}>
 					Invia alla cucina
 				</InviaAllaCucinaButton>

@@ -27,6 +27,11 @@ const BigButtonContainer = styled.button`
         text-shadow: 2px 2px 8px black;
     }
 
+    &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
     &:hover {
         filter: hue-rotate(-10deg);
 

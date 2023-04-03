@@ -8,6 +8,8 @@ import { Ristorante } from "./../ristorante";
 interface IRistoranteDAO {
 	getRistoranti(): Promise<Ristorante[]>;
 	getRistorante(id: number): Promise<Ristorante | null>;
+	getRistoranteAttuale(): Promise<Ristorante>;
+
 	addRistorante(ristorante: Ristorante): Promise<Result<string>>;
 	updateRistorante(ristorante: Ristorante): Promise<Ristorante>;
 	deleteRistorante(id: number): Promise<Ristorante>;
@@ -15,6 +17,20 @@ interface IRistoranteDAO {
 
 // TODO da implementare
 class RistoranteDAO implements IRistoranteDAO {
+	async getRistoranteAttuale(): Promise<Ristorante> {
+		const token = getTokenDaCookie();
+
+		const response = await axios.get<Ristorante>(`${API_URL}/resturant`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+		});
+
+		const data = response.data;
+
+		return data;
+	}
 	async getRistoranti(): Promise<Ristorante[]> {
 		try {
 			const token = getTokenDaCookie();

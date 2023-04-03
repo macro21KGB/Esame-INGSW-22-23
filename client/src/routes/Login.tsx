@@ -12,6 +12,7 @@ import logoIcon from "../public/logo.svg";
 import { useStore } from "../stores/store";
 import { salvaTokenInCookie, verificaEmail } from "../utils/utils";
 import { RUOLI } from "../entities/utente";
+import LoadingCircle from "../components/LoadingCircle";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -55,6 +56,7 @@ export default function Login() {
 	const controller = Controller.getInstance();
 	const navigate = useNavigate();
 
+	const [isLoading, setIsLoading] = React.useState(false);
 	const [isLogging, setIsLogging] = React.useState(true);
 	const handleInfoLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setLoginInfo({
@@ -73,6 +75,8 @@ export default function Login() {
 			toast.error("Inserisci email e password");
 			return;
 		}
+
+		setIsLoading(true);
 
 		// se è in fase di REGISTRZIONE
 		if (!isLogging) {
@@ -128,6 +132,7 @@ export default function Login() {
 
 
 			} else {
+				setIsLoading(false);
 				toast.error("Email o password errati");
 			}
 		}
@@ -197,8 +202,10 @@ export default function Login() {
 					onClick={() => {
 						handleLoginRegister(loginInfo.email, loginInfo.password, loginInfo.confirmPassword || "");
 					}}
+					disabled={isLoading}
 					text={isLogging ? "Login" : "Registrati"}
 				/>
+
 				<br />
 				{/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 				<p
