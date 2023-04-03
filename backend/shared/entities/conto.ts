@@ -1,14 +1,16 @@
 import { Ordinazione } from "./ordinazione";
 
 export class Conto {
+    id_conto: number;
     data: Date;
     codice_tavolo: number;
     ordini: Ordinazione[];
 
-    constructor(data: Date = new Date(), codice_tavolo: number, ordini: Ordinazione[] = []) {
+    constructor(data: Date = new Date(), codice_tavolo: number, ordini: Ordinazione[] = [], id_conto: number = 0) {
         this.data = data;
         this.ordini = ordini;
         this.codice_tavolo = codice_tavolo;
+        this.id_conto = id_conto;
     }
 
     getImportoTotale(): number {

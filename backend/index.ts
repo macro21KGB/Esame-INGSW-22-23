@@ -1,3 +1,4 @@
+import { Conto } from './shared/entities/conto';
 import express, { Request, Response, NextFunction, Router } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import cors from 'cors';
@@ -6,14 +7,19 @@ import { UtenteDAOPostgresDB } from './db_dao/utente';
 import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
 import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB, AllergeneDAOPostgresDB } from './db_dao/menu';
 import { Ristorante } from './shared/entities/ristorante';
-import { Categoria, Elemento, Allergene } from './shared/entities/menu';
+import { Categoria, Elemento, Allergene, ElementoConQuantita } from './shared/entities/menu';
 import { checkRequestBody } from './utils';
+import { OrdinazioneDAOPostgresDB } from './db_dao/ordinazione';
+import { Ordinazione } from './shared/entities/ordinazione';
+import { ContoDAOPostgresDB } from './db_dao/conto';
 
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
 const ElementoDAO = new ElementoDAOPostgresDB();
 const CategoriaDAO = new CategoriaDAOPostgresDB();
 const AllergeneDAO = new AllergeneDAOPostgresDB();
+const ContoDAO = new ContoDAOPostgresDB();
+const OrdineDAO = new OrdinazioneDAOPostgresDB();
 
 const app = express();
 const router = Router();
@@ -473,6 +479,63 @@ router.put('/categoria/:id_categoria', authenticateToken, requiresSupervisor, as
   catch (err) {
     res.status(400).send({ success: false, data: 'Categoria non aggiornata' });
   }
+});
+
+
+// --------------------------------------------------------------------------------------
+// ORDINAZIONI E CONTI
+// --------------------------------------------------------------------------------------
+
+router.post('/ordina/:idRistorante', authenticateToken, async (req: Request, res: Response) => {
+  const idRistorante = req.params.idRistorante;
+  const codiceTavolo = req.body['codiceTavolo'];
+  const elementi = req.body['elementi'] as ElementoConQuantita[];
+  if (idRistorante == null || codiceTavolo == null || elementi == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  const contoTavolo = await ContoDAO.getContoByCodiceTavolo(codiceTavolo, +idRistorante);
+
+  // non esiste ancora un conto per questo tavolo al momento
+  if (contoTavolo == null) {
+
+    const nuovoConto = new Conto(undefined, codiceTavolo, undefined)
+
+    const idContoCreato = await ContoDAO.creaConto(nuovoConto, +idRistorante);
+
+    if (idContoCreato == null) {
+      res.status(400).json({ success: false, data: 'Errore creazione conto' });
+      return;
+    }
+
+    const nuovaOrdinazione = new Ordinazione(codiceTavolo, undefined, undefined, false, elementi);
+
+    const isOrdineCreato = await OrdineDAO.addOrdinazione(nuovaOrdinazione, idContoCreato);
+
+    if (isOrdineCreato) {
+      res.status(200).json({ success: true, data: 'Ordine creato' });
+    }
+    else {
+      res.status(400).json({ success: false, data: 'Errore creazione ordine' });
+    }
+
+  }
+  else {
+
+    const nuovaOrdinazione = new Ordinazione(codiceTavolo, undefined, undefined, false, elementi);
+
+    const isOrdineCreato = await OrdineDAO.addOrdinazione(nuovaOrdinazione, contoTavolo.id_conto);
+
+    if (isOrdineCreato) {
+      res.status(200).json({ success: true, data: 'Ordine creato' });
+    }
+    else {
+      res.status(400).json({ success: false, data: 'Errore creazione ordine' });
+    }
+
+  }
+
 });
 
 // --------------------------------------------------------------------------------------

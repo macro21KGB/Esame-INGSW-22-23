@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
 import ItemElementoConQuantita from "../components/ItemElementoConQuantita";
@@ -8,7 +8,9 @@ import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
 import SoftButton from "../components/SoftButton";
 import { Controller } from "../entities/controller";
-import { Categoria, Elemento } from "../entities/menu";
+import { Categoria, Elemento, ElementoConQuantita } from "../entities/menu";
+import { useParams } from "react-router";
+import { toast } from "react-toastify";
 
 const Container = styled.div`
 	position: relative;
@@ -75,6 +77,7 @@ const ElementiRiepilogoContainer = styled.div`
 
 export default function InserimentoElementiOrdinazioneRoute() {
 	const controller = Controller.getInstance();
+	const { codiceTavolo } = useParams<{ codiceTavolo: string }>();
 
 	const [showModal, setShowModal] = useState(false);
 
@@ -113,6 +116,52 @@ export default function InserimentoElementiOrdinazioneRoute() {
 	const goBackToPreviousCategory = () => {
 		setCategoriaScelta(undefined);
 	};
+
+	const mutationInviaOrdineAllaCucina = useMutation({
+		mutationKey: "inviaOrdineAllaCucina",
+		mutationFn: (data: {
+			codiceTavolo: string;
+			elementi: ElementoConQuantita[];
+			idRistorante: number;
+		}) => {
+			return controller.inviaOrdineAllaCucina(
+				data.codiceTavolo,
+				data.elementi,
+				data.idRistorante,
+			);
+		}
+	});
+
+	const inviaAllaCucina = async () => {
+		if (codiceTavolo === undefined) {
+			toast.error("Codice tavolo non valido");
+			return;
+		}
+
+		if (elementiScelti.length === 0) {
+			toast.error("Non hai scelto nessun elemento");
+			return;
+		}
+
+		const elementiConQuantita = elementiScelti.map((e) => {
+			return ElementoConQuantita.fromElemento(e.elemento, e.quantita);
+		});
+
+		if (await controller.inviaOrdineAllaCucina(
+			codiceTavolo,
+			elementiConQuantita,
+			queryRistorante.data!.id,
+		)) {
+			toast.success("Ordine inviato alla cucina");
+			setElementiScelti([]);
+			setCategoriaScelta(undefined);
+			setShowModal(false);
+		}
+		else {
+			toast.error("Errore nell'invio dell'ordine alla cucina");
+		}
+
+	}
 
 	const aggiornaElementiScelti = (elemento: Elemento, quantita: number) => {
 		setElementiScelti((prev) => {
@@ -181,7 +230,7 @@ export default function InserimentoElementiOrdinazioneRoute() {
 						</span>
 					))}
 				</ElementiRiepilogoContainer>
-				<InviaAllaCucinaButton onClick={() => { }}>
+				<InviaAllaCucinaButton onClick={() => { inviaAllaCucina() }}>
 					Invia alla cucina
 				</InviaAllaCucinaButton>
 			</SlideUpModal>

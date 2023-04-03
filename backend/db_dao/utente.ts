@@ -5,7 +5,7 @@ import { hashPassword } from '../utils';
 import { conn } from '../db_connection'
 import { verifyPassword } from '../utils';
 import { IMapper } from './mapper';
-import { Ristorante } from '@shared/entities/ristorante';
+import { Ristorante } from '../shared/entities/ristorante';
 import { RistoranteMapper } from './ristorante';
 class UtenteMapper implements IMapper<Utente> {
 	map(data: any): Utente {

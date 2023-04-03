@@ -7,19 +7,13 @@ import { UtenteDAO } from "./daos/utenteDAO";
 import { OrdinazioneDAO } from "./daos/ordinazioneDAO";
 import { ElementoDAO } from "./daos/elementoDAO";
 import { CategoriaDAO } from "./daos/categoriaDAO";
-import { Utente } from "./utente";
-import { Categoria, Elemento } from "./menu";
+import { Categoria, Elemento, ElementoConQuantita } from "./menu";
 import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 import { InformazioniUtente } from "../routes/GestisciUtenza";
 
 export class Controller {
-	getRistoranteAttuale(): Promise<Ristorante> {
-		return this.ristoranteDAO.getRistoranteAttuale();
-	}
-	spostaElementiCategoria(idElemento1: number, idElemento2: number): Promise<Result<string>> {
-		return this.elementoMenuDAO.scambiaElementi(idElemento1, idElemento2);
-	}
+
 
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
@@ -57,6 +51,10 @@ export class Controller {
 
 	public async getRistorante(id: number): Promise<Ristorante | null> {
 		return this.ristoranteDAO.getRistorante(id);
+	}
+
+	getRistoranteAttuale(): Promise<Ristorante> {
+		return this.ristoranteDAO.getRistoranteAttuale();
 	}
 
 	public async registraUtente(
@@ -117,6 +115,14 @@ export class Controller {
 	}
 	modificaElementoCategoria(elemento: Elemento, idCategoria: number): Promise<Result<string>> {
 		throw new Error("Method not implemented.");
+	}
+
+	spostaElementiCategoria(idElemento1: number, idElemento2: number): Promise<Result<string>> {
+		return this.elementoMenuDAO.scambiaElementi(idElemento1, idElemento2);
+	}
+
+	inviaOrdineAllaCucina(codiceTavolo: string, elementiConQuantita: ElementoConQuantita[], id: number): Promise<Result<string>> {
+		return this.contoDAO.aggiornaConto(codiceTavolo, elementiConQuantita, id);
 	}
 
 	// CONTI

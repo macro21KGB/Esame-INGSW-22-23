@@ -90,12 +90,14 @@ class ElementoConQuantita extends Elemento {
 		ingredienti: string[],
 		allergeni: Allergene[],
 		quantita: number,
+		id: number = 0,
 	) {
 		super(nome, descrizione, prezzo, {
 			ingredienti,
 			allergeni,
 			ordine: 0,
-		});
+
+		}, id);
 		this.quantita = quantita;
 	}
 
@@ -110,6 +112,7 @@ class ElementoConQuantita extends Elemento {
 			elemento.ingredienti,
 			elemento.allergeni,
 			quantita,
+			elemento.id_elemento,
 		);
 	}
 }

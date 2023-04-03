@@ -7,8 +7,8 @@ interface IOrdinazioneDAO {
     getOrdinazione(id: number): Promise<Ordinazione>;
 
     evadiOrdinazione(id: number): Promise<boolean>;
-    
-    addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
+
+    addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
     deleteOrdinazione(id: number): Promise<Ordinazione>;
 

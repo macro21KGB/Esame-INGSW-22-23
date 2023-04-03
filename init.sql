@@ -53,21 +53,21 @@ CREATE TABLE "Conto" (
   "id_conto" SERIAL PRIMARY KEY,
   "id_ristorante" int NOT NULL,
   "codice_tavolo" VARCHAR(50) NOT NULL,
-  "data" date
+  "data" date DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE "Ordinazione" (
   "id_ordinazione" SERIAL PRIMARY KEY,
   "id_conto" int NOT NULL,
-  "timestamp" timestamp,
-  "data" date,
-  "evaso_da" int NOT NULL,
+  "timestamp" timestamp DEFAULT CURRENT_TIMESTAMP,
+  "data" date DEFAULT CURRENT_DATE,
+  "evaso_da" int,
   "evaso" bool
 );
 
 CREATE TABLE "ElementoConQuantita" (
-  "id_elemento" int UNIQUE NOT NULL,
-  "id_ordinazione" int UNIQUE NOT NULL,
+  "id_elemento" int NOT NULL,
+  "id_ordinazione" int NOT NULL,
   "quantita" int
 );
 
