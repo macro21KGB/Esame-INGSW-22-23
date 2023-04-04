@@ -12,8 +12,15 @@ import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 import { InformazioniUtente } from "../routes/GestisciUtenza";
 import { Ordinazione } from "./ordinazione";
+import { Utente } from "./utente";
 
 export class Controller {
+	deleteOrdinazione(idOrdinazione: number): Promise<boolean> {
+		return this.ordinazioneDAO.deleteOrdinazione(idOrdinazione);
+	}
+	getUtenteById(idUtente: number): Promise<Utente> {
+		return this.utenteDAO.getUtenteById(idUtente);
+	}
 
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;

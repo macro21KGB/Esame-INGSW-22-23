@@ -4,13 +4,12 @@ import ItemElementoOrdinazione from "../ItemElementoOrdinazione";
 import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/utils";
 import { useState } from "react";
 import { COLORS } from "../../utils/constants";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Controller } from "../../entities/controller";
 import { toast } from "react-toastify";
 
 interface ItemOrdinazioneProps {
 	ordinazione: Ordinazione;
-	onDelete: (id: string) => void;
 	evasa?: boolean;
 }
 
@@ -152,7 +151,6 @@ const OuterLayer = styled.div`
 export default function ItemOrdinazione({
 	ordinazione,
 	evasa,
-	onDelete,
 }: ItemOrdinazioneProps) {
 	const tempoOrdinazione = ordinazione.timestamp;
 
@@ -164,7 +162,7 @@ export default function ItemOrdinazione({
 		return controller.evadiOrdinazione(ordinazione);
 	},
 		{
-			onSuccess: (data) => {
+			onSuccess: () => {
 				toast.success("Ordine evaso con successo");
 				queryClient.invalidateQueries(["ordinazioni", "cucina"]);
 			},
@@ -175,12 +173,32 @@ export default function ItemOrdinazione({
 		}
 	);
 
+	const queryUtenteEvasaDa = useQuery(["utente", "evasaDa", ordinazione.id], () => {
+		if (!ordinazione.evasaDa) {
+			return null;
+		}
+
+		return controller.getUtenteById(ordinazione.evasaDa);
+	});
+
+	const mutationDeleteOrdinazione = useMutation((idOrdinazione: number) => {
+		return controller.deleteOrdinazione(idOrdinazione!);
+	}, {
+		onSuccess: () => {
+			toast.success("Ordine eliminato con successo");
+			queryClient.invalidateQueries(["ordinazioni", "cucina"]);
+		}, onError: (error) => {
+			console.log("Errore eliminazione ordine", error);
+			toast.error("Si è riscontrato un Errore!");
+		}
+	});
+
 
 	const evadiOrdinazione = () => {
 		mutationEvadiOrdine.mutate(ordinazione);
 	};
 
-	const deleteOrdinazione = () => {
+	const openDeleteModal = () => {
 		setShowDeleteModal(true);
 	};
 
@@ -191,7 +209,7 @@ export default function ItemOrdinazione({
 				<div style={{ display: "flex", flexDirection: "row" }}>
 					{!evasa && (
 						<>
-							<button className="delete_button" onClick={deleteOrdinazione}>
+							<button className="delete_button" onClick={openDeleteModal}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
@@ -226,7 +244,7 @@ export default function ItemOrdinazione({
 						type="button"
 						onClick={() => {
 							setShowDeleteModal(false);
-							onDelete(ordinazione.codice_tavolo);
+							mutationDeleteOrdinazione.mutate(ordinazione.id!);
 							console.log("Cancella");
 						}}
 					>
@@ -255,8 +273,7 @@ export default function ItemOrdinazione({
 					</ItemOrdinazioneContainer>
 					{evasa ? (
 						<InfoOrdinazioneEvasa>
-							Ordine evaso da {ordinazione.evasaDa?.nome}{" "}
-							{ordinazione.evasaDa?.cognome}
+							Ordine evaso da {queryUtenteEvasaDa.data?.cognome}{" "}
 						</InfoOrdinazioneEvasa>
 					) : (
 						<EvadiButton

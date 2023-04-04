@@ -1,18 +1,19 @@
 import { ElementoConQuantita } from "./menu";
 import { Cameriere } from "./utente";
 
+// TODO cambiata classe Ordinazione da evasaDa: Cameriere a evasaDa: number
 export class Ordinazione {
 	id?: number;
 	codice_tavolo: string;
 	timestamp: Date;
-	evasaDa?: Cameriere;
+	evasaDa?: number;
 	evaso: boolean;
 	elementi: ElementoConQuantita[];
 
 	constructor(
 		codice_tavolo: string,
 		timestamp: Date = new Date(),
-		evasaDa?: Cameriere,
+		evasaDa?: number,
 		evaso: boolean = false,
 		elementi: ElementoConQuantita[] = [],
 		id: number = -1

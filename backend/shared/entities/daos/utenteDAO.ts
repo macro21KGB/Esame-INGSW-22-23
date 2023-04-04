@@ -8,6 +8,7 @@ interface IUtenteDAO {
 	registraUtente(email: string, password: string): Promise<boolean>;
 	accediUtente(email: string, password: string): Promise<Utente | null>;
 	
+	getUtenteById(id_utente: number): Promise<Utente | null>;
 	getUtente(email: string): Promise<Utente | null>;
 	getIdUtente(email: string): Promise<number | null>;
 	getUtenti(): Promise<Utente[]>;

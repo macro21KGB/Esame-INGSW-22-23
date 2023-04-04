@@ -10,7 +10,7 @@ interface IOrdinazioneDAO {
 
     addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
-    deleteOrdinazione(id: number): Promise<Ordinazione>;
+    deleteOrdinazione(id: number): Promise<boolean>;
 
 }
 export type { IOrdinazioneDAO };

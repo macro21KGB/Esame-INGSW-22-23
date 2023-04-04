@@ -2,7 +2,7 @@ import { Ristorante } from "./ristorante";
 
 // questa interfaccia serve per indicare che un utente può essere un supervisore
 // nel nostro caso solo l'admin non può essere un supervisore
-interface ICanBeSupervisor extends Utente {
+export interface ICanBeSupervisor extends Utente {
 	supervisore: boolean;
 }
 
@@ -100,7 +100,7 @@ class AddettoCucinaFactory implements IUtenteAbstractFactory {
 }
 
 class UtenteFactory {
-	public static creaUtente(nome: string, cognome: string, telefono: string, email: string, ruolo: RUOLI, supervisore: boolean = false) : Utente {
+	public static creaUtente(nome: string, cognome: string, telefono: string, email: string, ruolo: RUOLI, supervisore: boolean = false): Utente {
 		if (ruolo === RUOLI.ADMIN) {
 			return new Admin(nome, cognome, telefono, email);
 		} else if (ruolo === RUOLI.ADDETTO_CUCINA) {
@@ -110,7 +110,7 @@ class UtenteFactory {
 		}
 		throw new Error("Ruolo non valido");
 	}
-	public static getUtente(factory : IUtenteAbstractFactory){
+	public static getUtente(factory: IUtenteAbstractFactory) {
 		return factory.createUtente();
 	}
 }
@@ -139,13 +139,13 @@ abstract class Utente {
 	public static fromJson(jsonText: string): Utente {
 		const json = JSON.parse(jsonText);
 		// ritorna utente utilizzando le factory
-		if(json.ruolo === RUOLI.ADMIN){
+		if (json.ruolo === RUOLI.ADMIN) {
 			return UtenteFactory.getUtente(new AdminFactory(json.nome, json.cognome, json.telefono, json.email));
 		}
-		else if(json.ruolo === RUOLI.CAMERIERE){
+		else if (json.ruolo === RUOLI.CAMERIERE) {
 			return UtenteFactory.getUtente(new CameriereFactory(json.nome, json.cognome, json.telefono, json.email));
 		}
-		else if(json.ruolo === RUOLI.ADDETTO_CUCINA){
+		else if (json.ruolo === RUOLI.ADDETTO_CUCINA) {
 			return UtenteFactory.getUtente(new AddettoCucinaFactory(json.nome, json.cognome, json.telefono, json.email));
 		}
 		throw new Error("Ruolo non valido");
@@ -170,7 +170,7 @@ class Admin extends Utente {
 		this.ruolo = RUOLI.ADMIN;
 	}
 
-	
+
 }
 
 class Cameriere extends Utente implements ICanBeSupervisor {

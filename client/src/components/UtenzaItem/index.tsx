@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { RUOLI, Utente } from "../../entities/utente";
+import { ICanBeSupervisor, RUOLI, Utente } from "../../entities/utente";
 import StarBadge from "./StarBadge";
 
 export const UtenzaItemContainer = styled.div`
@@ -56,8 +56,9 @@ export const UtenzaItemContainer = styled.div`
 
 `;
 
+
 interface UtenzaItemProps {
-	utente: any;
+	utente: ICanBeSupervisor;
 	onModifica: () => void;
 }
 

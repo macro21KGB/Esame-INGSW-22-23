@@ -1,18 +1,17 @@
 import { ElementoConQuantita } from "./menu";
-import { Cameriere } from "./utente";
 
 export class Ordinazione {
 	id?: number;
 	codice_tavolo: string;
 	timestamp: Date;
-	evasaDa?: Cameriere;
+	evasaDa?: number;
 	evaso: boolean;
 	elementi: ElementoConQuantita[];
 
 	constructor(
 		codice_tavolo: string,
 		timestamp: Date = new Date(),
-		evasaDa?: Cameriere,
+		evasaDa?: number,
 		evaso: boolean = false,
 		elementi: ElementoConQuantita[] = [],
 		id: number = -1,
@@ -30,7 +29,7 @@ export class Ordinazione {
 		return this;
 	}
 
-	setEvasaDa(evasaDa: Cameriere) {
+	setEvasaDa(evasaDa: number) {
 		this.evasaDa = evasaDa;
 		return this;
 	}

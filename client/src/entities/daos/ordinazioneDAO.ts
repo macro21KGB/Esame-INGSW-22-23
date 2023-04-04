@@ -12,7 +12,7 @@ interface IOrdinazioneDAO {
 
     addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
-    deleteOrdinazione(id: number): Promise<Ordinazione>;
+    deleteOrdinazione(id: number): Promise<boolean>;
 
 }
 
@@ -66,8 +66,20 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
     }
-    deleteOrdinazione(id: number): Promise<Ordinazione> {
-        throw new Error('Method not implemented.');
+    async deleteOrdinazione(id: number): Promise<boolean> {
+        const token = getTokenDaCookie();
+
+        try {
+            const result = await axios.delete<boolean>(`${API_URL}/ordinazione/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            return result.data;
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
     }
 
 }

@@ -19,6 +19,7 @@ interface IUtenteDAO {
 
 	promuoviASupervisore(utente: Utente): Promise<Utente>;
 
+	getUtenteById(id: number): Promise<Utente>;
 	addUtente(InformazioniUtente: InformazioniUtente, idRistorante: number): Promise<Result<string>>;
 	updateUtente(utente: InformazioniUtente): Promise<Result<string>>;
 	deleteUtente(utente: Utente): Promise<Utente>;
@@ -227,6 +228,25 @@ class UtenteDAO implements IUtenteDAO {
 			};
 		}
 
+	}
+
+	async getUtenteById(id: number): Promise<Utente> {
+		const token = getTokenDaCookie();
+
+		try {
+			const response = await axios.get(`${API_URL}/utente/${id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				}
+			});
+
+			const data: Utente = await response.data
+
+			return data;
+		} catch (error) {
+			throw new Error("Method not implemented.");
+		}
 	}
 
 	deleteUtente(utente: Utente): Promise<Utente> {

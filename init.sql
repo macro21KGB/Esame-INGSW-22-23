@@ -87,7 +87,7 @@ ALTER TABLE "Elemento" ADD FOREIGN KEY ("id_categoria") REFERENCES "Categoria" (
 
 ALTER TABLE "Ordinazione" ADD FOREIGN KEY ("id_conto") REFERENCES "Conto" ("id_conto");
 
-ALTER TABLE "ElementoConQuantita" ADD FOREIGN KEY ("id_ordinazione") REFERENCES "Ordinazione" ("id_ordinazione");
+ALTER TABLE "ElementoConQuantita" ADD FOREIGN KEY ("id_ordinazione") REFERENCES "Ordinazione" ("id_ordinazione") ON DELETE CASCADE;
 
 ALTER TABLE "Conto" ADD FOREIGN KEY ("id_ristorante") REFERENCES "Ristorante" ("id_ristorante");
 

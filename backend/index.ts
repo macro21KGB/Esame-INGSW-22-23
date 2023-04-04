@@ -351,6 +351,17 @@ router.delete('/utente/:email', authenticateToken, requiresAdminRole, blockAcces
 
 });
 
+router.get('/utente/:idUtente', authenticateToken, async (req: Request, res: Response) => {
+  const idUtente = +req.params.idUtente;
+
+  if (idUtente == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  res.status(200).json((await UtenteDAO.getUtenteById(idUtente)));
+})
+
 // get utenti 
 router.get('/utenti/:id_ristorante', authenticateToken, requiresAdminRole, async (req: Request, res: Response) => {
   const id_ristorante = +req.params.id_ristorante;
@@ -584,6 +595,43 @@ router.get('/ordinazioni/:isEvase', authenticateToken, async (req: Request, res:
     });
   });
 })
+
+router.delete('/ordinazione/:idOrdinazione', authenticateToken, async (req: Request, res: Response) => {
+  const idOrdinazione: number = +req.params.idOrdinazione;
+  if (idOrdinazione == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+
+  jwt.verify(token, secret, async (err, user) => {
+    if (err) {
+      res.status(403).json({ success: false, data: 'Forbidden' });
+      return;
+    }
+
+    if (user === undefined) {
+      res.status(403).json({ success: false, data: 'Forbidden' });
+      return;
+    }
+
+    const isDeleted = await OrdinazioneDAO.deleteOrdinazione(idOrdinazione);
+
+    if (isDeleted) {
+      res.status(200).json({ success: true, data: 'Ordinazione cancellata' });
+    }
+    else {
+      res.status(400).json({ success: false, data: 'Ordinazione non cancellata' });
+    }
+  });
+});
 
 // evadi ordinazione
 router.put('/ordinazione/:idOrdinazione', authenticateToken, async (req: Request, res: Response) => {

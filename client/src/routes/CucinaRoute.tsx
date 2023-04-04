@@ -142,7 +142,7 @@ export default function CucinaRoute() {
                         <p>Errore nel caricamento delle ordinazioni</p>
                     ) : queryOrdinazioni[0].data ? (
                         queryOrdinazioni[0].data?.data.map((ordinazione: Ordinazione) => {
-                            return <ItemOrdinazione onDelete={() => { }} ordinazione={ordinazione} key={ordinazione.timestamp.toString()} />
+                            return <ItemOrdinazione ordinazione={ordinazione} key={ordinazione.timestamp.toString()} />
                         })
                     ) : null}
                 </MacroSection>
@@ -151,11 +151,11 @@ export default function CucinaRoute() {
                         <p>Caricamento...</p>
                     ) : queryOrdinazioni[1].isError ? (
                         <p>Errore nel caricamento delle ordinazioni</p>
-                    ) : queryOrdinazioni[1].data ? (
+                    ) : queryOrdinazioni[1].data && (
                         queryOrdinazioni[1].data?.data.map((ordinazione: Ordinazione) => {
-                            return <ItemOrdinazione evasa={true} onDelete={() => { }} ordinazione={ordinazione} key={ordinazione.timestamp.toString()} />
+                            return <ItemOrdinazione evasa={true} ordinazione={ordinazione} key={ordinazione.timestamp.toString()} />
                         })
-                    ) : null}
+                    )}
                 </MacroSection>
             </div>
         </CucinaRouteContainer>

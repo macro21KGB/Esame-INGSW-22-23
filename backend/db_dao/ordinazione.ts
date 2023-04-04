@@ -92,8 +92,17 @@ export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
     }
-    deleteOrdinazione(id: number): Promise<Ordinazione> {
-        throw new Error('Method not implemented.');
+    async deleteOrdinazione(id: number): Promise<boolean> {
+        const client = await conn.connect();
+        try {
+            const result = await client.query('DELETE FROM "Ordinazione" WHERE id_ordinazione = $1', [id]);
+            return result.rows[0];
+        } catch (err) {
+            throw new Error(`Could not delete Ordinazione. Error: ${err}`);
+        }
+        finally {
+            client.release();
+        }
     }
 
 }
