@@ -4,6 +4,9 @@ import ItemElementoOrdinazione from "../ItemElementoOrdinazione";
 import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/utils";
 import { useState } from "react";
 import { COLORS } from "../../utils/constants";
+import { useMutation, useQueryClient } from "react-query";
+import { Controller } from "../../entities/controller";
+import { toast } from "react-toastify";
 
 interface ItemOrdinazioneProps {
 	ordinazione: Ordinazione;
@@ -153,11 +156,28 @@ export default function ItemOrdinazione({
 }: ItemOrdinazioneProps) {
 	const tempoOrdinazione = ordinazione.timestamp;
 
-
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const controller = Controller.getInstance();
+	const queryClient = useQueryClient();
+
+	const mutationEvadiOrdine = useMutation((ordinazione: Ordinazione) => {
+		return controller.evadiOrdinazione(ordinazione);
+	},
+		{
+			onSuccess: (data) => {
+				toast.success("Ordine evaso con successo");
+				queryClient.invalidateQueries(["ordinazioni", "cucina"]);
+			},
+			onError: (error) => {
+				console.log("Errore evasione ordine", error);
+				toast.error("Si è riscontrato un Errore!");
+			}
+		}
+	);
+
 
 	const evadiOrdinazione = () => {
-		console.log("Evadi ordinazione");
+		mutationEvadiOrdine.mutate(ordinazione);
 	};
 
 	const deleteOrdinazione = () => {

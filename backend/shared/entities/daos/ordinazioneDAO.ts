@@ -6,7 +6,7 @@ interface IOrdinazioneDAO {
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>;
     getOrdinazione(id: number): Promise<Ordinazione>;
 
-    evadiOrdinazione(id: number): Promise<boolean>;
+    evadiOrdinazione(idOrdinazione: number, idUtente: number): Promise<boolean>;
 
     addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;

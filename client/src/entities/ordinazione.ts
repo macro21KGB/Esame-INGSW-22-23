@@ -2,6 +2,7 @@ import { ElementoConQuantita } from "./menu";
 import { Cameriere } from "./utente";
 
 export class Ordinazione {
+	id?: number;
 	codice_tavolo: string;
 	timestamp: Date;
 	evasaDa?: Cameriere;
@@ -14,12 +15,14 @@ export class Ordinazione {
 		evasaDa?: Cameriere,
 		evaso: boolean = false,
 		elementi: ElementoConQuantita[] = [],
+		id: number = -1,
 	) {
 		this.codice_tavolo = codice_tavolo;
 		this.timestamp = timestamp;
 		this.evasaDa = evasaDa;
 		this.evaso = evaso;
 		this.elementi = elementi;
+		this.id = id;
 	}
 
 	setElementi(elementi: ElementoConQuantita[]) {

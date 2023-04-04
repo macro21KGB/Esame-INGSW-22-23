@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ItemOrdinazione from "../components/ItemOrdinazione";
 import { NavbarFactory } from "../components/NavBar";
-import { useQuery } from "react-query";
+import { useQueries, useQuery } from "react-query";
 import { Controller } from "../entities/controller";
 import { OrdinazioneConCodice } from "../utils/constants";
 import { Ordinazione } from "../entities/ordinazione";
@@ -92,11 +92,22 @@ export default function CucinaRoute() {
         window.addEventListener("resize", checkScreenSize);
     }, [])
 
-    const queryOrdinazioni = useQuery(["ordinazioni", "cucina"], () => {
-        return controller.getOrdinazioniDaEvadere();
-    }, {
-        refetchInterval: 60000,
-    })
+    const queryOrdinazioni = useQueries([
+        {
+            queryKey: ["ordinazioni", "cucina", "nonevase"],
+            queryFn: () => {
+                return controller.getOrdinazioniDaEvadere();
+            },
+            refetchInterval: 60000,
+        },
+        {
+            queryKey: ["ordinazioni", "cucina", "evase"],
+            queryFn: () => {
+                return controller.getOrdinazioniEvaseUltime24h();
+            },
+        }
+    ])
+
 
     return (
         <CucinaRouteContainer>
@@ -125,18 +136,26 @@ export default function CucinaRoute() {
 
             <div id="sections">
                 <MacroSection title="Ordinazioni da evadere" bgColor="red">
-                    {queryOrdinazioni.isLoading ? (
+                    {queryOrdinazioni[0].isLoading ? (
                         <p>Caricamento...</p>
-                    ) : queryOrdinazioni.isError ? (
+                    ) : queryOrdinazioni[0].isError ? (
                         <p>Errore nel caricamento delle ordinazioni</p>
-                    ) : queryOrdinazioni.data ? (
-                        queryOrdinazioni.data?.data.map((ordinazione: Ordinazione) => {
+                    ) : queryOrdinazioni[0].data ? (
+                        queryOrdinazioni[0].data?.data.map((ordinazione: Ordinazione) => {
                             return <ItemOrdinazione onDelete={() => { }} ordinazione={ordinazione} key={ordinazione.timestamp.toString()} />
                         })
                     ) : null}
                 </MacroSection>
                 <MacroSection title="Ordinazioni già evase" bgColor="green">
-
+                    {queryOrdinazioni[1].isLoading ? (
+                        <p>Caricamento...</p>
+                    ) : queryOrdinazioni[1].isError ? (
+                        <p>Errore nel caricamento delle ordinazioni</p>
+                    ) : queryOrdinazioni[1].data ? (
+                        queryOrdinazioni[1].data?.data.map((ordinazione: Ordinazione) => {
+                            return <ItemOrdinazione evasa={true} onDelete={() => { }} ordinazione={ordinazione} key={ordinazione.timestamp.toString()} />
+                        })
+                    ) : null}
                 </MacroSection>
             </div>
         </CucinaRouteContainer>

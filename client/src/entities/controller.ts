@@ -15,7 +15,6 @@ import { Ordinazione } from "./ordinazione";
 
 export class Controller {
 
-
 	private static _instance: Controller;
 	private ristoranteDAO: RistoranteDAO;
 	private utenteDAO: UtenteDAO;
@@ -147,10 +146,19 @@ export class Controller {
 		});
 	}
 
-	public async getOrdinazioniDaEvadere(): Promise<Result<OrdinazioneConCodice[]>> {
-		return this.ordinazioneDAO.getOrdinazioniNonEvase();
-	
+	public async getOrdinazioniDaEvadere(): Promise<Result<Ordinazione[]>> {
+		return this.ordinazioneDAO.getOrdinazioni(false);
 	}
+
+	getOrdinazioniEvaseUltime24h(): Promise<Result<Ordinazione[]>> {
+		return this.ordinazioneDAO.getOrdinazioni(true);
+	}
+
+	public async evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean> {
+		return this.ordinazioneDAO.evadiOrdinazione(ordinazione);
+	}
+
+
 	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
 		return wait(1000).then(() => {
 			return {

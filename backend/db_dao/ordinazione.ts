@@ -22,7 +22,7 @@ export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
             // per ogni ordinazione, prendo i suoi elementi
             for (let i = 0; i < result.rows.length; i++) {
                 console.log(result.rows[i]);
-                const ordinazioneCorrente = new Ordinazione(result.rows[i].codice_tavolo, result.rows[i].timestamp, result.rows[i].evasoDa, result.rows[i].evaso, []);
+                const ordinazioneCorrente = new Ordinazione(result.rows[i].codice_tavolo, result.rows[i].timestamp, result.rows[i].evaso_da, result.rows[i].evaso, [], result.rows[i].id_ordinazione);
                 const elementi = await client.query<ElementoConQuantita & Elemento>('SELECT "ElementoConQuantita".*, "Elemento".nome, "Elemento".prezzo FROM "ElementoConQuantita" INNER JOIN "Elemento" ON "ElementoConQuantita".id_elemento = "Elemento".id_elemento WHERE "ElementoConQuantita".id_ordinazione = $1;', [result.rows[i].id_ordinazione]);
 
                 for (let j = 0; j < elementi.rows.length; j++) {
@@ -48,8 +48,20 @@ export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
     getOrdinazione(id: number): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
     }
-    evadiOrdinazione(id: number): Promise<boolean> {
-        throw new Error('Method not implemented.');
+    async evadiOrdinazione(idOrdinazione: number, idUtente: number): Promise<boolean> {
+        const client = await conn.connect();
+        try {
+            await client.query(
+                `UPDATE "Ordinazione" SET evaso = $1, evaso_da = $2 WHERE id_ordinazione = $3`,
+                [true, idUtente, idOrdinazione]
+            );
+            return true;
+        }
+        catch (err) {
+            throw new Error(`Could not create conto. Error: ${err}`);
+        } finally {
+            client.release();
+        }
     }
 
     async addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean> {

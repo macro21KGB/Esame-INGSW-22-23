@@ -583,8 +583,49 @@ router.get('/ordinazioni/:isEvase', authenticateToken, async (req: Request, res:
       data: ordinazioniPrese
     });
   });
-
 })
+
+// evadi ordinazione
+router.put('/ordinazione/:idOrdinazione', authenticateToken, async (req: Request, res: Response) => {
+  const idOrdinazione: number = +req.params.idOrdinazione;
+  if (idOrdinazione == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+
+  jwt.verify(token, secret, async (err, user) => {
+    if (err) {
+      res.status(403).json({ success: false, data: 'Forbidden' });
+      return;
+    }
+
+    if (user === undefined) {
+      res.status(403).json({ success: false, data: 'Forbidden' });
+      return;
+    }
+
+    user = user as Utente;
+
+    const isOrdineAggiornato = await OrdinazioneDAO.evadiOrdinazione(idOrdinazione, +user["id"]);
+
+    if (isOrdineAggiornato) {
+      res.status(200).json({ success: true, data: 'Ordine aggiornato' });
+    }
+    else {
+      res.status(400).json({ success: false, data: 'Errore aggiornamento ordine' });
+    }
+
+  });
+
+});
 
 // --------------------------------------------------------------------------------------
 // ELEMENTI MENU

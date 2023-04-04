@@ -4,12 +4,11 @@ import { Ordinazione } from './../ordinazione';
 import { API_URL, OrdinazioneConCodice, Result } from '../../utils/constants';
 
 interface IOrdinazioneDAO {
-    getOrdinazioni(): Promise<Ordinazione[]>;
-    getOrdinazioniNonEvase(): Promise<Result<OrdinazioneConCodice[]>>
+    getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>>;
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>;
     getOrdinazione(id: number): Promise<Ordinazione>;
 
-    evadiOrdinazione(id: number): Promise<boolean>;
+    evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean>;
 
     addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
@@ -19,14 +18,13 @@ interface IOrdinazioneDAO {
 
 
 class OrdinazioneDAO implements IOrdinazioneDAO {
-    getOrdinazioni(): Promise<Ordinazione[]> {
-        throw new Error('Method not implemented.');
-    }
-    async getOrdinazioniNonEvase(): Promise<Result<OrdinazioneConCodice[]>> {
+
+    // TODO: implementare evada_da assegnando l'addetto alla cucina corrispondente
+    async getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>> {
         const token = getTokenDaCookie();
 
         try {
-            const result = await axios.get<Result<OrdinazioneConCodice[]>>(`${API_URL}/ordinazioni/${false}`, {
+            const result = await axios.get<Result<OrdinazioneConCodice[]>>(`${API_URL}/ordinazioni/${evase}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
@@ -46,8 +44,21 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
     getOrdinazione(id: number): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
     }
-    evadiOrdinazione(id: number): Promise<boolean> {
-        throw new Error('Method not implemented.');
+    async evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean> {
+        const token = getTokenDaCookie();
+
+        try {
+            const response = axios.put<Result<string>>(`${API_URL}/ordinazione/${ordinazione.id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            return (await response).data.success;
+
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
     }
     addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
