@@ -1,3 +1,4 @@
+import { Ordinazione } from "../entities/ordinazione";
 import { RUOLI } from "../entities/utente";
 
 const COLORS = {
@@ -29,6 +30,9 @@ export interface Result<T> {
 	success: boolean;
 	data: T;
 }
+
+export type OrdinazioneConCodice = Ordinazione & { codiceTavolo: string };
+
 
 export interface LoginPayload {
 	token: string;

@@ -1,4 +1,4 @@
-import React, { useState, lazy } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import styled from "styled-components";
 import { NavbarFactory } from "../components/NavBar";
 import WelcomePanel from "../components/WelcomePanel";
@@ -139,7 +139,9 @@ function App() {
 			<p id="start_list_ristoranti">I Miei Ristoranti</p>
 
 			{(queryCambioPassword.isSuccess && !queryCambioPassword.data) && (
-				<ResettaPasswordPopup onConfirm={(pwd) => { mutationCambiaPassword.mutate(pwd) }} />
+				<Suspense fallback={<LoadingCircle />}>
+					<ResettaPasswordPopup onConfirm={(pwd) => { mutationCambiaPassword.mutate(pwd) }} />
+				</Suspense>
 			)}
 
 			<ListaRistorantiContainer>

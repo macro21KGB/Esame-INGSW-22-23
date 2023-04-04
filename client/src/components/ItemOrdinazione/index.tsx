@@ -14,7 +14,7 @@ interface ItemOrdinazioneProps {
 const ItemOrdinazioneContainer = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     padding: 0.5rem;
     
@@ -152,6 +152,7 @@ export default function ItemOrdinazione({
 	onDelete,
 }: ItemOrdinazioneProps) {
 	const tempoOrdinazione = ordinazione.timestamp;
+
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 

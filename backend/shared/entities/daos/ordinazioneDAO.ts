@@ -1,7 +1,7 @@
 import { Ordinazione } from '../ordinazione';
 
 interface IOrdinazioneDAO {
-    getOrdinazioni(): Promise<Ordinazione[]>;
+    getOrdinazioni(idRistorante: number, evase: boolean): Promise<Ordinazione[]>
     getOrdinazioniNonEvase(): Promise<Ordinazione[]>;
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>;
     getOrdinazione(id: number): Promise<Ordinazione>;

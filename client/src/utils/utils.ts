@@ -68,6 +68,10 @@ export function getTokenDaCookie(): string {
 	return "";
 }
 
+/**
+ * Scrive il conto su un pdf e lo scarica
+ * @param conto conto da scrivere su pdf
+ */
 export function scriviContoSuPDF(conto: Conto) {
 	const doc = new jsPDF();
 
@@ -96,6 +100,12 @@ export function scriviContoSuPDF(conto: Conto) {
 
 }
 
+
+/**
+ * Genera un array di oggetti con giorno e numero di evasi fittizi
+ * @param maxDays numero di giorni da generare
+ * @returns array di oggetti con giorno e numero di evasi
+ */
 export function generaFakeDataCharts(maxDays: number): { giorno: string, evasi: number }[] {
 	const data = [];
 	for (let i = 0; i < maxDays; i++) {
@@ -107,6 +117,11 @@ export function generaFakeDataCharts(maxDays: number): { giorno: string, evasi: 
 	return data;
 }
 
+/**
+ * Genera un oggetto con data inizio e data fine del lasso temporale
+ * @param lassoTemporale lasso temporale da prendere
+ * @returns {{from: Date, to: Date}} oggetto con data inizio e data fine del lasso temporale
+ */
 export const prendiInizioEFine = (lassoTemporale: "week" | "month" | "year"): { from: Date, to: Date } => {
 	const from = dayjs().startOf(lassoTemporale).toDate();
 	const to = dayjs().endOf(lassoTemporale).toDate();
@@ -120,14 +135,28 @@ export function rimuoviTokenDaCookie() {
 }
 
 // da un date estrarre l'ora e i minuti nel seguente formato: hh:mm
-export function getOraMinutiDaDate(date: Date) {
+export function getOraMinutiDaDate(date: Date | string) {
+
+	if (typeof date === "string") {
+		date = new Date(date);
+	}
+
 	const ora = date.getHours();
 	const minuti = date.getMinutes();
 	return `${ora < 10 ? `0${ora}` : ora}:${minuti < 10 ? `0${minuti}` : minuti}`;
 }
 
 // prese due date, restituisce la differenza in minuti e ora nel segue formato: hh:mm
-export function getDifferenzaInMinuti(date1: Date, date2: Date) {
+export function getDifferenzaInMinuti(date1: Date | string, date2: Date | string) {
+
+	if (typeof date1 === "string") {
+		date1 = new Date(date1);
+	}
+
+	if (typeof date2 === "string") {
+		date2 = new Date(date2);
+	}
+
 	const diff = Math.abs(date1.getTime() - date2.getTime());
 	const diffInMinuti = Math.floor(diff / 1000 / 60);
 	const ore = Math.floor(diffInMinuti / 60);

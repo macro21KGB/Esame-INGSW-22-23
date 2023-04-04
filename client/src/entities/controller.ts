@@ -1,4 +1,4 @@
-import { LoginPayload, Result } from "./../utils/constants";
+import { LoginPayload, OrdinazioneConCodice, Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
 import { generaFakeDataCharts, wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
@@ -11,6 +11,7 @@ import { Categoria, Elemento, ElementoConQuantita } from "./menu";
 import { Conto } from "./conto";
 import { dummyConto } from "./dummyObjects";
 import { InformazioniUtente } from "../routes/GestisciUtenza";
+import { Ordinazione } from "./ordinazione";
 
 export class Controller {
 
@@ -146,6 +147,10 @@ export class Controller {
 		});
 	}
 
+	public async getOrdinazioniDaEvadere(): Promise<Result<OrdinazioneConCodice[]>> {
+		return this.ordinazioneDAO.getOrdinazioniNonEvase();
+	
+	}
 	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
 		return wait(1000).then(() => {
 			return {
