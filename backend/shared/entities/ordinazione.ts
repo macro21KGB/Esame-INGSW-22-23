@@ -1,7 +1,6 @@
 import { ElementoConQuantita } from "./menu";
 import { Cameriere } from "./utente";
 
-// TODO cambiata classe Ordinazione da evasaDa: Cameriere a evasaDa: number
 export class Ordinazione {
 	id?: number;
 	codice_tavolo: string;

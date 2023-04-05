@@ -368,21 +368,6 @@ router.get('/utenti/:id_ristorante', authenticateToken, requiresAdminRole, async
   res.status(200).json(JSON.stringify(await UtenteDAO.getUtentiRistorante(id_ristorante)));
 });
 
-// // TODO da contollare le autorizzazioni
-// // get utente by token
-// router.get('/utente/', (req: Request, res: Response) => {
-//   // ottieni email da token
-//   const authHeader = req.headers['authorization']
-//   const token = authHeader && authHeader.split(' ')[1]
-//   if (token == null) return res.status(400).json({ message: "Token not provided" });
-
-//   jwt.verify(token, secret, async (err: any, decoded: any) => {
-//     if (err) return res.status(403).json({ message: "Invalid token" });
-//     const email = decoded.email;
-//     res.status(200).json(JSON.stringify(await UtenteDAO.getUtente(email)));
-//   })
-// });
-
 router.get('/pw-changed', authenticateToken, async (req: Request, res: Response) => {
   // ottieni email dal token
   const authHeader = req.headers['authorization']

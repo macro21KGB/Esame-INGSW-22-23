@@ -15,7 +15,6 @@ class UtenteMapper implements IMapper<Utente> {
 
 class UtenteDAOPostgresDB implements IUtenteDAO {
 
-	// TODO da controllare
 	// get ristorante by email utente
 	async getRistorante(email: string): Promise<Ristorante> {
 		return new Promise((resolve, reject) => {

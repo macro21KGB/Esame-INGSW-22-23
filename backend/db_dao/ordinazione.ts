@@ -4,7 +4,6 @@ import { IMapper } from './mapper';
 import { Ordinazione } from '../shared/entities/ordinazione';
 import { Elemento, ElementoConQuantita } from '../shared/entities/menu';
 
-//TODO implementare i metodi
 
 class OrdinazioneMapper implements IMapper<Ordinazione>{
     map(data: any): Ordinazione {

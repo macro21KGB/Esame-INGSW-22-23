@@ -114,8 +114,6 @@ interface DrawerProps {
 	onClose: () => void;
 }
 
-// TODO implementare i vari pulsanti
-// TODO cercare di implementare le animazione di chiusura
 function Drawer(props: DrawerProps): JSX.Element {
 	const { onClose } = props;
 

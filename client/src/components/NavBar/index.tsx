@@ -89,6 +89,10 @@ class NavbarFactory {
 	public static generateNavbarAll(addFunction: () => void): JSX.Element {
 		return <NavBar addFunc={addFunction} />;
 	}
+
+	public static geenerateNavbarEmpty(): JSX.Element {
+		return <NavBar />;
+	}
 }
 
 function NavBar(props: NavBarProps) {
@@ -106,7 +110,6 @@ function NavBar(props: NavBarProps) {
 
 	const state = props.state || DEFAULT_STATE;
 
-	// TODO da controllare se body va bene
 	return (
 		<NavBarContainer>
 			<h3 style={{ fontFamily: "Pacifico" }}>Ratatouille</h3>

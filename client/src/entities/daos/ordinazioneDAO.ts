@@ -19,7 +19,6 @@ interface IOrdinazioneDAO {
 
 class OrdinazioneDAO implements IOrdinazioneDAO {
 
-    // TODO: implementare evada_da assegnando l'addetto alla cucina corrispondente
     async getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>> {
         const token = getTokenDaCookie();
 

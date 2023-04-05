@@ -4,7 +4,6 @@ import { Conto } from '../shared/entities/conto'
 import { conn } from '../db_connection'
 import { IMapper } from './mapper';
 
-//TODO implementare i metodi
 class ContoMapper implements IMapper<Conto>{
     map(data: any): Conto {
         return new Conto(
@@ -17,11 +16,12 @@ class ContoMapper implements IMapper<Conto>{
 }
 
 export class ContoDAOPostgresDB implements IContoDAO {
+
+    // questo metodo prende solo il conto senza ordinazioni...per ora
     async getContoByCodiceTavolo(codiceTavolo: string, idRistorante: number): Promise<Conto | null> {
         const client = await conn.connect();
 
         try {
-            //TODO: per ora prende solo il conto senza ordinazioni
             const result = await client.query(
                 `SELECT * FROM "Conto" WHERE codice_tavolo = $1 AND id_ristorante = $2`,
                 [codiceTavolo, idRistorante]

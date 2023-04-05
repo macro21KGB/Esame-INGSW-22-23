@@ -15,7 +15,6 @@ interface IRistoranteDAO {
 	deleteRistorante(id: number): Promise<Ristorante>;
 }
 
-// TODO da implementare
 class RistoranteDAO implements IRistoranteDAO {
 	async getRistoranteAttuale(): Promise<Ristorante> {
 		const token = getTokenDaCookie();
@@ -103,7 +102,6 @@ class RistoranteDAO implements IRistoranteDAO {
 		return Promise.resolve(dummyResturant);
 	}
 	deleteRistorante(id: number): Promise<Ristorante> {
-		//TODO
 		return Promise.resolve(dummyResturant);
 	}
 }

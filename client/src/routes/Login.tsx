@@ -105,7 +105,6 @@ export default function Login() {
 				password,
 			);
 
-			//TODO per reindirizzare bene bisogna mandare anche il ruolo dell'utente
 			if (result.success) {
 				toast.success("Accesso eseguito con successo");
 

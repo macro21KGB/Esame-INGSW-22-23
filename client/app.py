@@ -14,7 +14,7 @@ def extract_class_functions_attributes(file_path):
         class_and_interfaces = []
         for class_match in class_matchs:
             class_name = class_match[1]
-            attributes_regex = r"(\w+):\s*(\w+)"
+            attributes_regex = r"([\w\?]+):\s*(\w+)"
             attributes_match = re.findall(attributes_regex, class_match[2])
             functions_regex = r"(\w+)\(([a-zA-Z\s=\(\)\[\]\.]*)\)\s*:\s*(\w+)\s*"
             functions_match = re.findall(functions_regex, class_match[2])
@@ -47,5 +47,8 @@ if __name__ == "__main__":
         sys.exit(1)
     file_path = sys.argv[1]
     classes_and_interfaces = extract_class_functions_attributes(file_path)
+    if not isinstance(classes_and_interfaces, list):
+        print(classes_and_interfaces)
+        sys.exit(1)
     plantuml = generate_plantuml(classes_and_interfaces)
     print(plantuml)
