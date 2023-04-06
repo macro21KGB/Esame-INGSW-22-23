@@ -1,8 +1,9 @@
-import { rejects } from 'assert';
 import { IContoDAO } from '../shared/entities/daos/contoDAO'
 import { Conto } from '../shared/entities/conto'
 import { conn } from '../db_connection'
 import { IMapper } from './mapper';
+import { Ordinazione } from '../shared/entities/ordinazione';
+import { Elemento, ElementoConQuantita } from '../shared/entities/menu';
 
 class ContoMapper implements IMapper<Conto>{
     map(data: any): Conto {
@@ -58,11 +59,63 @@ export class ContoDAOPostgresDB implements IContoDAO {
         }
     }
 
+    async getConti(idRistorante: number): Promise<Conto[]> {
+        type ContiQueryResult = {
+            id_conto: number;
+            id_ordinazione: number;
+            codice_tavolo: string;
+            id_ristorante: number;
+            prezzo: number;
+            nome: string;
+            quantita: number;
+            evasa: boolean;
+
+        }
+        const client = await conn.connect();
+        try {
+            const queryText = `select c.id_conto, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione from "Conto" c JOIN "Ordinazione" o ON o.id_conto = c.id_conto JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  JOIN "Elemento" e ON e.id_elemento = eo.id_elemento where eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;`
+            const result = await client.query<ContiQueryResult>(queryText, [idRistorante]);
+
+
+            const conti: Conto[] = [];
+            for (const row of result.rows) {
+                const contoInArray = conti.find(c => c.id_conto === row.id_conto);
+                const elementiOrdinazione = result.rows.filter(r => r.id_ordinazione === row.id_ordinazione).map(r => {
+                    return ElementoConQuantita.fromElemento(new Elemento(r.nome, "", r.prezzo, {
+                        allergeni: [],
+                        ingredienti: [],
+                        ordine: 0,
+                    }), r.quantita)
+                });
+
+                // se il conto è già presente nell'array, aggiungo l'ordinazione
+                if (contoInArray) {
+                    if (contoInArray.ordini.length > 0) {
+                        continue;
+                    }
+                    contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione));
+                }
+                else {
+                    const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione)];
+
+                    conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto));
+                }
+
+            }
+
+
+
+            return conti;
+
+        } catch (err) {
+            throw new Error(`Could not get conti. Error: ${err}`);
+        }
+        finally {
+            client.release();
+        }
+    }
 
     getContoByData(data: Date): Promise<Conto> {
-        throw new Error('Method not implemented.');
-    }
-    getConti(): Promise<Conto[]> {
         throw new Error('Method not implemented.');
     }
     getContiByData(data: Date): Promise<Conto[]> {

@@ -134,14 +134,9 @@ export class Controller {
 
 	// CONTI
 
-	public async getContiTavoliUltime24h(idRistorante: number): Promise<Result<Conto[]>> {
-		return wait(1000).then(() => {
-			return {
-				success: true,
-				data: [dummyConto]
-			}
+	public async getContiTavoliUltime24h(idRistorante: number): Promise<Conto[]> {
+		return await this.contoDAO.getConti();
 
-		});
 	}
 
 	public async chiudiConto(conto: Conto): Promise<Result<string>> {

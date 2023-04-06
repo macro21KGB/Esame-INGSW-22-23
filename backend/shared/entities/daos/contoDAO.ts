@@ -6,7 +6,7 @@ import { Conto } from "../conto";
 interface IContoDAO {
     creaConto(conto: Conto, idRistorante: number): Promise<number>;
     getContoByData(data: Date): Promise<Conto>;
-    getConti(): Promise<Conto[]>;
+    getConti(idRistorante: number): Promise<Conto[]>;
     getContiByData(data: Date): Promise<Conto[]>;
 
     stampaConto(conto: Conto): Promise<boolean>;

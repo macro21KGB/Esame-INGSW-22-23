@@ -26,4 +26,6 @@ export class Conto {
         }
         return totale;
     }
+
+
 }

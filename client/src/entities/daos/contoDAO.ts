@@ -52,8 +52,24 @@ export class ContoDAO implements IContoDAO {
     getContoByData(data: Date): Promise<Conto> {
         throw new Error("Method not implemented.");
     }
-    getConti(): Promise<Conto[]> {
-        throw new Error("Method not implemented.");
+    async getConti(): Promise<Conto[]> {
+        const token = getTokenDaCookie();
+
+        try {
+            const result = await axios.get<Conto[]>(`${API_URL}/conti`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data: Conto[] = result.data;
+
+            return data;
+        } catch (err) {
+            console.log(err);
+            return [];
+        }
     }
     getContiByData(data: Date): Promise<Conto[]> {
         throw new Error("Method not implemented.");

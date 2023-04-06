@@ -3,10 +3,10 @@ import { Ordinazione } from "./ordinazione";
 export class Conto {
     id_conto: number;
     data: Date;
-    codice_tavolo: number;
+    codice_tavolo: string;
     ordini: Ordinazione[];
 
-    constructor(data: Date = new Date(), codice_tavolo: number, ordini: Ordinazione[] = [], id_conto: number = 0) {
+    constructor(data: Date = new Date(), codice_tavolo: string, ordini: Ordinazione[] = [], id_conto: number = 0) {
         this.data = data;
         this.ordini = ordini;
         this.codice_tavolo = codice_tavolo;

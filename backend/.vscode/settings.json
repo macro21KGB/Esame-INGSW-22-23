@@ -18,5 +18,16 @@
         "titleBar.inactiveBackground": "#00008b99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "darkblue"
+    "peacock.color": "darkblue",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "ratto",
+            "database": "ratatouille",
+            "username": "docker"
+        }
+    ]
 }

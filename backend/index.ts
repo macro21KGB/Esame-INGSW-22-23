@@ -8,7 +8,7 @@ import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
 import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB, AllergeneDAOPostgresDB } from './db_dao/menu';
 import { Ristorante } from './shared/entities/ristorante';
 import { Categoria, Elemento, Allergene, ElementoConQuantita } from './shared/entities/menu';
-import { Result, checkRequestBody } from './utils';
+import { Result, checkRequestBody, takeAuthTokenFromRequest } from './utils';
 import { OrdinazioneDAOPostgresDB } from './db_dao/ordinazione';
 import { Ordinazione } from './shared/entities/ordinazione';
 import { ContoDAOPostgresDB } from './db_dao/conto';
@@ -479,7 +479,7 @@ router.put('/categoria/:id_categoria', authenticateToken, requiresSupervisor, as
 
 
 // --------------------------------------------------------------------------------------
-// ORDINAZIONI E CONTI
+// ORDINAZIONI
 // --------------------------------------------------------------------------------------
 
 router.post('/ordina/:idRistorante', authenticateToken, async (req: Request, res: Response) => {
@@ -780,6 +780,32 @@ router.post('/elemento', authenticateToken, requiresSupervisor, async (req: Requ
     res.status(400).send({ success: false, data: 'Elemento non aggiunto' });
   }
 });
+// --------------------------------------------------------------------------------------
+// CONTI
+// --------------------------------------------------------------------------------------
+
+router.get('/conti', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
+  const token = takeAuthTokenFromRequest(req);
+  if (token == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+
+  const infoUtente = jwt.verify(token, secret) as TokenPayload;
+  if (infoUtente == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+
+
+  const ristorante = await UtenteDAO.getRistorante(infoUtente['email'])
+
+  const contiRistorante = await ContoDAO.getConti(ristorante.id);
+
+  console.log(contiRistorante[0].getImportoTotale());
+  res.json(contiRistorante);
+});
+
 
 // --------------------------------------------------------------------------------------
 // ALLERGENI

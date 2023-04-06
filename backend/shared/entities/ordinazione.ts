@@ -1,5 +1,4 @@
 import { ElementoConQuantita } from "./menu";
-import { Cameriere } from "./utente";
 
 export class Ordinazione {
 	id?: number;
@@ -15,7 +14,7 @@ export class Ordinazione {
 		evasaDa?: number,
 		evaso: boolean = false,
 		elementi: ElementoConQuantita[] = [],
-		id: number = -1
+		id: number = -1,
 	) {
 		this.codice_tavolo = codice_tavolo;
 		this.timestamp = timestamp;
@@ -23,6 +22,20 @@ export class Ordinazione {
 		this.evaso = evaso;
 		this.elementi = elementi;
 		this.id = id;
+	}
+
+	setElementi(elementi: ElementoConQuantita[]) {
+		this.elementi = elementi;
+		return this;
+	}
+
+	setEvasaDa(evasaDa: number) {
+		this.evasaDa = evasaDa;
+		return this;
+	}
+
+	getTotaleElementi(): number {
+		return this.elementi.length;
 	}
 
 	getImporto(): number {

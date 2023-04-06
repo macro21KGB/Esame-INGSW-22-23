@@ -120,8 +120,8 @@ export default function GestisciContiRoute() {
                         {
                             query.isLoading ? <LoadingCircle loaderPosition="absolute" /> :
                                 (
-                                    query.data?.data.map((conto) => (<ItemOrdineTavolo onClick={() => setContoSelezionato(conto)}
-                                        conto={conto} chiuso={true} key={conto.data.toString()} />))
+                                    query.data?.map((conto) => (<ItemOrdineTavolo onClick={() => setContoSelezionato(conto)}
+                                        conto={conto} chiuso={true} key={conto.codice_tavolo} />))
                                 )
                         }
                     </Content>
@@ -138,15 +138,23 @@ export default function GestisciContiRoute() {
                                             <p>{getOraMinutiDaDate(ordine.timestamp)}</p>
                                             <sub>Contiene {ordine.elementi.length} elementi</sub>
                                         </div>
-                                        <span>€{ordine.getImporto()}</span>
+                                        <span>€{ordine.elementi.reduce((prev, curr) => {
+                                            return prev + curr.prezzo * curr.quantita;
+                                        }, 0)}</span>
                                     </ELementoOrdinazioneSupervisore>
                                 )
                             })
                         }
                         <div>
                             <Divider />
-                            <p>Importo totale: €{contoSelezionato.getImportoTotale()}</p>
-                            <p>Quantità piatti ordinati: {contoSelezionato.getTotaleElementi()}</p>
+                            <p>Importo totale: €{contoSelezionato.ordini.reduce((prev, curr) => {
+                                return prev + curr.elementi.reduce((prev, curr) => {
+                                    return prev + curr.prezzo * curr.quantita;
+                                }, 0);
+                            }, 0)}</p>
+                            <p>Quantità piatti ordinati: {contoSelezionato.ordini.reduce((prev, curr) => {
+                                return prev + curr.elementi.length;
+                            }, 0)}</p>
                         </div>
                         <StampaButton onClick={chiudiEStampaConto}>Chiudi e Stampa Conto</StampaButton>
                     </Content>

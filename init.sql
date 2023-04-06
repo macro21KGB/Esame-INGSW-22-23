@@ -97,6 +97,7 @@ ALTER TABLE "Ordinazione" ADD FOREIGN KEY ("evaso_da") REFERENCES "Utente" ("id_
 
 ALTER TABLE "Allergene" ADD FOREIGN KEY ("id_elemento") REFERENCES "Elemento" ("id_elemento");
 
+-- TRIGGER PER ASSEGNARE ORDINE CORRETTO ALL'ELEMENTO
 CREATE OR REPLACE FUNCTION assegna_ordine() RETURNS TRIGGER AS $$
 BEGIN                                  
     UPDATE "Elemento" SET ordine = COALESCE((SELECT MAX(ordine) FROM "Elemento" WHERE id_categoria = NEW.id_categoria), 0) + 1 WHERE id_elemento = NEW.id_elemento;              
@@ -109,6 +110,8 @@ AFTER INSERT ON "Elemento"
 FOR EACH ROW
 EXECUTE FUNCTION assegna_ordine();
 
+-- VIEW PER CONTARE IL NUMERO DI ORDINI PER CONTO
+CREATE  OR REPLACE VIEW conto_numero_ordini AS SELECT c.id_conto, c.codice_tavolo, COUNT(o.id_ordinazione) AS numero_ordinazioni FROM "Conto" c JOIN "Ordinazione" o ON c.id_conto = o.id_conto GROUP BY c.codice_tavolo, c.id_conto;
 
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Mario', 'Rossi', 'mario.rossi@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADMIN','3333333333');
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Salvatore', 'Esposito', 'salvo.espo@gmail.com','$2a$12$nzu1NWK7El1q9AeHsa7PFuy16lE740S/KYeGIemtzqcSeiSFfKI8u','CAMERIERE','3333333333');

@@ -32,7 +32,7 @@ export default function DashboardSupervisore() {
                 <Link to={`/dashboard/${id}/menu`} >
                     <SoftButton text="Gestisci Menu" />
                 </Link>
-                <Link to={`/supevisore/conti`}>
+                <Link to={`/supevisore/cassa`}>
                     <SoftButton text="Gestisci Conti" />
                 </Link>
             </Content>

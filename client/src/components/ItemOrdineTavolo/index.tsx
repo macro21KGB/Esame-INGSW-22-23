@@ -18,6 +18,7 @@ const Container = styled.div`
     background-color: #263657;
     padding: 0;
     margin: 0;
+    margin-bottom: 1rem;
     height: 3rem;
     border-radius: 0.8rem;
     padding-left: 1rem;
@@ -52,7 +53,7 @@ const ContoLabel = styled.div<{ chiuso: boolean }>`
 export default function ItemOrdineTavolo({ conto, chiuso, onClick }: ItemOrdineTavoloProps) {
     return (
         <Container onClick={onClick}>
-            <p>{conto.codice_tavolo}</p>
+            <p>Tavolo {conto.codice_tavolo}</p>
             <ContoLabel chiuso={chiuso}>{chiuso ? "CONTO CHIUSO" : "IN CORSO"}</ContoLabel>
         </Container>
     )

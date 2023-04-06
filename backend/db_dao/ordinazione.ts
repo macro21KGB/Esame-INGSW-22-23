@@ -12,12 +12,12 @@ class OrdinazioneMapper implements IMapper<Ordinazione>{
 }
 
 export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
-    async getOrdinazioni(idRistorante: number, evase: boolean): Promise<Ordinazione[]> {
+    async getOrdinazioni(idRistorante: number, evase: boolean, idConto?: number): Promise<Ordinazione[]> {
         const client = await conn.connect();
 
         try {
-            const result = await client.query('SELECT "Ordinazione".*, "Conto".codice_tavolo FROM "Ordinazione" INNER JOIN "Conto" ON "Ordinazione".id_conto = "Conto".id_conto WHERE "Conto".id_ristorante = $1 AND "Ordinazione".evaso = $2', [idRistorante, evase]);
-            console.log(result.rows);
+            let result = await client.query('SELECT "Ordinazione".*, "Conto".codice_tavolo FROM "Ordinazione" INNER JOIN "Conto" ON "Ordinazione".id_conto = "Conto".id_conto WHERE "Conto".id_ristorante = $1 AND "Ordinazione".evaso = $2', [idRistorante, evase]);
+
             // per ogni ordinazione, prendo i suoi elementi
             for (let i = 0; i < result.rows.length; i++) {
                 console.log(result.rows[i]);

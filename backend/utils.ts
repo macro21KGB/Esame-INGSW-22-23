@@ -28,3 +28,12 @@ export function checkRequestBody(request: Request, requiredFields: string[], all
 
     return requiredFields.some(field => field in request.body);
 }
+
+export function takeAuthTokenFromRequest(request: Request): string | undefined {
+    const authHeader = request.headers.authorization;
+    if (!authHeader)
+        return undefined;
+
+    const token = authHeader.split(' ')[1];
+    return token;
+}
