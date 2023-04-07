@@ -4,6 +4,7 @@ import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
 import { Elemento } from '../entities/menu';
 import { TokenPayload } from './constants';
+import { table } from 'console';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -74,32 +75,37 @@ export function getTokenDaCookie(): string {
  * @param conto conto da scrivere su pdf
  */
 export function scriviContoSuPDF(conto: Conto) {
+
 	const doc = new jsPDF();
+
+	const contoAttuale = Conto.fromContoJSON(conto);
 
 	doc.setFontSize(20);
 
 	doc.text("Conto", 14, 22);
 	doc.setFontSize(12);
-	doc.text(`Numero tavolo: ${conto.codice_tavolo}`, 14, 32);
-	doc.text(`Data: ${conto.data.toISOString()}`, 14, 38);
-	doc.text(`Totale: €${conto.getImportoTotale()}`, 14, 44);
-	doc.text(`Totale elementi: ${conto.getTotaleElementi()}`, 14, 50);
+	doc.text(`Numero tavolo: ${contoAttuale.codice_tavolo}`, 14, 32);
 
-	conto.ordini.forEach((ordinazione, index) => {
+	const dataConOraAttuale = dayjs(contoAttuale.data).format("DD/MM/YYYY HH:mm:ss");
+
+	doc.text(`Data: ${dataConOraAttuale}`, 14, 38);
+
+	contoAttuale.ordini.forEach((ordinazione, index) => {
 		doc.text(`Ordinazione ${index + 1}`, 14, 60 + index * 6);
 		doc.text(`Totale: €${ordinazione.getImporto()}`, 14, 66 + index * 6);
 		doc.text(`Totale elementi: ${ordinazione.getTotaleElementi()}\n\n`, 14, 72 + index * 6);
 		ordinazione.elementi.forEach((elemento, index2) => {
-			doc.text(`Elemento ${index2 + 1}`, 14, 78 + index * 6 + index2 * 6);
-			doc.text(`Nome: ${elemento.nome}`, 14, 84 + index * 6 + index2 * 6);
-			doc.text(`Prezzo: €${elemento.prezzo}`, 14, 90 + index * 6 + index2 * 6);
-			doc.text(`Quantità: ${elemento.quantita}`, 14, 96 + index * 6 + index2 * 6);
+			doc.text(`Elemento ${index2 + 1}`, 14, 78 + index * 8 + index2 * 30);
+			doc.text(`Nome: ${elemento.nome}`, 14, 84 + index * 8 + index2 * 30);
+			doc.text(`Prezzo: €${elemento.prezzo}`, 14, 90 + index * 8 + index2 * 30);
+			doc.text(`Quantità: ${elemento.quantita}`, 14, 96 + index * 8 + index2 * 30);
 		});
 	});
 
-	doc.save(`conto_${conto.codice_tavolo}_${conto.data.toISOString()}.pdf`);
+	doc.save(`contoAttuale_${contoAttuale.codice_tavolo}_${contoAttuale.data}.pdf`);
 
 }
+
 
 
 /**

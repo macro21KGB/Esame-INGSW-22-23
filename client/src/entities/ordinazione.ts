@@ -41,7 +41,7 @@ export class Ordinazione {
 	getImporto(): number {
 		let importo = 0;
 		for (let elemento of this.elementi) {
-			importo += elemento.getPrezzo();
+			importo += elemento.prezzo * elemento.quantita;
 		}
 		return importo;
 	}

@@ -32,7 +32,7 @@ export class Conto {
         return new Conto(
             json.data,
             json.codice_tavolo,
-            json.ordini
+            json.ordini.map(ordinazione => Ordinazione.fromOrdinazioneJSON(ordinazione))
         );
     }
 }

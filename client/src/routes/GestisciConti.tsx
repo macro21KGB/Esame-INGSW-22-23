@@ -106,11 +106,7 @@ export default function GestisciContiRoute() {
                     <Content>
                         {
                             contoSelezionato.ordini.map((ordine) => {
-
-                                return (
-                                    <ELementoOrdinazioneSupervisore ordine={ordine} key={ordine.timestamp.toString()} />
-                                )
-
+                                return <ELementoOrdinazioneSupervisore ordine={ordine} key={ordine.timestamp.toString()} />
                             })
                         }
                         <div>

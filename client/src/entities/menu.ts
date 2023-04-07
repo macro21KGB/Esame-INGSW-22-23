@@ -115,6 +115,18 @@ class ElementoConQuantita extends Elemento {
 			elemento.id_elemento,
 		);
 	}
+
+	public static fromElementoJSON(json: ElementoConQuantita): ElementoConQuantita {
+		return new ElementoConQuantita(
+			json.nome,
+			json.descrizione,
+			json.prezzo,
+			json.ingredienti,
+			json.allergeni,
+			json.quantita,
+			json.id_elemento,
+		);
+	}
 }
 
 export { Menu, Elemento, ElementoConQuantita, Categoria };
