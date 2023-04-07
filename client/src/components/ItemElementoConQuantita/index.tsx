@@ -1,11 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Elemento } from "../../entities/menu";
+import { Elemento, ElementoConQuantita } from "../../entities/menu";
 
 interface ItemElementoCategoriaProps {
-	elemento: Elemento;
+	elemento: Elemento | ElementoConQuantita;
 	quantita: number;
-	onChangeQuantita: (elemento: Elemento, quantita: number) => void;
+	onChangeQuantita?: (elemento: Elemento, quantita: number) => void;
 }
 
 const ItemElementoCategoriaContainer = styled.div<{ isNot0: boolean }>`
@@ -97,6 +97,8 @@ export default function ItemElementoConQuantita({
 	const [quantitaDisplay, setQuantitaDisplay] = useState(quantita);
 
 	const onChangeQuantitaDisplay = (quantita: number) => {
+		if (onChangeQuantita === undefined) return;
+
 		if (quantita < 0) {
 			quantita = 0;
 		}
@@ -123,7 +125,6 @@ export default function ItemElementoConQuantita({
 			<div className="prezzo">
 				<strong>€{elemento.prezzo}</strong>
 			</div>
-
 			<div className="quantita">
 				<button onClick={() => onChangeQuantitaDisplay(quantitaDisplay + 1)}>
 					+

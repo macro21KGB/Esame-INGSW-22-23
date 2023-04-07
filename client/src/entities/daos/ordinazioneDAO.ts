@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { getTokenDaCookie } from '../../utils/utils';
 import { Ordinazione } from './../ordinazione';
 import { API_URL, OrdinazioneConCodice, Result } from '../../utils/constants';
@@ -7,7 +7,6 @@ interface IOrdinazioneDAO {
     getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>>;
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>;
     getOrdinazione(id: number): Promise<Ordinazione>;
-
     evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean>;
 
     addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;

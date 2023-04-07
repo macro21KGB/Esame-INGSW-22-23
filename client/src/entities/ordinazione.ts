@@ -45,4 +45,15 @@ export class Ordinazione {
 		}
 		return importo;
 	}
+
+	public static fromOrdinazioneJSON(json: Ordinazione) {
+		return new Ordinazione(
+			json.codice_tavolo,
+			json.timestamp,
+			json.evasaDa,
+			json.evaso,
+			json.elementi,
+			json.id
+		);
+	}
 }

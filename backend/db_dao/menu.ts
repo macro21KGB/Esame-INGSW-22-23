@@ -1,7 +1,7 @@
 import { ICategoriaDAO } from '../shared/entities/daos/categoriaDAO'
 import { IElementoDAO } from '../shared/entities/daos/elementoDAO'
 import { IAllergeneDAO } from '../shared/entities/daos/allergeneDAO'
-import { Categoria, Elemento, OpzioniElemento } from '../shared/entities/menu'
+import { Categoria, Elemento, ElementoConQuantita, OpzioniElemento } from '../shared/entities/menu'
 import { conn } from '../db_connection'
 import { IMapper } from './mapper';
 import { Ristorante } from '../shared/entities/ristorante';

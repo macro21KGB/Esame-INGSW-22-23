@@ -28,4 +28,11 @@ export class Conto {
     }
 
 
+    public static fromContoJSON(json: Conto) {
+        return new Conto(
+            json.data,
+            json.codice_tavolo,
+            json.ordini
+        );
+    }
 }

@@ -96,7 +96,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
                     contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione));
                 }
                 else {
-                    const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione)];
+                    const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione, row.id_ordinazione)];
 
                     conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto));
                 }

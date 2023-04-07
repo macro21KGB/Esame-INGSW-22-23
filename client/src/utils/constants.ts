@@ -13,6 +13,16 @@ const COLORS = {
 	dangerColor: "#EF3636",
 };
 
+export interface TokenPayload {
+	id: number,
+	nome: string,
+	cognome: string,
+	email: string,
+	ruolo: RUOLI
+	supervisore: boolean
+}
+
+
 export const ALLERGENI = {
 	GLUTINE: "glutine",
 	LATTOSIO: "lattosio",
@@ -22,7 +32,7 @@ export const ALLERGENI = {
 	ARACHIDI: "arachidi",
 	SOIA: "soia",
 	SESAMO: "sesamo",
-};
+} as const;
 
 const API_URL = "http://localhost:3000/api";
 

@@ -9,6 +9,7 @@ import { Conto } from "../entities/conto";
 import { Controller } from "../entities/controller";
 import { useStore } from "../stores/store";
 import { getOraMinutiDaDate, scriviContoSuPDF } from "../utils/utils";
+import ELementoOrdinazioneSupervisore from "../components/ElementoOrdinazioneSupervisore";
 
 const Container = styled.div`
     display: flex;
@@ -53,33 +54,6 @@ const StampaButton = styled.button`
 
     &:hover {
         background-color: #465375;
-    }
-    `;
-
-const ELementoOrdinazioneSupervisore = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #263657;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    line-height: 1.2rem;
-
-    p {
-        margin: 0;
-        font-weight: 600;
-        font-size: 1.2rem;
-    }
-
-    sub {
-        font-style: italic;
-        font-size: 0.8rem;
-    }
-
-    span {
-        font-size: 1.5rem;
-        font-weight: 400;
     }
     `;
 
@@ -132,17 +106,11 @@ export default function GestisciContiRoute() {
                     <Content>
                         {
                             contoSelezionato.ordini.map((ordine) => {
+
                                 return (
-                                    <ELementoOrdinazioneSupervisore key={ordine.timestamp.toString()}>
-                                        <div>
-                                            <p>{getOraMinutiDaDate(ordine.timestamp)}</p>
-                                            <sub>Contiene {ordine.elementi.length} elementi</sub>
-                                        </div>
-                                        <span>€{ordine.elementi.reduce((prev, curr) => {
-                                            return prev + curr.prezzo * curr.quantita;
-                                        }, 0)}</span>
-                                    </ELementoOrdinazioneSupervisore>
+                                    <ELementoOrdinazioneSupervisore ordine={ordine} key={ordine.timestamp.toString()} />
                                 )
+
                             })
                         }
                         <div>

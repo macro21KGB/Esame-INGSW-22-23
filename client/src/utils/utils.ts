@@ -3,6 +3,7 @@ import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
 import { Elemento } from '../entities/menu';
+import { TokenPayload } from './constants';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -190,4 +191,11 @@ export class ElementiOrderSaver {
 		}
 		return [];
 	}
+}
+
+
+export const decodeJWTPayload = (token: string): TokenPayload => {
+	const payload = token.split(".")[1];
+	const decodedPayload = atob(payload);
+	return JSON.parse(decodedPayload);
 }
