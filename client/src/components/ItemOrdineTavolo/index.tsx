@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { Conto } from "../../entities/conto";
+import { useEffect } from "react";
+import { getOraMinutiDaDate } from "../../utils/utils";
 
 interface ItemOrdineTavoloProps {
     conto: Conto;
-    chiuso: boolean;
     onClick?: () => void;
 }
 
@@ -24,6 +25,10 @@ const Container = styled.div`
     padding-left: 1rem;
     cursor: pointer;
     
+    span {
+        margin: 0;
+        font-style: italic;
+    }
 
     p {
         margin: 0;
@@ -50,11 +55,13 @@ const ContoLabel = styled.div<{ chiuso: boolean }>`
     `;
 
 
-export default function ItemOrdineTavolo({ conto, chiuso, onClick }: ItemOrdineTavoloProps) {
+export default function ItemOrdineTavolo({ conto, onClick }: ItemOrdineTavoloProps) {
+
     return (
         <Container onClick={onClick}>
             <p>Tavolo {conto.codice_tavolo}</p>
-            <ContoLabel chiuso={chiuso}>{chiuso ? "CONTO CHIUSO" : "IN CORSO"}</ContoLabel>
+            <span>{getOraMinutiDaDate(conto.data)}</span>
+            <ContoLabel chiuso={conto.chiuso}>{conto.chiuso ? "CONTO CHIUSO" : "IN CORSO"}</ContoLabel>
         </Container>
     )
 }

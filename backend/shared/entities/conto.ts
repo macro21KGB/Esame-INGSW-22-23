@@ -5,12 +5,14 @@ export class Conto {
     data: Date;
     codice_tavolo: string;
     ordini: Ordinazione[];
+    chiuso: boolean;
 
-    constructor(data: Date = new Date(), codice_tavolo: string, ordini: Ordinazione[] = [], id_conto: number = 0) {
+    constructor(data: Date = new Date(), codice_tavolo: string, ordini: Ordinazione[] = [], id_conto: number = 0, chiuso: boolean = false) {
         this.data = data;
         this.ordini = ordini;
         this.codice_tavolo = codice_tavolo;
         this.id_conto = id_conto;
+        this.chiuso = chiuso;
     }
 
     getImportoTotale(): number {

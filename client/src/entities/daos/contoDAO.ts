@@ -17,6 +17,24 @@ interface IContoDAO {
 }
 
 export class ContoDAO implements IContoDAO {
+    async chiudiConto(idConto: number): Promise<boolean> {
+        const token = getTokenDaCookie();
+
+        try {
+            const result = await axios.put<boolean>(`${API_URL}/conto/${idConto}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            })
+
+            const data: boolean = result.data;
+
+            return data;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
     async aggiornaConto(codiceTavolo: string, elementiConQuantita: ElementoConQuantita[], idRistorante: number): Promise<Result<string>> {
         const token = getTokenDaCookie();
 

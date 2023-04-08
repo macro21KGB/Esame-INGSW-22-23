@@ -68,12 +68,12 @@ export class ContoDAOPostgresDB implements IContoDAO {
             prezzo: number;
             nome: string;
             quantita: number;
-            evasa: boolean;
-
+            evaso: boolean;
+            chiuso: boolean;
         }
         const client = await conn.connect();
         try {
-            const queryText = `select c.id_conto, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione from "Conto" c JOIN "Ordinazione" o ON o.id_conto = c.id_conto JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  JOIN "Elemento" e ON e.id_elemento = eo.id_elemento where eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;`
+            const queryText = `SELECT c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso from "Conto" c JOIN "Ordinazione" o ON o.id_conto = c.id_conto JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  JOIN "Elemento" e ON e.id_elemento = eo.id_elemento where eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;`
             const result = await client.query<ContiQueryResult>(queryText, [idRistorante]);
 
 
@@ -93,12 +93,12 @@ export class ContoDAOPostgresDB implements IContoDAO {
                     if (contoInArray.ordini.length > 0) {
                         continue;
                     }
-                    contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione));
+                    contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione));
                 }
                 else {
-                    const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evasa, elementiOrdinazione, row.id_ordinazione)];
+                    const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione, row.id_ordinazione)];
 
-                    conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto));
+                    conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto, row.chiuso));
                 }
 
             }
@@ -111,6 +111,23 @@ export class ContoDAOPostgresDB implements IContoDAO {
             throw new Error(`Could not get conti. Error: ${err}`);
         }
         finally {
+            client.release();
+        }
+    }
+
+    async chiudiConto(idConto: number) {
+        const client = await conn.connect();
+
+        try {
+            const result = await client.query(
+                `UPDATE "Conto" SET chiuso = true WHERE id_conto = $1`,
+                [idConto]
+            );
+
+            return result.rowCount > 0;
+        } catch (err) {
+            throw new Error(`Could not close conto. Error: ${err}`);
+        } finally {
             client.release();
         }
     }

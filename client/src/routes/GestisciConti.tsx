@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components"
 import ItemOrdineTavolo from "../components/ItemOrdineTavolo";
 import LoadingCircle from "../components/LoadingCircle";
@@ -8,8 +8,9 @@ import WelcomePanel from "../components/WelcomePanel";
 import { Conto } from "../entities/conto";
 import { Controller } from "../entities/controller";
 import { useStore } from "../stores/store";
-import { getOraMinutiDaDate, scriviContoSuPDF } from "../utils/utils";
+import { getOraMinutiDaDate, isContoClosed as isContoChiuso, scriviContoSuPDF } from "../utils/utils";
 import ELementoOrdinazioneSupervisore from "../components/ElementoOrdinazioneSupervisore";
+import { toast } from "react-toastify";
 
 const Container = styled.div`
     display: flex;
@@ -32,6 +33,14 @@ const Content = styled.div`
         font-weight: 600;
         color: #465375;
     }
+
+    #apertura_conto {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #465375;
+        font-style: italic;
+    }
+    
 `;
 
 const StampaButton = styled.button`
@@ -67,12 +76,31 @@ const Divider = styled.div`
 export default function GestisciContiRoute() {
 
     const controller = Controller.getInstance();
+    const queryClient = useQueryClient();
 
     const [contoSelezionato, setContoSelezionato] = useState<Conto | undefined>(undefined);
     const idRistorante = useStore(state => state.idRistorante)
 
+    const mutationChiudiConto = useMutation((conto: Conto & { id_conto: number }) => {
+        return controller.chiudiConto(conto.id_conto);
+    }, {
+        onSuccess: (success) => {
+            if (success) {
+                setContoSelezionato(undefined);
+                toast.success("Conto chiuso con successo");
+                queryClient.invalidateQueries(["conti"]);
+            } else {
+                toast.error("Errore durante la chiusura del conto");
+            }
+        }, onError: () => {
+            toast.error("Errore durante la chiusura del conto");
+        }
+    });
+
     const chiudiEStampaConto = () => {
-        controller.chiudiConto(contoSelezionato!);
+        if (!contoSelezionato) return;
+
+        mutationChiudiConto.mutate(contoSelezionato as Conto & { id_conto: number });
         scriviContoSuPDF(contoSelezionato!);
     }
 
@@ -95,7 +123,7 @@ export default function GestisciContiRoute() {
                             query.isLoading ? <LoadingCircle loaderPosition="absolute" /> :
                                 (
                                     query.data?.map((conto) => (<ItemOrdineTavolo onClick={() => setContoSelezionato(conto)}
-                                        conto={conto} chiuso={true} key={conto.codice_tavolo} />))
+                                        conto={conto} key={conto.codice_tavolo} />))
                                 )
                         }
                     </Content>
@@ -104,6 +132,9 @@ export default function GestisciContiRoute() {
 
                 : (
                     <Content>
+                        <WelcomePanel title="Riepligo Conto" subtitle={`Tavolo ${contoSelezionato.codice_tavolo}`} />
+                        <sub id="apertura_conto">Conto aperto alle {getOraMinutiDaDate(contoSelezionato.data)}</sub>
+
                         {
                             contoSelezionato.ordini.map((ordine) => {
                                 return <ELementoOrdinazioneSupervisore ordine={ordine} key={ordine.timestamp.toString()} />
@@ -120,7 +151,10 @@ export default function GestisciContiRoute() {
                                 return prev + curr.elementi.length;
                             }, 0)}</p>
                         </div>
-                        <StampaButton onClick={chiudiEStampaConto}>Chiudi e Stampa Conto</StampaButton>
+                        {
+                            !contoSelezionato.chiuso &&
+                            <StampaButton onClick={chiudiEStampaConto}>Chiudi e Stampa Conto</StampaButton>
+                        }
                     </Content>
                 )}
         </Container>

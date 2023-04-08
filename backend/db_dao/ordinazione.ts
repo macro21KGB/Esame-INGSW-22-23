@@ -12,6 +12,7 @@ class OrdinazioneMapper implements IMapper<Ordinazione>{
 }
 
 export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
+    //TODO rimuovere idConto da getOrdinazioni
     async getOrdinazioni(idRistorante: number, evase: boolean, idConto?: number): Promise<Ordinazione[]> {
         const client = await conn.connect();
 

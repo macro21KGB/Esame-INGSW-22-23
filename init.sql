@@ -53,7 +53,8 @@ CREATE TABLE "Conto" (
   "id_conto" SERIAL PRIMARY KEY,
   "id_ristorante" int NOT NULL,
   "codice_tavolo" VARCHAR(50) NOT NULL,
-  "data" date DEFAULT CURRENT_DATE
+  "data" date DEFAULT CURRENT_DATE,
+  "chiuso" bool DEFAULT false
 );
 
 CREATE TABLE "Ordinazione" (

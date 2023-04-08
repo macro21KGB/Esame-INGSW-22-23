@@ -9,6 +9,7 @@ interface IContoDAO {
     getConti(idRistorante: number): Promise<Conto[]>;
     getContiByData(data: Date): Promise<Conto[]>;
 
+    chiudiConto(idConto: number): Promise<boolean>;
     stampaConto(conto: Conto): Promise<boolean>;
 }
 export type { IContoDAO };

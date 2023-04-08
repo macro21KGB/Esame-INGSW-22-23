@@ -806,6 +806,23 @@ router.get('/conti', authenticateToken, requiresSupervisor, async (req: Request,
   res.json(contiRistorante);
 });
 
+router.put('/conto/:id_conto', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
+  const id_conto = +req.params.id_conto;
+  if (id_conto == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  try {
+    if (await ContoDAO.chiudiConto(+id_conto))
+      res.status(200).send({ success: true, data: 'Stato conto aggiornato' });
+    else
+      res.status(400).send({ success: false, data: 'Stato conto non aggiornato' });
+  }
+  catch (err) {
+    res.status(400).send({ success: false, data: 'Stato conto non aggiornato' });
+  }
+});
 
 // --------------------------------------------------------------------------------------
 // ALLERGENI

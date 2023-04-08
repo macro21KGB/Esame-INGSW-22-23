@@ -199,6 +199,9 @@ export class ElementiOrderSaver {
 	}
 }
 
+export function isContoClosed(conto: Conto): boolean {
+	return conto.ordini.every(ordinazione => ordinazione.evaso === true);
+}
 
 export const decodeJWTPayload = (token: string): TokenPayload => {
 	const payload = token.split(".")[1];

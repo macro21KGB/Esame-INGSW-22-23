@@ -139,13 +139,8 @@ export class Controller {
 
 	}
 
-	public async chiudiConto(conto: Conto): Promise<Result<string>> {
-		return wait(1000).then(() => {
-			return {
-				success: true,
-				data: "Conto chiuso"
-			}
-		});
+	public async chiudiConto(idConto: number): Promise<boolean> {
+		return this.contoDAO.chiudiConto(idConto);
 	}
 
 	public async getOrdinazioniDaEvadere(): Promise<Result<Ordinazione[]>> {

@@ -4,11 +4,13 @@ export class Conto {
     data: Date;
     codice_tavolo: string;
     ordini: Ordinazione[];
+    chiuso: boolean;
 
-    constructor(data: Date = new Date(), codice_tavolo: string, ordini: Ordinazione[] = []) {
+    constructor(data: Date = new Date(), codice_tavolo: string, ordini: Ordinazione[] = [], chiuso: boolean = false) {
         this.data = data;
         this.ordini = ordini;
         this.codice_tavolo = codice_tavolo;
+        this.chiuso = chiuso;
     }
 
     getImportoTotale(): number {
