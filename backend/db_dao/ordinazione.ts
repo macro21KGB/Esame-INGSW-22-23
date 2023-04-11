@@ -4,6 +4,7 @@ import { IMapper } from './mapper';
 import { Ordinazione } from '../shared/entities/ordinazione';
 import { Elemento, ElementoConQuantita } from '../shared/entities/menu';
 
+type DateString = `${number}-${number}-${number}`;
 
 class OrdinazioneMapper implements IMapper<Ordinazione>{
     map(data: any): Ordinazione {
@@ -12,8 +13,8 @@ class OrdinazioneMapper implements IMapper<Ordinazione>{
 }
 
 export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
-    //TODO rimuovere idConto da getOrdinazioni
-    async getOrdinazioni(idRistorante: number, evase: boolean, idConto?: number): Promise<Ordinazione[]> {
+
+    async getOrdinazioni(idRistorante: number, evase: boolean): Promise<Ordinazione[]> {
         const client = await conn.connect();
 
         try {
@@ -104,5 +105,21 @@ export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
             client.release();
         }
     }
+
+    async getOrdinazioneEvaseDa(idUtente: number, opzioni: { dataInizio: DateString, dataFine: DateString }): Promise<{ giorno: DateString, numero_ordinazioni: number }[]> {
+        const client = await conn.connect();
+        try {
+            const queryText = `select count(*) as numero_ordinazioni, o.data as giorno FROM "Ordinazione" o JOIN "Utente" u ON u.id_utente = o.evaso_da WHERE o.evaso = 'true' AND u.id_utente = $1 AND o.data BETWEEN $2 AND $3 GROUP BY o.data;`;
+            const result = await client.query<{ giorno: DateString, numero_ordinazioni: number }>(queryText, [idUtente, opzioni.dataInizio, opzioni.dataFine]);
+
+            return result.rows;
+        } catch (err) {
+            throw new Error(`Could not get ordinazioni. Error: ${err}`);
+        }
+        finally {
+            client.release();
+        }
+    }
+
 
 }

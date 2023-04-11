@@ -534,6 +534,35 @@ router.post('/ordina/:idRistorante', authenticateToken, async (req: Request, res
 
 });
 
+// prende gli ordini di un utente in una determinata data
+router.get('/ordinazioni/:idUtente/', async (req: Request, res: Response) => {
+  const idUtente = req.params.idUtente;
+  type DateString = `${number}-${number}-${number}`;
+
+  if (idUtente == null) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  if (!checkRequestBody(req.body, ['dataInizio', 'dataFine'])) {
+    res.status(400).json({ success: false, data: 'Bad request' });
+    return;
+  }
+
+  const dataInizio = req.body['dataInizio'] as DateString;
+  const dataFine = req.body['dataFine'] as DateString;
+
+  const ordinazioni = await OrdinazioneDAO.getOrdinazioneEvaseDa(+idUtente, { dataInizio, dataFine });
+
+  if (ordinazioni != null) {
+    res.status(200).json({ success: true, data: ordinazioni });
+  }
+  else {
+    res.status(400).json({ success: false, data: 'Errore nel recupero delle statistiche' });
+  }
+});
+
+
 router.get('/ordinazioni/:isEvase', authenticateToken, async (req: Request, res: Response<Result<string | Ordinazione[]>>) => {
 
   const authHeader = req.headers['authorization'];

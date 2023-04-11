@@ -63,7 +63,7 @@ CREATE TABLE "Ordinazione" (
   "timestamp" timestamp DEFAULT CURRENT_TIMESTAMP,
   "data" date DEFAULT CURRENT_DATE,
   "evaso_da" int,
-  "evaso" bool
+  "evaso" bool DEFAULT false
 );
 
 CREATE TABLE "ElementoConQuantita" (
@@ -157,6 +157,9 @@ INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 4,
 INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 5, 2, false);
 INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 6, 2, false);
 
+INSERT INTO "Conto" ( id_ristorante, codice_tavolo, data) VALUES ( 1, 1, '2023-04-09');
+INSERT INTO "Ordinazione" (id_conto, data, evaso_da, evaso) VALUES (1, '2023-04-09', 1, true);
+INSERT INTO "Ordinazione" (id_conto, data,evaso_da, evaso) VALUES (1, '2023-04-09', 1, true);
 
 /*
 SELECT * FROM (

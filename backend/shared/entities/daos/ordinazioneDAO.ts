@@ -1,5 +1,12 @@
 import { Ordinazione } from '../ordinazione';
 
+interface OpzioniTemporali {
+    dataInizio: DateString;
+    dataFine: DateString;
+}
+
+type DateString = `${number}-${number}-${number}`;
+
 interface IOrdinazioneDAO {
     getOrdinazioni(idRistorante: number, evase: boolean): Promise<Ordinazione[]>
     getOrdinazioniNonEvase(): Promise<Ordinazione[]>;
@@ -7,6 +14,8 @@ interface IOrdinazioneDAO {
     getOrdinazione(id: number): Promise<Ordinazione>;
 
     evadiOrdinazione(idOrdinazione: number, idUtente: number): Promise<boolean>;
+
+    getOrdinazioneEvaseDa(idUtente: number, opzioni: OpzioniTemporali): Promise<{ giorno: DateString, numero_ordinazioni: number }[]>;
 
     addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
