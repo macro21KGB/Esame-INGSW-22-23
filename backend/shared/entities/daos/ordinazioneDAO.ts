@@ -15,7 +15,7 @@ interface IOrdinazioneDAO {
 
     evadiOrdinazione(idOrdinazione: number, idUtente: number): Promise<boolean>;
 
-    getOrdinazioneEvaseDa(idUtente: number, opzioni: OpzioniTemporali): Promise<{ giorno: DateString, numero_ordinazioni: number }[]>;
+    getOrdinazioneEvaseDa(emailUtente: string, opzioni: OpzioniTemporali): Promise<{ giorno: DateString, numero_ordinazioni: number }[]>;
 
     addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;

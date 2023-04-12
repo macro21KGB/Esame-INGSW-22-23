@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { ICanBeSupervisor, RUOLI, Utente } from "../../entities/utente";
 import StarBadge from "./StarBadge";
+import { InformazioniUtente } from "../../routes/GestisciUtenza";
 
 export const UtenzaItemContainer = styled.div`
     position: relative;    
@@ -58,7 +59,7 @@ export const UtenzaItemContainer = styled.div`
 
 
 interface UtenzaItemProps {
-	utente: ICanBeSupervisor;
+	utente: InformazioniUtente;
 	onModifica: () => void;
 }
 

@@ -106,11 +106,11 @@ export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
         }
     }
 
-    async getOrdinazioneEvaseDa(idUtente: number, opzioni: { dataInizio: DateString, dataFine: DateString }): Promise<{ giorno: DateString, numero_ordinazioni: number }[]> {
+    async getOrdinazioneEvaseDa(emailUtente: string, opzioni: { dataInizio: DateString, dataFine: DateString }): Promise<{ giorno: DateString, numero_ordinazioni: number }[]> {
         const client = await conn.connect();
         try {
-            const queryText = `select count(*) as numero_ordinazioni, o.data as giorno FROM "Ordinazione" o JOIN "Utente" u ON u.id_utente = o.evaso_da WHERE o.evaso = 'true' AND u.id_utente = $1 AND o.data BETWEEN $2 AND $3 GROUP BY o.data;`;
-            const result = await client.query<{ giorno: DateString, numero_ordinazioni: number }>(queryText, [idUtente, opzioni.dataInizio, opzioni.dataFine]);
+            const queryText = `select count(*) as numero_ordinazioni, o.data as giorno FROM "Ordinazione" o JOIN "Utente" u ON u.id_utente = o.evaso_da WHERE o.evaso = 'true' AND u.email = $1 AND o.data BETWEEN $2 AND $3 GROUP BY o.data;`;
+            const result = await client.query<{ giorno: DateString, numero_ordinazioni: number }>(queryText, [emailUtente, opzioni.dataInizio, opzioni.dataFine]);
 
             return result.rows;
         } catch (err) {

@@ -1,13 +1,14 @@
 import axios from 'axios';
-import { getTokenDaCookie } from '../../utils/utils';
+import { convertFullDateStringToDateString, convertToDateString, getTokenDaCookie } from '../../utils/utils';
 import { Ordinazione } from './../ordinazione';
-import { API_URL, OrdinazioneConCodice, Result } from '../../utils/constants';
+import { API_URL, DateString, OrdinazioneConCodice, Result } from '../../utils/constants';
 
 interface IOrdinazioneDAO {
     getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>>;
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>;
     getOrdinazione(id: number): Promise<Ordinazione>;
     evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean>;
+    getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordini: number }[]>;
 
     addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
@@ -17,7 +18,6 @@ interface IOrdinazioneDAO {
 
 
 class OrdinazioneDAO implements IOrdinazioneDAO {
-
     async getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>> {
         const token = getTokenDaCookie();
 
@@ -39,6 +39,41 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]> {
         throw new Error('Method not implemented.');
     }
+    async getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordini: number }[]> {
+        const token = getTokenDaCookie();
+
+        try {
+            const payloadToSend = {
+                emailUtente: selectedUserEmail,
+                dataInizio: convertToDateString(from),
+                dataFine: convertToDateString(to)
+            }
+
+            const result = await axios.post<{ giorno: DateString, numero_ordini: number }[]>(`${API_URL}/ordinazioni/evase/`, payloadToSend,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            const data = result.data;
+
+
+            return data.map((item) => {
+                return {
+                    giorno: convertFullDateStringToDateString(item.giorno),
+                    numero_ordini: item.numero_ordini
+                }
+            });
+        }
+        catch (err) {
+            console.log(err);
+            return [];
+        }
+    }
+
     getOrdinazione(id: number): Promise<Ordinazione> {
         throw new Error('Method not implemented.');
     }

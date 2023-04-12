@@ -22,6 +22,7 @@ export interface TokenPayload {
 	supervisore: boolean
 }
 
+export type DateString = `${number}-${number}-${number}`
 
 export const ALLERGENI = {
 	GLUTINE: "glutine",

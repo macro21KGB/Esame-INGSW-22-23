@@ -23,10 +23,27 @@ export interface Result<T> {
  */
 
 export function checkRequestBody(request: Request, requiredFields: string[], allRequired = true): boolean {
-    if (allRequired)
-        return requiredFields.every(field => field in request.body);
+    if (!request.body)
+        return false;
 
-    return requiredFields.some(field => field in request.body);
+    if (allRequired) {
+        for (const field of requiredFields) {
+            if (!request.body[field])
+                return false;
+        }
+    } else {
+        let found = false;
+        for (const field of requiredFields) {
+            if (request.body[field]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            return false;
+    }
+
+    return true;
 }
 
 export function takeAuthTokenFromRequest(request: Request): string | undefined {

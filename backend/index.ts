@@ -116,7 +116,7 @@ app.use(cors())
 app.use('/api', router);
 router.use(express.json());
 
-// UTENTU
+// UTENTI
 router.post('/login', async (req: Request, res: Response) => {
   if (!checkRequestBody(req, ['username', 'password']))
     return res.status(400).send({ message: 'Credentials not provided.' });
@@ -535,30 +535,25 @@ router.post('/ordina/:idRistorante', authenticateToken, async (req: Request, res
 });
 
 // prende gli ordini di un utente in una determinata data
-router.get('/ordinazioni/:idUtente/', async (req: Request, res: Response) => {
-  const idUtente = req.params.idUtente;
+router.post('/ordinazioni/evase/', authenticateToken, async (req: Request, res: Response) => {
   type DateString = `${number}-${number}-${number}`;
 
-  if (idUtente == null) {
-    res.status(400).json({ success: false, data: 'Bad request' });
-    return;
-  }
-
-  if (!checkRequestBody(req.body, ['dataInizio', 'dataFine'])) {
-    res.status(400).json({ success: false, data: 'Bad request' });
+  if (!req.body['dataInizio'] || !req.body['dataFine'] || !req.body['emailUtente']) {
+    res.status(400).send("Bad request");
     return;
   }
 
   const dataInizio = req.body['dataInizio'] as DateString;
   const dataFine = req.body['dataFine'] as DateString;
+  const emailUtente = req.body['emailUtente'] as string;
 
-  const ordinazioni = await OrdinazioneDAO.getOrdinazioneEvaseDa(+idUtente, { dataInizio, dataFine });
+  const ordinazioni = await OrdinazioneDAO.getOrdinazioneEvaseDa(emailUtente, { dataInizio, dataFine });
 
   if (ordinazioni != null) {
-    res.status(200).json({ success: true, data: ordinazioni });
+    res.status(200).json(ordinazioni);
   }
   else {
-    res.status(400).json({ success: false, data: 'Errore nel recupero delle statistiche' });
+    res.status(400).send("Errore");
   }
 });
 

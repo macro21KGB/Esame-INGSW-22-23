@@ -1,4 +1,4 @@
-import { LoginPayload, OrdinazioneConCodice, Result } from "./../utils/constants";
+import { DateString, LoginPayload, OrdinazioneConCodice, Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
 import { generaFakeDataCharts, wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
@@ -156,13 +156,8 @@ export class Controller {
 	}
 
 
-	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): any {
-		return wait(1000).then(() => {
-			return {
-				success: true,
-				data: generaFakeDataCharts(7),
-			}
-		});
+	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordini: number }[]> {
+		return this.ordinazioneDAO.getOrdinazioniEvasiPerUtente(selectedUserEmail, from, to);
 	}
 
 }

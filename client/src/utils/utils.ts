@@ -3,7 +3,7 @@ import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
 import { Elemento } from '../entities/menu';
-import { TokenPayload } from './constants';
+import { DateString, TokenPayload } from './constants';
 import { table } from 'console';
 
 // This function checks if a telephone number is valid using a regular expression
@@ -113,12 +113,12 @@ export function scriviContoSuPDF(conto: Conto) {
  * @param maxDays numero di giorni da generare
  * @returns array di oggetti con giorno e numero di evasi
  */
-export function generaFakeDataCharts(maxDays: number): { giorno: string, evasi: number }[] {
+export function generaFakeDataCharts(maxDays: number) {
 	const data = [];
 	for (let i = 0; i < maxDays; i++) {
 		data.push({
 			giorno: `giorno ${i}`,
-			evasi: Math.floor(Math.random() * 100),
+			numero_ordini: Math.floor(Math.random() * 100),
 		});
 	}
 	return data;
@@ -180,6 +180,19 @@ export function isValoriNonSettati(obj: Record<string, any>): boolean {
 		}
 	}
 	return false;
+}
+
+
+export function convertToDateString(date: Date): string {
+	return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
+export function convertFullDateStringToDateString(date: string): DateString {
+	if (date === undefined) {
+		return "2001-06-24";
+	}
+
+	return date.split("T")[0] as DateString;
 }
 
 export class ElementiOrderSaver {
