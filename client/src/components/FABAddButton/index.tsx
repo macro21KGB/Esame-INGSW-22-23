@@ -17,6 +17,11 @@ font-size: 1.5rem;
 font-weight: bold;
 height: 2.5rem;
 width: 2.5rem;
+transition: transform 0.2s ease-in-out;
+
+&:hover {
+	transform: scale(1.1);
+}
 
 `;
 

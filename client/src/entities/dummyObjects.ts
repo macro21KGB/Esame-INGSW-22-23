@@ -52,9 +52,7 @@ const dummyElementoConQuantita = ElementoConQuantita.fromElemento(
 const dummyOrdinazione = new Ordinazione("23").setElementi([
 	dummyElementoConQuantita,
 ]);
-const dummyOrdinazioneEvasa = new Ordinazione("23")
-	.setElementi([dummyElementoConQuantita])
-	.setEvasaDa(dummyAdmin as Cameriere);
+
 
 const dummyConto = new Conto(new Date(), "Tavolo 23", [
 	dummyOrdinazione
@@ -67,6 +65,5 @@ export {
 	dummyCategoria,
 	dummyElemento,
 	dummyElementoConQuantita,
-	dummyOrdinazioneEvasa,
 	dummyConto
 };
