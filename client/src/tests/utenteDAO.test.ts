@@ -53,7 +53,7 @@ describe('L utenteDAO dovrebbe permettere di registrare e loggare un utente', ()
             const result = await utenteDAO.accediUtente(email, password);
 
             expect(result.success).toBe(true);
-            expect(result.data).toBeTypeOf('string');
+            expect(result.data).toBeTypeOf('object');
         });
 
         it("dovrebbe ritornare un oggetto di tipo Result<string> se l'utente non è stato loggato con successo", async () => {
