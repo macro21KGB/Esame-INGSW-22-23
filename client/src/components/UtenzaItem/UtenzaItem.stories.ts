@@ -1,4 +1,5 @@
-import { Meta } from "@storybook/react";
+import React from "react";
+import { Meta, } from "@storybook/react";
 import UtenzaItem from ".";
 import { InformazioniUtente } from "../../routes/GestisciUtenza";
 import { RUOLI } from "../../entities/utente";
@@ -21,6 +22,7 @@ const utenteAddettoCucina = {
 const utenteAddettoCameriere = {
     ...utente,
     ruolo: RUOLI.CAMERIERE,
+
 }
 
 const meta: Meta = {
@@ -29,7 +31,10 @@ const meta: Meta = {
     args: {
         utente,
         onModifica: () => { },
-    }
+    },
+    decorators: [
+    ]
+
 }
 
 export default meta;

@@ -23,7 +23,10 @@ const ItemRistoranteContainer = styled.button`
         font-size: 2rem;
         font-weight: bold;
         margin: 0;
-        
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 18rem;
 
     }
 

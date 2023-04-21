@@ -20,7 +20,7 @@ const DashboardSupervisore = lazy(() => import("./routes/DashboardSupervisore"))
 const GestisciContiRoute = lazy(() => import("./routes/GestisciConti"));
 const StatisticheRoute = lazy(() => import("./routes/Statistiche"));
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
 	{
 		path: "/",
 		element:
@@ -134,7 +134,7 @@ const router = createBrowserRouter([
 
 ]);
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>

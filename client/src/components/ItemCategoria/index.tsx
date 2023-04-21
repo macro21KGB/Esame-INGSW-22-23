@@ -41,7 +41,8 @@ const ItemCategoriaContainer = styled.div`
 export default function ItemCategoria({
     categoria,
 }: ItemCategoriaProps) {
-    const params = useParams<{ id: string }>();
+
+    const params = useParams<{ id: string }>() || { id: "" };
 
     return (
         <Link to={`/dashboard/${params.id}/menu/${categoria.id_categoria}`}>
