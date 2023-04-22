@@ -716,6 +716,10 @@ router.put('/scambia-elementi/:id_elemento1/:id_elemento2', authenticateToken, r
     return;
   }
   try {
+    if( id_elemento1 == id_elemento2) {
+      res.status(200).send({ success: true, data: 'Non ha senso scambiare lo stesso elemento' });
+      return;
+    }
     if (await ElementoDAO.scambiaOrdineElementi(+id_elemento1, +id_elemento2))
       res.status(200).send({ success: true, data: 'Elementi scambiati' });
     else
@@ -779,7 +783,7 @@ router.put('/elemento/:id_elemento', authenticateToken, requiresSupervisor, asyn
 
 router.post('/elemento', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
   if (!req.body['nome'] || !req.body['prezzo'] || !req.body['descrizione'] || !req.body['id_categoria']) {
-    res.status(400).json({ success: false, data: 'Bad request' });
+    res.status(400).send({ success: false, data: 'Bad request' });
     return;
   }
   const ingredienti = req.body['ingredienti'] || "";

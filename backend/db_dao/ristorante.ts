@@ -70,10 +70,11 @@ class RistoranteDAOPostgresDB implements IRistoranteDAO {
                             return reject(false);
                         }
                         conn.query(`COMMIT;`, 
-                        (err : any, res : any) => {
+                        async(err : any, res : any) => {
                             if (err) {
                                 // log error
                                 console.log(err);
+                                await conn.query('ROLLBACK;');
                                 return reject(false);
                             }
                             resolve(true);

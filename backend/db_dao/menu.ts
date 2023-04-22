@@ -181,7 +181,8 @@ class ElementoDAOPostgresDB implements IElementoDAO {
     }
 
     async scambiaOrdineElementi(idElemento1: number, idElemento2: number): Promise<Boolean> {
-
+        if (idElemento1 == idElemento2)
+            return false;
         try {
             await conn.query('BEGIN;');
             const update1Text = 'UPDATE "Elemento" SET ordine = ordine + 1 WHERE id_elemento = $1;';

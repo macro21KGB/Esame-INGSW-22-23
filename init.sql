@@ -44,7 +44,7 @@ CREATE TABLE "Elemento" (
   "id_categoria" int NOT NULL,
   "nome" VARCHAR(50),
   "descrizione" VARCHAR(250),
-  "prezzo" float,
+  "prezzo" float CHECK ("prezzo" > 0),
   "ingredienti" VARCHAR(250),
   "ordine" integer DEFAULT 0 NOT NULL
 );
@@ -69,7 +69,7 @@ CREATE TABLE "Ordinazione" (
 CREATE TABLE "ElementoConQuantita" (
   "id_elemento" int NOT NULL,
   "id_ordinazione" int NOT NULL,
-  "quantita" int
+  "quantita" int CHECK ("quantita" > 0)
 );
 
 CREATE TABLE "Allergene" (
