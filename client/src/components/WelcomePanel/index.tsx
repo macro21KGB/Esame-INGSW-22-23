@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 interface WelcomePanelProps {
-	title: string;
-	subtitle: string;
+    title: string;
+    subtitle: string;
 }
 
 const WelcomePanelContainer = styled.div`
@@ -32,13 +32,12 @@ const WelcomePanelContainer = styled.div`
 
     `;
 
-export default function WelcomePanel(props: WelcomePanelProps) {
-	const { title, subtitle } = props;
+export default function WelcomePanel({ title, subtitle }: WelcomePanelProps) {
 
-	return (
-		<WelcomePanelContainer>
-			<p>{title}</p>
-			<sub>{subtitle}</sub>
-		</WelcomePanelContainer>
-	);
+    return (
+        <WelcomePanelContainer>
+            <p>{title}</p>
+            <sub>{subtitle}</sub>
+        </WelcomePanelContainer>
+    );
 }

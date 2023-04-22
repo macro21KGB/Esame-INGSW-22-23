@@ -5,10 +5,7 @@ interface ItemElementoOrdinazioneProps {
 	elemento: ElementoConQuantita;
 }
 
-export default function ItemElementoOrdinazione(
-	props: ItemElementoOrdinazioneProps,
-) {
-	const { elemento } = props;
+export default function ItemElementoOrdinazione({ elemento }: ItemElementoOrdinazioneProps) {
 
 	return (
 		<div style={{ fontWeight: "bold", fontSize: "1.2rem" }}>
