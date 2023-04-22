@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 interface SoftButtonProps {
-	text: string;
-	onClick?: () => void;
+    text: string;
+    onClick?: () => void;
 }
 
 const SoftButtonContainer = styled.div`
@@ -40,9 +40,9 @@ const SoftButtonContainer = styled.div`
     `;
 
 export default function SoftButton(props: SoftButtonProps) {
-	return (
-		<SoftButtonContainer onClick={props.onClick}>
-			{props.text}
-		</SoftButtonContainer>
-	);
+    return (
+        <SoftButtonContainer onClick={props.onClick}>
+            {props.text}
+        </SoftButtonContainer>
+    );
 }
