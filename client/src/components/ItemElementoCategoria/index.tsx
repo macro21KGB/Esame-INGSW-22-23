@@ -123,6 +123,15 @@ const AllergeneSub = styled.sub`
 export default function ItemElementoCategoria({
 	elemento, onClickDown, onClickUp, onClickElemento, ordine
 }: ItemElementoCategoriaProps) {
+
+	if (elemento === null) {
+		return (
+			<ItemElementoCategoriaContainer >
+				<p>Si è verficato un errore!</p>
+			</ItemElementoCategoriaContainer >
+		)
+	}
+
 	return (
 		<ItemElementoCategoriaContainer >
 
