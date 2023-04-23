@@ -12,6 +12,7 @@ import { Result, checkRequestBody, takeAuthTokenFromRequest } from './utils';
 import { OrdinazioneDAOPostgresDB } from './db_dao/ordinazione';
 import { Ordinazione } from './shared/entities/ordinazione';
 import { ContoDAOPostgresDB } from './db_dao/conto';
+import { swaggerSetup } from './helper/documentation';
 
 const UtenteDAO = new UtenteDAOPostgresDB();
 const RistoranteDAO = new RistoranteDAOPostgresDB();
@@ -24,6 +25,8 @@ const OrdinazioneDAO = new OrdinazioneDAOPostgresDB();
 const app = express();
 const router = Router();
 const port = 3000;
+
+const swagger = require("swagger-ui-express");
 
 const secret = 'ilMioSegretoSegretissimo';
 
@@ -114,6 +117,8 @@ export function blockAccessToOtherResturantsEmployees(req: Request, res: Respons
 // Middleware
 app.use(cors())
 app.use('/api', router);
+app.use('/doc',swagger.serve);
+app.use('/doc',swagger.setup(swaggerSetup));
 router.use(express.json());
 
 // UTENTI
