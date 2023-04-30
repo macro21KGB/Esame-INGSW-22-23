@@ -35,10 +35,13 @@ const creaRistorante = {
 }
 
 export const resturantRoute ={
-    "/resturants/id":{
+    "/resturants":{
         get: listaRistoranti
     },
-    "/resturant":{
+    "/resturant/id":{
         post: creaRistorante
+    },
+    "/resturant":{
+        get:{}
     }
 }
