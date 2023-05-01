@@ -8,7 +8,7 @@ import { RistoranteDAOPostgresDB } from './db_dao/ristorante';
 import { ElementoDAOPostgresDB, CategoriaDAOPostgresDB, AllergeneDAOPostgresDB } from './db_dao/menu';
 import { Ristorante } from './shared/entities/ristorante';
 import { Categoria, Elemento, Allergene, ElementoConQuantita } from './shared/entities/menu';
-import { Result, checkRequestBody, takeAuthTokenFromRequest } from './utils';
+import { Result, checkRequestBody, getAuthTokenFromRequest } from './utils';
 import { OrdinazioneDAOPostgresDB } from './db_dao/ordinazione';
 import { Ordinazione } from './shared/entities/ordinazione';
 import { ContoDAOPostgresDB } from './db_dao/conto';
@@ -50,7 +50,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
   if (token == null) return res.status(400).json({ message: "Token not provided" });
   jwt.verify(token, secret, (err: any, decoded: any) => {
     if (err) return res.status(403).json({ message: "Invalid token" });
-    console.log(decoded as TokenPayload);
+    //console.log(decoded as TokenPayload);
     next()
   })
 }
@@ -113,12 +113,24 @@ export function blockAccessToOtherResturantsEmployees(req: Request, res: Respons
   });
 }
 
+const swaggerUiOptions = {
+  swaggerOptions: {
+    bearerAuth: {
+      name:   'Authorization',
+      schema: {
+        type: 'bearer',
+        in:   'header'
+      },
+      value:  'Bearer <token>'
+    }
+  }
+}
 
 // Middleware
 app.use(cors())
 app.use('/api', router);
 app.use('/doc',swagger.serve);
-app.use('/doc',swagger.setup(swaggerSetup));
+app.use('/doc',swagger.setup(swaggerSetup,swaggerUiOptions));
 router.use(express.json());
 
 // UTENTI
@@ -142,7 +154,7 @@ router.post('/login', async (req: Request, res: Response) => {
   if (user instanceof Cameriere || user instanceof AddettoAllaCucina) {
     supervisore = (user as Cameriere).supervisore || (user as AddettoAllaCucina).supervisore;
   }
-  console.log("utente id: " + id);
+  //console.log("utente id: " + id);
   const payload: TokenPayload = {
     id: id,
     nome: user.nome,
@@ -725,6 +737,10 @@ router.put('/scambia-elementi/:id_elemento1/:id_elemento2', authenticateToken, r
       res.status(200).send({ success: true, data: 'Non ha senso scambiare lo stesso elemento' });
       return;
     }
+    if(+id_elemento1 < 0 || +id_elemento2 <0 ) {
+      res.status(200).send({ success: false, data: 'Errore: id negativi' });
+      return;
+    }
     if (await ElementoDAO.scambiaOrdineElementi(+id_elemento1, +id_elemento2))
       res.status(200).send({ success: true, data: 'Elementi scambiati' });
     else
@@ -780,7 +796,7 @@ router.put('/elemento/:id_elemento', authenticateToken, requiresSupervisor, asyn
       res.status(400).send({ success: false, data: 'Elemento non aggiornato' });
   }
   catch (err) {
-    console.log(err);
+    //console.log(err);
     res.status(400).send({ success: false, data: 'Elemento non aggiornato' });
   }
 });
@@ -809,7 +825,7 @@ router.post('/elemento', authenticateToken, requiresSupervisor, async (req: Requ
       res.status(400).send({ success: false, data: 'Elemento non aggiunto' });
   }
   catch (err) {
-    console.log(err);
+    //console.log(err);
     res.status(400).send({ success: false, data: 'Elemento non aggiunto' });
   }
 });
@@ -818,7 +834,7 @@ router.post('/elemento', authenticateToken, requiresSupervisor, async (req: Requ
 // --------------------------------------------------------------------------------------
 
 router.get('/conti', authenticateToken, requiresSupervisor, async (req: Request, res: Response) => {
-  const token = takeAuthTokenFromRequest(req);
+  const token = getAuthTokenFromRequest(req);
   if (token == undefined) {
     res.status(401).json({ success: false, data: 'Unauthorized' });
     return;
@@ -835,7 +851,7 @@ router.get('/conti', authenticateToken, requiresSupervisor, async (req: Request,
 
   const contiRistorante = await ContoDAO.getConti(ristorante.id);
 
-  console.log(contiRistorante[0].getImportoTotale());
+  //console.log(contiRistorante[0].getImportoTotale());
   res.json(contiRistorante);
 });
 

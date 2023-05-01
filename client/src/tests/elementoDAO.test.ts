@@ -88,7 +88,7 @@ describe('Elemento DAO dovrebbe permettere di creare un nuovo elemento e scambia
         
         it("Lo scambio elementi che non esistono non solleva errore e ritorna true", async () => {
             const result = await elementoDAO.scambiaElementi(-2,-1,token);
-            expect(result.success).toBe(true);
+            expect(result.success).toBe(false);
             expect(result.data).toBeTypeOf('string');
         });
         

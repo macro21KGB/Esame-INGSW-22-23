@@ -46,7 +46,7 @@ export function checkRequestBody(request: Request, requiredFields: string[], all
     return true;
 }
 
-export function takeAuthTokenFromRequest(request: Request): string | undefined {
+export function getAuthTokenFromRequest(request: Request): string | undefined {
     const authHeader = request.headers.authorization;
     if (!authHeader)
         return undefined;

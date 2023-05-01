@@ -1,9 +1,19 @@
 export enum ROUTE_TAGS {
 	UTENTE = "Utente",
-    RISTORANTE = "Ristorante"
+    RISTORANTE = "Ristorante",
+    MENU = "Menu",
+    ORDINAZIONE = "Ordinazione",
+    ELEMENTO = "Elemento",
+    CONTO = "Conto",
+    ALLERGENE = "Allergene",
 }
-import {userRoute} from "./route/user.doc";
-import {resturantRoute} from "./route/resturant.doc";
+import {userRoutes} from "./route/user.doc";
+import {resturantRoutes} from "./route/resturant.doc";
+import { menuRoutes } from "./route/menu.doc";
+import { ordinazioneRoutes } from "./route/ordinazione.doc";
+import { elementoRoutes } from "./route/elemento.doc";
+import { contoRoutes } from "./route/conto.doc";
+import { allergeneRoutes } from "./route/allergene.doc";
 const swaggerSetup = {
     openapi: "3.0.0",
     info: {
@@ -22,9 +32,22 @@ const swaggerSetup = {
         }
     ],
     paths: {
-        ...userRoute,
-        ...resturantRoute
-    }
+        ...userRoutes,
+        ...resturantRoutes,
+        ...menuRoutes,
+        ...ordinazioneRoutes,
+        ...elementoRoutes,
+        ...contoRoutes,
+        ...allergeneRoutes,
+    },
+    components: {
+        securitySchemes: {
+          bearerAuth: {
+            type:   'http',
+            scheme: 'bearer'
+          }
+        }
+      },
 };
 
 export { swaggerSetup };
