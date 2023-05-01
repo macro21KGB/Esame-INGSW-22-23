@@ -21,8 +21,6 @@ describe('Elemento DAO dovrebbe permettere di creare un nuovo elemento e scambia
     const token = (await utenteDAO.accediUtente(email, password)).data.token;
 
     describe('addElemento()', () => {
-        
-        
         it("dovrebbe ritornare true se l'elemento è stato registrato con successo", async () => {
             const elemento = new Elemento(`test${randomInt(8000)}`,
                          "Descrizione",
