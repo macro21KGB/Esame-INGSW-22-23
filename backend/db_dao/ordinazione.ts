@@ -111,7 +111,7 @@ export class OrdinazioneDAOPostgresDB implements IOrdinazioneDAO {
         try {
             const queryText = `select count(*) as numero_ordinazioni, o.data as giorno FROM "Ordinazione" o JOIN "Utente" u ON u.id_utente = o.evaso_da WHERE o.evaso = 'true' AND u.email = $1 AND o.data BETWEEN $2 AND $3 GROUP BY o.data;`;
             const result = await client.query<{ giorno: DateString, numero_ordinazioni: number }>(queryText, [emailUtente, opzioni.dataInizio, opzioni.dataFine]);
-
+            console.log(result.rows);
             return result.rows;
         } catch (err) {
             throw new Error(`Could not get ordinazioni. Error: ${err}`);

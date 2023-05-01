@@ -8,11 +8,14 @@ import { NavbarFactory } from "../components/NavBar";
 import SoftButton from "../components/SoftButton";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
-import { Result } from "../utils/constants";
 import { prendiInizioEFine as prendiLassoTemporale } from "../utils/utils";
 import { useParams } from "react-router";
 import { RUOLI } from "../entities/utente";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+
 
 const DashboardContainer = styled.div`
     display: flex;
@@ -31,17 +34,9 @@ const DashboardContainer = styled.div`
         gap: 0.5rem;
         margin: 0.5rem 0;
 
-        div:first-child {
+        #buttons {
             display: flex;
             flex-direction: row;
-        }
-
-        div:last-child {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.5rem;
         }
     }
 `;
@@ -62,14 +57,17 @@ export default function StatisticheRoute() {
 
     const { id } = useParams();
 
-    const fromInputRef = useRef<HTMLInputElement>(null);
-    const toInputRef = useRef<HTMLInputElement>(null);
+    const [startDate, setStartDate] = useState<Date>(new Date());
+    const [endDate, setEndDate] = useState<Date>(new Date());
 
     const controller = Controller.getInstance();
-    const [timeSpan, setTimeSpan] = useState<{ from: Date, to: Date }>({
-        from: new Date(),
-        to: new Date()
-    })
+
+    const onChangeDateFromCalendar = (dates: [Date | null, Date | null]) => {
+        const [start, end] = dates;
+        setStartDate(start!);
+        setEndDate(end!);
+        mutationAggiornaTimeSpan.mutate({ from: start!, to: end! });
+    };
 
     const queryUtenti = useQuery(["utenti", "cucina"], async () => {
         if (id === undefined) return [];
@@ -77,24 +75,9 @@ export default function StatisticheRoute() {
         return utenti.filter(utente => utente.ruolo != RUOLI.ADDETTO_CUCINA);
     });
 
-    useEffect(() => {
-        const today = new Date();
-        if (fromInputRef.current && toInputRef.current) {
-            fromInputRef.current.valueAsDate = today;
-            toInputRef.current.valueAsDate = today;
-        }
-    }, [])
-
-    useEffect(() => {
-        if (fromInputRef.current && toInputRef.current) {
-            fromInputRef.current.valueAsDate = timeSpan.from;
-            toInputRef.current.valueAsDate = timeSpan.to;
-        }
-    }, [timeSpan]);
-
-
-    const queryOrdiniEvasi = useQuery<{ giorno: string, numero_ordini: number }[]>(["ordini", "evasi", selectedEmailUser], () => {
-        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, timeSpan.from, timeSpan.to);
+    const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], async () => {
+        const result = await controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, startDate, endDate!);
+        return result;
     },
         {
             enabled: selectedEmailUser !== "" && selectedEmailUser !== "0",
@@ -102,7 +85,6 @@ export default function StatisticheRoute() {
     );
 
     const mutationAggiornaTimeSpan = useMutation((newTimeSpan: { from: Date, to: Date }) => {
-        setTimeSpan(newTimeSpan);
         return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, newTimeSpan.from, newTimeSpan.to);
     },
         {
@@ -120,9 +102,9 @@ export default function StatisticheRoute() {
         }
     );
 
-    const aggiornaTimeSpan = (newTimeSpan: { from: Date, to: Date }) => {
-        console.log(newTimeSpan);
-        mutationAggiornaTimeSpan.mutate(newTimeSpan);
+    const aggiornaTimeSpan = async (newTimeSpan: { from: Date, to: Date }) => {
+        setStartDate(newTimeSpan.from);
+        setEndDate(newTimeSpan.to);
     }
 
     return (
@@ -149,36 +131,28 @@ export default function StatisticheRoute() {
                 {queryOrdiniEvasi.data &&
                     <>
                         <div id="options">
-                            <div>
+                            <div id="buttons">
+                                <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("today")) }} text="Oggi" />
                                 <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("week")) }} text="Questa settimana" />
                                 <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("month")) }} text="Questo mese" />
                                 <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("year")) }} text="Questo anno" />
                             </div>
-                            <div>
-                                <label htmlFor="from">From</label>
-                                <input ref={fromInputRef} onChange={(e) => {
-                                    setTimeSpan({
-                                        from: new Date(e.target.value),
-                                        to: timeSpan.to
-                                    })
-                                }} name="from" type="date" />
-
-                                <label htmlFor="to">To</label>
-                                <input ref={toInputRef} onChange={(e) => {
-                                    setTimeSpan({
-                                        from: timeSpan.from,
-                                        to: new Date(e.target.value),
-                                    })
-                                }} name="to" type="date" />
-                            </div>
+                            <DatePicker
+                                selected={startDate}
+                                startDate={startDate}
+                                onChange={onChangeDateFromCalendar}
+                                endDate={endDate}
+                                selectsRange
+                            />
                         </div>
                         <ResponsiveContainer width="95%" >
+
                             <BarChart width={730} height={250} data={queryOrdiniEvasi.data}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="giorno" />
                                 <YAxis />
                                 <Tooltip />
-                                <Bar dataKey="numero_ordini" name="Numero Ordini" fill="#8884d8" />
+                                <Bar dataKey="numero_ordinazioni" name="Numero Ordini" fill="#8884d8" />
                             </BarChart>
                         </ResponsiveContainer>
                     </>
