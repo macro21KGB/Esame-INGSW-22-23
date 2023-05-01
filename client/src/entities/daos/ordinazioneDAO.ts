@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { convertFullDateStringToDateString, convertToDateString, getTokenDaCookie } from '../../utils/utils';
+import { convertFullDateStringToDateString, convertToDateString, createArrayOfDates, getTokenDaCookie } from '../../utils/utils';
 import { Ordinazione } from './../ordinazione';
 import { API_URL, DateString, OrdinazioneConCodice, Result } from '../../utils/constants';
 
@@ -8,7 +8,7 @@ interface IOrdinazioneDAO {
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>;
     getOrdinazione(id: number): Promise<Ordinazione>;
     evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean>;
-    getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordini: number }[]>;
+    getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordinazioni: number }[]>;
 
     addOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
     updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>;
@@ -39,8 +39,11 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
     getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]> {
         throw new Error('Method not implemented.');
     }
-    async getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordini: number }[]> {
+    async getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordinazioni: number }[]> {
         const token = getTokenDaCookie();
+
+        if (to === null)
+            to = new Date();
 
         try {
             const payloadToSend = {
@@ -49,7 +52,7 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
                 dataFine: convertToDateString(to)
             }
 
-            const result = await axios.post<{ giorno: DateString, numero_ordini: number }[]>(`${API_URL}/ordinazioni/evase/`, payloadToSend,
+            const result = await axios.post<{ giorno: DateString, numero_ordinazioni: number }[]>(`${API_URL}/ordinazioni/evase/`, payloadToSend,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -60,13 +63,12 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
 
             const data = result.data;
 
-
-            return data.map((item) => {
+            return data.map((item => {
                 return {
                     giorno: convertFullDateStringToDateString(item.giorno),
-                    numero_ordini: item.numero_ordini
+                    numero_ordinazioni: +item.numero_ordinazioni
                 }
-            });
+            }));
         }
         catch (err) {
             console.log(err);

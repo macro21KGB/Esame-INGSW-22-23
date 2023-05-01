@@ -21,7 +21,8 @@ const SoftButtonContainer = styled.div`
     margin: 0.2rem;
 
     min-height: 3rem;
-    
+    min-width: 3rem;
+
     font-weight: 400;
     cursor: pointer;
 

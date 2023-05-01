@@ -129,10 +129,13 @@ export function generaFakeDataCharts(maxDays: number) {
  * @param lassoTemporale lasso temporale da prendere
  * @returns {{from: Date, to: Date}} oggetto con data inizio e data fine del lasso temporale
  */
-export const prendiInizioEFine = (lassoTemporale: "week" | "month" | "year"): { from: Date, to: Date } => {
+export const prendiInizioEFine = (lassoTemporale: "today" | "week" | "month" | "year"): { from: Date, to: Date } => {
+
+	if (lassoTemporale === "today")
+		return { from: new Date(), to: new Date() };
+
 	const from = dayjs().startOf(lassoTemporale).toDate();
 	const to = dayjs().endOf(lassoTemporale).toDate();
-
 	return { from, to };
 }
 
@@ -183,7 +186,7 @@ export function isValoriNonSettati(obj: Record<string, any>): boolean {
 }
 
 
-export function convertToDateString(date: Date): string {
+export function convertToDateString(date: Date): DateString {
 	return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
@@ -210,6 +213,21 @@ export class ElementiOrderSaver {
 		}
 		return [];
 	}
+}
+
+export function createArrayOfDates(from: Date, to: Date, orders: { giorno: string; numero_ordinazioni: number }[]): { giorno: DateString; numero_ordinazioni: number }[] {
+	const dates = [];
+	let currentDate = new Date(from);
+	while (currentDate <= to) {
+		const dateString: DateString = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+		const order = orders.find((o) => o.giorno === dateString);
+		dates.push({
+			giorno: dateString,
+			numero_ordinazioni: order ? order.numero_ordinazioni : 0,
+		});
+		currentDate.setDate(currentDate.getDate() + 1);
+	}
+	return dates;
 }
 
 export function isContoClosed(conto: Conto): boolean {

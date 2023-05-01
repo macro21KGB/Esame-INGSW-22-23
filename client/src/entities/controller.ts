@@ -156,7 +156,7 @@ export class Controller {
 	}
 
 
-	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordini: number }[]> {
+	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordinazioni: number }[]> {
 		return this.ordinazioneDAO.getOrdinazioniEvasiPerUtente(selectedUserEmail, from, to);
 	}
 
