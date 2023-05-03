@@ -3,7 +3,7 @@ import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
 import { Elemento } from '../entities/menu';
-import { DateString, TokenPayload } from './constants';
+import { DateString, InfoGiorno, TokenPayload } from './constants';
 import { table } from 'console';
 
 // This function checks if a telephone number is valid using a regular expression
@@ -215,20 +215,35 @@ export class ElementiOrderSaver {
 	}
 }
 
-export function createArrayOfDates(from: Date, to: Date, orders: { giorno: string; numero_ordinazioni: number }[]): { giorno: DateString; numero_ordinazioni: number }[] {
-	const dates = [];
-	let currentDate = new Date(from);
-	while (currentDate <= to) {
-		const dateString: DateString = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-		const order = orders.find((o) => o.giorno === dateString);
-		dates.push({
-			giorno: dateString,
-			numero_ordinazioni: order ? order.numero_ordinazioni : 0,
-		});
-		currentDate.setDate(currentDate.getDate() + 1);
+const addZeroPrefix = (num: number): string => {
+	return num < 10 ? `0${num}` : `${num}`;
+};
+
+export const createInfoGiorniFromDateToDate = (from: Date, to: Date, completati: InfoGiorno[]): InfoGiorno[] => {
+
+
+	const result: InfoGiorno[] = [];
+	let completatiIndex = 0;
+	for (let i = from; i <= to; i.setDate(i.getDate() + 1)) {
+		const currentDateString = `${i.getFullYear()}-${addZeroPrefix(i.getMonth() + 1)}-${addZeroPrefix(i.getDate())}` as DateString;
+		const currentCompletatiDateString = convertFullDateStringToDateString(completati[completatiIndex]?.giorno)
+		if (currentDateString == currentCompletatiDateString) {
+			result.push({
+				giorno: currentCompletatiDateString,
+				numero_ordinazioni: +completati[completatiIndex].numero_ordinazioni
+			});
+			completatiIndex++;
+		}
+		else {
+			result.push({
+				giorno: currentDateString,
+				numero_ordinazioni: 0
+			});
+		}
 	}
-	return dates;
-}
+
+	return result;
+};
 
 export function isContoClosed(conto: Conto): boolean {
 	return conto.ordini.every(ordinazione => ordinazione.evaso === true);

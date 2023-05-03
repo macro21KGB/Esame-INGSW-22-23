@@ -147,7 +147,7 @@ const OuterLayer = styled.div`
     justify-content: space-between;
     background-color: #d9d9d9;
     `;
-
+//TODO controllare che il ritardo sia funzionante
 export default function ItemOrdinazione({
 	ordinazione,
 	evasa,

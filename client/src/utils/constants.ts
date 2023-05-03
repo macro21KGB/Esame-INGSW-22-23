@@ -24,6 +24,11 @@ export interface TokenPayload {
 
 export type DateString = `${number}-${number}-${number}`
 
+export type InfoGiorno = {
+	giorno: DateString;
+	numero_ordinazioni: number;
+}
+
 export const ALLERGENI = {
 	GLUTINE: "glutine",
 	LATTOSIO: "lattosio",
