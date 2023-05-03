@@ -2,7 +2,7 @@ import { Ordinazione } from "../../entities/ordinazione";
 import styled from "styled-components";
 import ItemElementoOrdinazione from "../ItemElementoOrdinazione";
 import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { COLORS } from "../../utils/constants";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Controller } from "../../entities/controller";
@@ -19,7 +19,7 @@ const ItemOrdinazioneContainer = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     padding: 0.5rem;
-    
+    overflow: scroll-y;
     min-height: 10rem;
     background-color: #d9d9d9;
     color: #4D4D4D;
@@ -97,6 +97,7 @@ const AreYouSureToDeleteDiv = styled.div`
     }
 
 `;
+
 const DateHolder = styled.div`
     display: flex;
     flex-direction: column;
@@ -130,6 +131,7 @@ const EvadiButton = styled.button`
     cursor: pointer;
 
 `;
+
 const InfoOrdinazioneEvasa = styled.div`
     background-color: gray;
     border: none;
@@ -143,6 +145,7 @@ const OuterLayer = styled.div`
     margin: 0;
     padding: 0;
     display: flex;
+	height: min-content;
     flex-direction: column;
     justify-content: space-between;
     background-color: #d9d9d9;
@@ -155,6 +158,12 @@ export default function ItemOrdinazione({
 	const tempoOrdinazione = ordinazione.timestamp;
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [differenzaTempo, setDifferenzaTempo] = useState("");
+
+	useEffect(() => {
+		setDifferenzaTempo(getDifferenzaInMinuti(tempoOrdinazione, new Date()));
+	}, [tempoOrdinazione]);
+
 	const controller = Controller.getInstance();
 	const queryClient = useQueryClient();
 
@@ -228,7 +237,7 @@ export default function ItemOrdinazione({
 							<DateHolder>
 								<p>{getOraMinutiDaDate(tempoOrdinazione)}</p>
 								<p className="difference_time">
-									+{getDifferenzaInMinuti(tempoOrdinazione, new Date())}
+									+{differenzaTempo}
 								</p>
 							</DateHolder>{" "}
 						</>
@@ -245,7 +254,6 @@ export default function ItemOrdinazione({
 						onClick={() => {
 							setShowDeleteModal(false);
 							mutationDeleteOrdinazione.mutate(ordinazione.id!);
-							console.log("Cancella");
 						}}
 					>
 						Si, Cancella

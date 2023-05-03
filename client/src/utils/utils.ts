@@ -124,18 +124,20 @@ export function generaFakeDataCharts(maxDays: number) {
 	return data;
 }
 
+export type ISOString = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
+
 /**
  * Genera un oggetto con data inizio e data fine del lasso temporale
  * @param lassoTemporale lasso temporale da prendere
  * @returns {{from: Date, to: Date}} oggetto con data inizio e data fine del lasso temporale
  */
-export const prendiInizioEFine = (lassoTemporale: "today" | "week" | "month" | "year"): { from: Date, to: Date } => {
+export const prendiInizioEFine = (lassoTemporale: "today" | "week" | "month" | "year"): { from: string, to: string } => {
 
 	if (lassoTemporale === "today")
-		return { from: new Date(), to: new Date() };
+		return { from: new Date().toISOString(), to: new Date().toISOString() };
 
-	const from = dayjs().startOf(lassoTemporale).toDate();
-	const to = dayjs().endOf(lassoTemporale).toDate();
+	const from = dayjs().startOf(lassoTemporale).toISOString();
+	const to = dayjs().endOf(lassoTemporale).toISOString();
 	return { from, to };
 }
 
@@ -146,32 +148,15 @@ export function rimuoviTokenDaCookie() {
 
 // da un date estrarre l'ora e i minuti nel seguente formato: hh:mm
 export function getOraMinutiDaDate(date: Date | string) {
-
-	if (typeof date === "string") {
-		date = new Date(date);
-	}
-
-	const ora = date.getHours();
-	const minuti = date.getMinutes();
-	return `${ora < 10 ? `0${ora}` : ora}:${minuti < 10 ? `0${minuti}` : minuti}`;
+	return dayjs(date).format("HH:mm");
 }
 
 // prese due date, restituisce la differenza in minuti e ora nel segue formato: hh:mm
 export function getDifferenzaInMinuti(date1: Date | string, date2: Date | string) {
-
-	if (typeof date1 === "string") {
-		date1 = new Date(date1);
-	}
-
-	if (typeof date2 === "string") {
-		date2 = new Date(date2);
-	}
-
-	const diff = Math.abs(date1.getTime() - date2.getTime());
-	const diffInMinuti = Math.floor(diff / 1000 / 60);
-	const ore = Math.floor(diffInMinuti / 60);
-	const minuti = diffInMinuti % 60;
-	return `${ore < 10 ? `0${ore}` : ore}:${minuti < 10 ? `0${minuti}` : minuti}`;
+	const diff = dayjs(date2).diff(dayjs(date1), "minute");
+	const ore = Math.floor(diff / 60);
+	const minuti = diff % 60;
+	return `${addZeroPrefix(ore)}:${addZeroPrefix(minuti)}`;
 }
 
 export function isValoriNonSettati(obj: Record<string, any>): boolean {

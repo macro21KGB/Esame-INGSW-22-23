@@ -13,7 +13,6 @@ import { useStore } from "../stores/store";
 import { useNavigate } from "react-router";
 import { Ristorante } from "../entities/ristorante";
 import { toast } from "react-toastify";
-const ResettaPasswordPopup = lazy(() => import("../components/ResettaPasswordPopup"));
 
 const AppContainer = styled.div`
 display: flex;
@@ -52,8 +51,6 @@ function App() {
 	const utenteCorrente = useStore((state) => state.user);
 	const query = useQuery(["ristoranti"], () => controller.getRistoranti());
 
-	const queryCambioPassword = useQuery<boolean>(["cambioPassword"], () => controller.isUtenteUsingDefaultPassword());
-
 	const saveIdRistorante = useStore((state) => state.setIdRistorante);
 	const [showModal, setShowModal] = useState(false);
 	const [informazioniRistorante, setInformazioniRistorante] = useState({
@@ -88,16 +85,6 @@ function App() {
 
 	const mutation = useMutation((newResturant: Ristorante) => controller.creaRistorante(newResturant));
 	const queryClient = useQueryClient();
-
-	const mutationCambiaPassword = useMutation((nuovaPassword: string) => controller.cambiaPasswordDefault(nuovaPassword), {
-		onSuccess: () => {
-			queryClient.invalidateQueries("cambioPassword");
-			toast.success("Password cambiata con successo");
-		},
-		onError: () => {
-			toast.error("Errore nel cambiare la password");
-		}
-	});
 
 	const aggiungiRistorante = () => {
 
@@ -138,11 +125,6 @@ function App() {
 			<WelcomePanel title="Benvenuto," subtitle={utenteCorrente?.nome || "Utente"} />
 			<p id="start_list_ristoranti">I Miei Ristoranti</p>
 
-			{(queryCambioPassword.isSuccess && !queryCambioPassword.data) && (
-				<Suspense fallback={<LoadingCircle />}>
-					<ResettaPasswordPopup onConfirm={(pwd) => { mutationCambiaPassword.mutate(pwd) }} />
-				</Suspense>
-			)}
 
 			<ListaRistorantiContainer>
 

@@ -8,11 +8,10 @@ import { NavbarFactory } from "../components/NavBar";
 import SoftButton from "../components/SoftButton";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
-import { convertFullDateStringToDateString, prendiInizioEFine as prendiLassoTemporale } from "../utils/utils";
+import { prendiInizioEFine as prendiLassoTemporale } from "../utils/utils";
 import { useParams } from "react-router";
 import { RUOLI } from "../entities/utente";
 import { toast } from "react-toastify";
-import dayjs from "dayjs";
 
 
 const DashboardContainer = styled.div`
@@ -63,8 +62,8 @@ export default function StatisticheRoute() {
     const { id } = useParams();
     const queryClient = useQueryClient();
 
-    const [startDate, setStartDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState<string>(new Date().toISOString());
+    const [endDate, setEndDate] = useState<string>(new Date().toISOString());
 
     const controller = Controller.getInstance();
 
@@ -80,16 +79,18 @@ export default function StatisticheRoute() {
     }, [startDate, endDate])
 
     const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], () => {
-        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, startDate, endDate!);
+        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, new Date(startDate), new Date(endDate!));
     },
         {
             enabled: selectedEmailUser !== "" && selectedEmailUser !== "0",
         }
     );
 
-    const mutationAggiornaRangeDate = useMutation((newRange: { from: Date, to: Date }) => {
+    const mutationAggiornaRangeDate = useMutation((newRange: { from: string, to: string }) => {
+        const fromDate = new Date(newRange.from);
+        const toDate = new Date(newRange.to);
 
-        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, newRange.from, newRange.to);
+        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, fromDate, toDate);
     }, {
         onSuccess: (data) => {
             queryClient.setQueryData(["ordini", "evasi", selectedEmailUser], data);
@@ -99,25 +100,17 @@ export default function StatisticheRoute() {
         }
     });
 
+    const aggiornaTimeSpan = (newRange: { from: string, to: string }) => {
+        setStartDate(newRange.from);
+        setEndDate(newRange.to);
+    }
 
-    const aggiornaTimeSpan = (newTimeSpan: { from: Date, to: Date }) => {
-        setStartDate(newTimeSpan.from);
-        setEndDate(newTimeSpan.to);
-    };
-
-    const onChangeInputDate = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newDate = dayjs(e.target.value).toDate();
-        if (e.target.name === "startTime") {
-            if (newDate > endDate)
-                toast.error("La data di inizio non può essere maggiore della data di fine");
-
-            aggiornaTimeSpan({ from: newDate, to: endDate });
-        }
-        else {
-            if (newDate < startDate)
-                toast.error("La data di fine non può essere minore della data di inizio");
-
-            aggiornaTimeSpan({ from: startDate, to: newDate });
+    const onChangeInputDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === "startDate") {
+            setStartDate(value);
+        } else {
+            setEndDate(value);
         }
     }
 
@@ -151,11 +144,11 @@ export default function StatisticheRoute() {
                                 <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("year")) }} text="Questo anno" />
                             </div>
                             <div id="time-control">
-                                <input type="date" name="startTime" value={convertFullDateStringToDateString(startDate.toISOString())} onChange={onChangeInputDate} />
-                                <input type="date" name="endTime" value={convertFullDateStringToDateString(endDate?.toISOString() || new Date().toISOString())} onChange={onChangeInputDate} />
-                                <button onClick={async () => {
+                                <input type="date" name="startDate" value={startDate.split("T")[0]} onChange={onChangeInputDate} />
+                                <input type="date" name="endDate" value={endDate?.split("T")[0]} onChange={onChangeInputDate} />
+                                <button onClick={() => {
                                     const newRange = { from: startDate, to: endDate };
-                                    await mutationAggiornaRangeDate.mutateAsync(newRange);
+                                    mutationAggiornaRangeDate.mutate(newRange);
                                 }}>Cerca</button>
                             </div>
                         </div>

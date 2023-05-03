@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import ItemOrdinazione from "../components/ItemOrdinazione";
+import ItemOrdinazione from "../components/ItemOrdinazioneCucina";
 import { NavbarFactory } from "../components/NavBar";
 import { useQueries, useQuery } from "react-query";
 import { Controller } from "../entities/controller";
