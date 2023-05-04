@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Cell, Bar, Tooltip } from "recharts";
 import styled from "styled-components"
@@ -12,9 +12,6 @@ import { prendiInizioEFine as prendiLassoTemporale } from "../utils/utils";
 import { useParams } from "react-router";
 import { RUOLI } from "../entities/utente";
 import { toast } from "react-toastify";
-import DatePicker from "react-datepicker";
-
-import "react-datepicker/dist/react-datepicker.css";
 
 
 const DashboardContainer = styled.div`
@@ -38,6 +35,14 @@ const DashboardContainer = styled.div`
             display: flex;
             flex-direction: row;
         }
+
+        #time-control {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
     }
 `;
 
@@ -53,58 +58,60 @@ const OptionDiv = styled.div`
 export default function StatisticheRoute() {
 
     const [selectedEmailUser, setSelected] = useState("");
-    const queryClient = useQueryClient();
 
     const { id } = useParams();
+    const queryClient = useQueryClient();
 
-    const [startDate, setStartDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState<string>(new Date().toISOString());
+    const [endDate, setEndDate] = useState<string>(new Date().toISOString());
 
     const controller = Controller.getInstance();
-
-    const onChangeDateFromCalendar = (dates: [Date | null, Date | null]) => {
-        const [start, end] = dates;
-        setStartDate(start!);
-        setEndDate(end!);
-        mutationAggiornaTimeSpan.mutate({ from: start!, to: end! });
-    };
 
     const queryUtenti = useQuery(["utenti", "cucina"], async () => {
         if (id === undefined) return [];
         const utenti = await controller.getUtenti(+id);
-        return utenti.filter(utente => utente.ruolo != RUOLI.ADDETTO_CUCINA);
+        return utenti.filter(utente => utente.ruolo === RUOLI.ADDETTO_CUCINA);
     });
 
-    const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], async () => {
-        const result = await controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, startDate, endDate!);
-        return result;
+    useEffect(() => {
+        console.log("StartDate:", startDate);
+        console.log("EndDate:", endDate);
+    }, [startDate, endDate])
+
+    const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], () => {
+        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, new Date(startDate), new Date(endDate!));
     },
         {
             enabled: selectedEmailUser !== "" && selectedEmailUser !== "0",
         }
     );
 
-    const mutationAggiornaTimeSpan = useMutation((newTimeSpan: { from: Date, to: Date }) => {
-        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, newTimeSpan.from, newTimeSpan.to);
-    },
-        {
-            onSettled: () => {
-                queryClient.invalidateQueries(["ordini", "evasi", selectedEmailUser]);
-            },
-            onSuccess: (data) => {
-                queryClient.setQueryData(["ordini", "evasi", selectedEmailUser], data);
+    const mutationAggiornaRangeDate = useMutation((newRange: { from: string, to: string }) => {
+        const fromDate = new Date(newRange.from);
+        const toDate = new Date(newRange.to);
 
-            },
-            onError: (error) => {
-                console.log(error);
-                toast.error("Errore nel caricamento dei dati");
-            }
+        return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, fromDate, toDate);
+    }, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(["ordini", "evasi", selectedEmailUser], data);
+        },
+        onError: (err) => {
+            toast.error("Errore durante l'aggiornamento del range di date");
         }
-    );
+    });
 
-    const aggiornaTimeSpan = async (newTimeSpan: { from: Date, to: Date }) => {
-        setStartDate(newTimeSpan.from);
-        setEndDate(newTimeSpan.to);
+    const aggiornaTimeSpan = (newRange: { from: string, to: string }) => {
+        setStartDate(newRange.from);
+        setEndDate(newRange.to);
+    }
+
+    const onChangeInputDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === "startDate") {
+            setStartDate(value);
+        } else {
+            setEndDate(value);
+        }
     }
 
     return (
@@ -119,7 +126,6 @@ export default function StatisticheRoute() {
                             {queryUtenti.data?.map((utente) =>
                                 <option key={utente.email} value={utente.email}>{utente.nome} {utente.cognome}</option>
                             )}
-
                         </DropDownItem >
 
                     </OptionDiv>
@@ -137,16 +143,16 @@ export default function StatisticheRoute() {
                                 <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("month")) }} text="Questo mese" />
                                 <SoftButton onClick={() => { aggiornaTimeSpan(prendiLassoTemporale("year")) }} text="Questo anno" />
                             </div>
-                            <DatePicker
-                                selected={startDate}
-                                startDate={startDate}
-                                onChange={onChangeDateFromCalendar}
-                                endDate={endDate}
-                                selectsRange
-                            />
+                            <div id="time-control">
+                                <input type="date" name="startDate" value={startDate.split("T")[0]} onChange={onChangeInputDate} />
+                                <input type="date" name="endDate" value={endDate?.split("T")[0]} onChange={onChangeInputDate} />
+                                <button onClick={() => {
+                                    const newRange = { from: startDate, to: endDate };
+                                    mutationAggiornaRangeDate.mutate(newRange);
+                                }}>Cerca</button>
+                            </div>
                         </div>
                         <ResponsiveContainer width="95%" >
-
                             <BarChart width={730} height={250} data={queryOrdiniEvasi.data}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="giorno" />

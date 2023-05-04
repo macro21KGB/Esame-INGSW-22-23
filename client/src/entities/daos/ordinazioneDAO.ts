@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { convertFullDateStringToDateString, convertToDateString, createArrayOfDates, getTokenDaCookie } from '../../utils/utils';
+import { convertToDateString, createInfoGiorniFromDateToDate, getTokenDaCookie } from '../../utils/utils';
 import { Ordinazione } from './../ordinazione';
 import { API_URL, DateString, OrdinazioneConCodice, Result } from '../../utils/constants';
 
@@ -62,13 +62,9 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
             );
 
             const data = result.data;
-
-            return data.map((item => {
-                return {
-                    giorno: convertFullDateStringToDateString(item.giorno),
-                    numero_ordinazioni: +item.numero_ordinazioni
-                }
-            }));
+            const arrayOfDates = createInfoGiorniFromDateToDate(from, to, data);
+            console.log(arrayOfDates);
+            return arrayOfDates;
         }
         catch (err) {
             console.log(err);

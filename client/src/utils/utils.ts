@@ -3,7 +3,7 @@ import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
 import { Elemento } from '../entities/menu';
-import { DateString, TokenPayload } from './constants';
+import { DateString, InfoGiorno, TokenPayload } from './constants';
 import { table } from 'console';
 
 // This function checks if a telephone number is valid using a regular expression
@@ -124,18 +124,20 @@ export function generaFakeDataCharts(maxDays: number) {
 	return data;
 }
 
+export type ISOString = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
+
 /**
  * Genera un oggetto con data inizio e data fine del lasso temporale
  * @param lassoTemporale lasso temporale da prendere
  * @returns {{from: Date, to: Date}} oggetto con data inizio e data fine del lasso temporale
  */
-export const prendiInizioEFine = (lassoTemporale: "today" | "week" | "month" | "year"): { from: Date, to: Date } => {
+export const prendiInizioEFine = (lassoTemporale: "today" | "week" | "month" | "year"): { from: string, to: string } => {
 
 	if (lassoTemporale === "today")
-		return { from: new Date(), to: new Date() };
+		return { from: new Date().toISOString(), to: new Date().toISOString() };
 
-	const from = dayjs().startOf(lassoTemporale).toDate();
-	const to = dayjs().endOf(lassoTemporale).toDate();
+	const from = dayjs().startOf(lassoTemporale).toISOString();
+	const to = dayjs().endOf(lassoTemporale).toISOString();
 	return { from, to };
 }
 
@@ -146,32 +148,15 @@ export function rimuoviTokenDaCookie() {
 
 // da un date estrarre l'ora e i minuti nel seguente formato: hh:mm
 export function getOraMinutiDaDate(date: Date | string) {
-
-	if (typeof date === "string") {
-		date = new Date(date);
-	}
-
-	const ora = date.getHours();
-	const minuti = date.getMinutes();
-	return `${ora < 10 ? `0${ora}` : ora}:${minuti < 10 ? `0${minuti}` : minuti}`;
+	return dayjs(date).format("HH:mm");
 }
 
 // prese due date, restituisce la differenza in minuti e ora nel segue formato: hh:mm
 export function getDifferenzaInMinuti(date1: Date | string, date2: Date | string) {
-
-	if (typeof date1 === "string") {
-		date1 = new Date(date1);
-	}
-
-	if (typeof date2 === "string") {
-		date2 = new Date(date2);
-	}
-
-	const diff = Math.abs(date1.getTime() - date2.getTime());
-	const diffInMinuti = Math.floor(diff / 1000 / 60);
-	const ore = Math.floor(diffInMinuti / 60);
-	const minuti = diffInMinuti % 60;
-	return `${ore < 10 ? `0${ore}` : ore}:${minuti < 10 ? `0${minuti}` : minuti}`;
+	const diff = dayjs(date2).diff(dayjs(date1), "minute");
+	const ore = Math.floor(diff / 60);
+	const minuti = diff % 60;
+	return `${addZeroPrefix(ore)}:${addZeroPrefix(minuti)}`;
 }
 
 export function isValoriNonSettati(obj: Record<string, any>): boolean {
@@ -215,20 +200,35 @@ export class ElementiOrderSaver {
 	}
 }
 
-export function createArrayOfDates(from: Date, to: Date, orders: { giorno: string; numero_ordinazioni: number }[]): { giorno: DateString; numero_ordinazioni: number }[] {
-	const dates = [];
-	let currentDate = new Date(from);
-	while (currentDate <= to) {
-		const dateString: DateString = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-		const order = orders.find((o) => o.giorno === dateString);
-		dates.push({
-			giorno: dateString,
-			numero_ordinazioni: order ? order.numero_ordinazioni : 0,
-		});
-		currentDate.setDate(currentDate.getDate() + 1);
+const addZeroPrefix = (num: number): string => {
+	return num < 10 ? `0${num}` : `${num}`;
+};
+
+export const createInfoGiorniFromDateToDate = (from: Date, to: Date, completati: InfoGiorno[]): InfoGiorno[] => {
+
+
+	const result: InfoGiorno[] = [];
+	let completatiIndex = 0;
+	for (let i = from; i <= to; i.setDate(i.getDate() + 1)) {
+		const currentDateString = `${i.getFullYear()}-${addZeroPrefix(i.getMonth() + 1)}-${addZeroPrefix(i.getDate())}` as DateString;
+		const currentCompletatiDateString = convertFullDateStringToDateString(completati[completatiIndex]?.giorno)
+		if (currentDateString == currentCompletatiDateString) {
+			result.push({
+				giorno: currentCompletatiDateString,
+				numero_ordinazioni: +completati[completatiIndex].numero_ordinazioni
+			});
+			completatiIndex++;
+		}
+		else {
+			result.push({
+				giorno: currentDateString,
+				numero_ordinazioni: 0
+			});
+		}
 	}
-	return dates;
-}
+
+	return result;
+};
 
 export function isContoClosed(conto: Conto): boolean {
 	return conto.ordini.every(ordinazione => ordinazione.evaso === true);
