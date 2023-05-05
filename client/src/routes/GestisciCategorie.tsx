@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
@@ -10,6 +10,8 @@ import { NavbarFactory } from "../components/NavBar";
 import SlideUpModal from "../components/SlideUpModal";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
+import { toast } from "react-toastify";
+import { logEventToFirebase } from "../firebase";
 
 const AppContainer = styled.div`
 display: flex;
@@ -42,6 +44,7 @@ const ListaCategorieContainer = styled.div`
 
 export default function GestisciMenuRoute() {
 	const controller = Controller.getInstance();
+	const queryClient = useQueryClient();
 
 	const { id } = useParams();
 
@@ -51,6 +54,33 @@ export default function GestisciMenuRoute() {
 	const query = useQuery(["categorie"], () => {
 		return controller.getCategorie(parseInt(id || "-1") || -1);
 	});
+
+	const aggiungiCategoriaMutation = useMutation(async () => {
+		if (nomeCategoria === "")
+			return false;
+
+		if (id === undefined)
+			return false;
+
+		return controller.creaCategoria(nomeCategoria, +id)
+	}, {
+		onSuccess: () => {
+			queryClient.invalidateQueries("categorie");
+			setShowModal(false);
+			setNomeCategoria("");
+			logEventToFirebase("add_category", {
+				nome: nomeCategoria,
+			});
+			toast.success("Categoria aggiunta con successo");
+		}
+		,
+		onError: (err) => {
+			toast.error("Errore durante l'aggiunta della categoria");
+			logEventToFirebase("error", {
+				error: err,
+			})
+		}
+	})
 
 	return (
 		<AppContainer>
@@ -87,7 +117,9 @@ export default function GestisciMenuRoute() {
 					/>
 
 					<br />
-					<BigButton onClick={() => { }} text="Crea" />
+					<BigButton onClick={() => {
+						aggiungiCategoriaMutation.mutate();
+					}} text="Crea" />
 				</SlideUpModal>
 			</ListaCategorieContainer>
 		</AppContainer>

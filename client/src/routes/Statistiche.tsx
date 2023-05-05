@@ -12,6 +12,8 @@ import { prendiInizioEFine as prendiLassoTemporale } from "../utils/utils";
 import { useParams } from "react-router";
 import { RUOLI } from "../entities/utente";
 import { toast } from "react-toastify";
+import { logEventToFirebase } from "../firebase";
+import { AppEvents } from "../utils/constants";
 
 
 const DashboardContainer = styled.div`
@@ -79,6 +81,7 @@ export default function StatisticheRoute() {
     }, [startDate, endDate])
 
     const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], () => {
+        logEventToFirebase(AppEvents.OPEN_STATISTICS)
         return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, new Date(startDate), new Date(endDate!));
     },
         {

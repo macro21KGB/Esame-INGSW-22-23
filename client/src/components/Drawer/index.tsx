@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { animated, useSpring } from "@react-spring/web";
-import { COLORS } from "../../utils/constants";
+import { AppEvents, COLORS } from "../../utils/constants";
 import { useStore } from "../../stores/store";
 import { useNavigate } from "react-router";
 import { rimuoviTokenDaCookie } from "../../utils/utils";
 import { toast } from "react-toastify";
+import { logEventToFirebase } from "../../firebase";
 
 const DrawerBackground = styled.div`
     position: fixed;
@@ -122,13 +123,11 @@ function Drawer(props: DrawerProps): JSX.Element {
 
 	const logout = () => {
 
-		// rimuovo l'utente dallo store
-		// rimuovo il token dal cookie
-		// navigo al login	
 		setUserInStore(null);
 		rimuoviTokenDaCookie();
 		navigate("/");
 
+		logEventToFirebase(AppEvents.LOGOUT);
 		toast.success("Logout effettuato con successo");
 	};
 

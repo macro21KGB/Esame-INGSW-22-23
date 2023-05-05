@@ -13,6 +13,7 @@ import { useStore } from "../stores/store";
 import { useNavigate } from "react-router";
 import { Ristorante } from "../entities/ristorante";
 import { toast } from "react-toastify";
+import { logEventToFirebase } from "../firebase";
 
 const AppContainer = styled.div`
 display: flex;
@@ -70,6 +71,9 @@ function App() {
 	};
 
 	const salvaIdRistoranteEAvanza = (id: number) => {
+		logEventToFirebase("clicked_on_resturant", {
+			id_ristorante: id,
+		})
 		saveIdRistorante(+id);
 		navigate(`/dashboard/${id}`);
 	};
@@ -111,6 +115,7 @@ function App() {
 				queryClient.invalidateQueries("ristoranti");
 				setShowModal(false);
 				resettaCampi();
+				logEventToFirebase("add_resturant")
 				toast.success("Ristorante Creato con successo");
 			}
 			, onError: (error: any) => {

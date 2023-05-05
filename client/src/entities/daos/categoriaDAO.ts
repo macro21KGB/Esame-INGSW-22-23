@@ -9,7 +9,7 @@ interface ICategoriaDAO {
 	getCategoria(idCategoria: number): Promise<Categoria>;
 	getCategorie(idRistorante: number): Promise<Categoria[]>;
 
-	addCategoria(categoria: Categoria): Promise<Categoria>;
+	addCategoria(nomeCategoria: string, idRistorante: number): Promise<boolean>;
 	updateCategoria(categoria: Categoria): Promise<Categoria>;
 	deleteCategoria(categoria: Categoria): Promise<Categoria>;
 
@@ -35,8 +35,19 @@ export class CategoriaDAO implements ICategoriaDAO {
 	getCategoria(idRistorante: number): Promise<Categoria> {
 		return Promise.resolve(new Categoria("categoria1", []));
 	}
-	addCategoria(categoria: Categoria): Promise<Categoria> {
-		throw new Error("Method not implemented.");
+	async addCategoria(nomeCategoria: string, idRistorante: number): Promise<boolean> {
+		const token = getTokenDaCookie();
+		const response = await axios.post<boolean>(`${API_URL}/categoria`, {
+			nome: nomeCategoria,
+			id_ristorante: idRistorante
+		}, {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		})
+
+		const data: boolean = response.data;
+		return data;
 	}
 	updateCategoria(categoria: Categoria): Promise<Categoria> {
 		throw new Error("Method not implemented.");

@@ -3,10 +3,11 @@ import styled from "styled-components";
 import ItemElementoOrdinazione from "../ItemElementoOrdinazione";
 import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/utils";
 import { useEffect, useState } from "react";
-import { COLORS } from "../../utils/constants";
+import { AppEvents, COLORS } from "../../utils/constants";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Controller } from "../../entities/controller";
 import { toast } from "react-toastify";
+import { logEventToFirebase } from "../../firebase";
 
 interface ItemOrdinazioneProps {
 	ordinazione: Ordinazione;
@@ -173,10 +174,17 @@ export default function ItemOrdinazione({
 		{
 			onSuccess: () => {
 				toast.success("Ordine evaso con successo");
+				logEventToFirebase(AppEvents.COMPLETE_ORDER, {
+					dimensione_ordine: ordinazione.elementi.length,
+					costo_totale: ordinazione.elementi.reduce((acc, curr) => acc + curr.prezzo, 0)
+				})
 				queryClient.invalidateQueries(["ordinazioni", "cucina"]);
 			},
 			onError: (error) => {
-				console.log("Errore evasione ordine", error);
+				console.log("Errore: Impossibile completare l'ordine", error);
+				logEventToFirebase(AppEvents.ERROR, {
+					err: error,
+				})
 				toast.error("Si è riscontrato un Errore!");
 			}
 		}

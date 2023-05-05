@@ -13,6 +13,7 @@ import { useStore } from "../stores/store";
 import { salvaTokenInCookie, verificaEmail } from "../utils/utils";
 import { RUOLI } from "../entities/utente";
 import LoadingCircle from "../components/LoadingCircle";
+import { logEventToFirebase } from "../firebase";
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -93,6 +94,7 @@ export default function Login() {
 
 			if (isUserCreatedSuccessfully) {
 				toast.success("Utente creato con successo");
+				logEventToFirebase("register", { email })
 				setIsLogging(true);
 				return;
 			}
@@ -107,7 +109,7 @@ export default function Login() {
 
 			if (result.success) {
 				toast.success("Accesso eseguito con successo");
-
+				logEventToFirebase("login", result.data)
 				salvaTokenInCookie(result.data.token, 3600);
 
 				// route per il supervisore

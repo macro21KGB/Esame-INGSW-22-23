@@ -9,7 +9,6 @@ import { ElementoDAO } from "./daos/elementoDAO";
 import { CategoriaDAO } from "./daos/categoriaDAO";
 import { Categoria, Elemento, ElementoConQuantita } from "./menu";
 import { Conto } from "./conto";
-import { dummyConto } from "./dummyObjects";
 import { InformazioniUtente } from "../routes/GestisciUtenza";
 import { Ordinazione } from "./ordinazione";
 import { Utente } from "./utente";
@@ -108,6 +107,10 @@ export class Controller {
 
 	public async getCategoria(idRistorante: number): Promise<Categoria> {
 		return this.categoriaDAO.getCategoria(idRistorante);
+	}
+
+	public async creaCategoria(nomeCategoria: string, idRistorante: number): Promise<boolean> {
+		return this.categoriaDAO.addCategoria(nomeCategoria, idRistorante);
 	}
 
 	public async getElementiCategoria(idCategoria: number): Promise<Elemento[]> {

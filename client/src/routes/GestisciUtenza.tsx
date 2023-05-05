@@ -14,8 +14,9 @@ import StarBadge from "../components/UtenzaItem/StarBadge";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Ruolo } from "../entities/utente";
-import { Result } from "../utils/constants";
+import { AppEvents, Result } from "../utils/constants";
 import { isValoriNonSettati } from "../utils/utils";
+import { logEventToFirebase } from "../firebase";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -106,13 +107,16 @@ export default function GestisciUtenzaRoute() {
 		return controller.getUtenti(+id);
 	});
 
-	const mutation = useMutation((infoUtente: InformazioniUtente) => {
+	const aggiungiModificaUtentemutation = useMutation((infoUtente: InformazioniUtente) => {
 		if (id == undefined) throw new Error("Id undefined");
 
-		if (isModifica)
+		if (isModifica) {
+			logEventToFirebase(AppEvents.MODIFY_USER_IN_RESTURANT, { id: id, ruolo: infoUtente.ruolo });
 			return controller.modificaUtenteConInformazioniUtente(infoUtente);
-		else
+		} else {
+			logEventToFirebase(AppEvents.ADD_USER_TO_RESTURANT, { id: id, ruolo: infoUtente.ruolo });
 			return controller.creaUtenteConInformazioniUtente(infoUtente, +id);
+		}
 	}, {
 		onSuccess: (result) => {
 
@@ -152,11 +156,11 @@ export default function GestisciUtenzaRoute() {
 			return;
 		}
 
-		mutation.mutate(informazioniUtente);
+		aggiungiModificaUtentemutation.mutate(informazioniUtente);
 	}
 
 	const handleModificaUtente = () => {
-		mutation.mutate(informazioniUtente);
+		aggiungiModificaUtentemutation.mutate(informazioniUtente);
 	}
 
 	const impostaInformazioniUtente = (utente: InformazioniUtente) => {

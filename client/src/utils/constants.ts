@@ -29,6 +29,27 @@ export type InfoGiorno = {
 	numero_ordinazioni: number;
 }
 
+export const AppEvents = {
+	ERROR: 'error',
+	LOGIN: 'login',
+	LOGOUT: 'logout',
+	REGISTER: 'register',
+	CLICKED_ON_RESTURANT: 'clicked_on_resturant',
+	ADD_USER_TO_RESTURANT: 'add_user_to_resturant',
+	MODIFY_USER_IN_RESTURANT: 'modify_user_to_resturant',
+	ADD_RESTURANT: 'add_resturant',
+	ADD_CATEGORY: 'add_category',
+	ADD_ELEMENT_TO_CATEGORY: 'add_element_to_category',
+	DELETE_ELEMENT_FROM_CATEGORY: 'delete_element_from_category',
+	MODIFY_ELEMENT_FROM_CATEGORY: 'modify_element_from_category',
+	START_TAKING_ORDER: 'start_taking_order',
+	SEND_ORDER: 'send_order_to_kitchen',
+	COMPLETE_ORDER: 'complete_order',
+	PRINT_ORDER: 'print_order',
+	OPEN_STATISTICS: 'open_statistics',
+} as const;
+
+
 export const ALLERGENI = {
 	GLUTINE: "glutine",
 	LATTOSIO: "lattosio",

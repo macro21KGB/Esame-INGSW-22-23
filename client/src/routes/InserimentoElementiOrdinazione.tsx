@@ -11,6 +11,7 @@ import { Controller } from "../entities/controller";
 import { Categoria, Elemento, ElementoConQuantita } from "../entities/menu";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
+import { logEventToFirebase } from "../firebase";
 
 const Container = styled.div`
 	position: relative;
@@ -153,6 +154,17 @@ export default function InserimentoElementiOrdinazioneRoute() {
 			queryRistorante.data!.id,
 		)) {
 			toast.success("Ordine inviato alla cucina");
+			logEventToFirebase("send_order_to_kitchen", {
+				id_ristorante: queryRistorante.data!.id,
+				codice_tavolo: codiceTavolo,
+				elementi: elementiConQuantita.map((e) => {
+					return {
+						id: e.id_elemento,
+						nome: e.nome,
+						quantita: e.quantita
+					}
+				})
+			})
 			setElementiScelti([]);
 			setCategoriaScelta(undefined);
 			setShowModal(false);

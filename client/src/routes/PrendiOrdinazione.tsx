@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Controller } from "../entities/controller";
 import LoadingCircle from "../components/LoadingCircle";
+import { logEventToFirebase } from "../firebase";
+import { AppEvents } from "../utils/constants";
 const ResettaPasswordPopup = lazy(() => import("../components/ResettaPasswordPopup"));
 
 const PrendiOrdinazioneContainer = styled.div`
@@ -64,7 +66,7 @@ export default function PrendiOrdinazioneRoute() {
 			toast.error("Inserisci un codice tavolo");
 			return;
 		}
-
+		logEventToFirebase(AppEvents.START_TAKING_ORDER);
 		navigate(`/ordinazione/${codiceTavolo}`);
 	};
 

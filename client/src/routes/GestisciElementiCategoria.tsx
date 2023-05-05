@@ -17,6 +17,7 @@ import { ALLERGENI } from "../utils/constants";
 import { toast } from "react-toastify";
 import { Allergene } from "../entities/allergene";
 import AutoCompleteComponent from "../components/AutoCompleteComponent";
+import { logEventToFirebase } from "../firebase";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -177,8 +178,10 @@ export default function GestisciElementiCategoriaRoute() {
 		);
 
 		if (isModifica) {
+			logEventToFirebase("modify_element_from_category")
 			return controller.modificaElementoCategoria(elemento, +idCategoria);
 		} else {
+			logEventToFirebase("add_element_to_category")
 			return controller.aggiungiElementoCategoria(elemento, +idCategoria);
 		}
 	}, {
@@ -204,6 +207,7 @@ export default function GestisciElementiCategoriaRoute() {
 		{
 			onSuccess: () => {
 				toast.success("Elemento eliminato con successo");
+				logEventToFirebase("delete_element_from_category");
 				queryClient.invalidateQueries(["elementi", idCategoria]);
 			},
 			onError: (error: any) => {
@@ -298,6 +302,7 @@ export default function GestisciElementiCategoriaRoute() {
 				ingredienti: [],
 				ordine: 0,
 			});
+
 
 		mutationAggiungiModifica.mutate(nuovoElemento);
 	}
