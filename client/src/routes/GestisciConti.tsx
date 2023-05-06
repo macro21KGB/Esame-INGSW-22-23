@@ -11,6 +11,8 @@ import { useStore } from "../stores/store";
 import { getOraMinutiDaDate, isContoClosed as isContoChiuso, scriviContoSuPDF } from "../utils/utils";
 import ELementoOrdinazioneSupervisore from "../components/ElementoOrdinazioneSupervisore";
 import { toast } from "react-toastify";
+import { logEventToFirebase } from "../firebase";
+import { AppEvents } from "../utils/constants";
 
 const Container = styled.div`
     display: flex;
@@ -99,7 +101,7 @@ export default function GestisciContiRoute() {
 
     const chiudiEStampaConto = () => {
         if (!contoSelezionato) return;
-
+        logEventToFirebase(AppEvents.PRINT_ORDER)
         mutationChiudiConto.mutate(contoSelezionato as Conto & { id_conto: number });
         scriviContoSuPDF(contoSelezionato!);
     }

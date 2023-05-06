@@ -75,11 +75,6 @@ export default function StatisticheRoute() {
         return utenti.filter(utente => utente.ruolo === RUOLI.ADDETTO_CUCINA);
     });
 
-    useEffect(() => {
-        console.log("StartDate:", startDate);
-        console.log("EndDate:", endDate);
-    }, [startDate, endDate])
-
     const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], () => {
         logEventToFirebase(AppEvents.OPEN_STATISTICS)
         return controller.getNumeroOrdiniEvasiPerUtente(selectedEmailUser, new Date(startDate), new Date(endDate!));

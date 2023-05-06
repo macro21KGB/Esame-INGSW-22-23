@@ -62,7 +62,7 @@ export default function ItemRistorante({
                 <p>{ristorante.nome}</p>
                 <sub>{ristorante.indirizzo}</sub>
             </div>
-            <img src="https://picsum.photos/100?blur4" alt="" />
+            <img src={`https://ui-avatars.com/api/?background=random&name=${ristorante.nome.replace(/ /g, "+")}`} alt="" />
         </ItemRistoranteContainer>
     );
 }
