@@ -1,14 +1,16 @@
 import { listaRistoranti } from "./resturantRoutes/listaRistoranti.doc"
-import { ROUTE_TAGS } from "../documentation"
+import { getResturant } from "./resturantRoutes/getRistorante.doc"
+import { getFirstResturant } from "./resturantRoutes/getFirstRistorante.doc"
+import { creaRistorante } from "./resturantRoutes/postRistorante.doc"
 export const resturantRoutes ={
     "/resturants":{
         get: listaRistoranti
     },
     "/resturant/{id}":{
-        post: {tags: [ROUTE_TAGS.RISTORANTE],security:[{"bearerAuth": []}]} // TODO
+        get: getResturant
     },
     "/resturant":{
-        get:{tags: [ROUTE_TAGS.RISTORANTE],security:[{"bearerAuth": []}]}, // TODO
-        post:{tags: [ROUTE_TAGS.RISTORANTE],security:[{"bearerAuth": []}]} // TODO
+        get: getFirstResturant,
+        post: creaRistorante
     }
 }
