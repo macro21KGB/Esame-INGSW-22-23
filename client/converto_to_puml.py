@@ -26,8 +26,11 @@ def extract_class_functions_attributes(file_path):
             })
         return class_and_interfaces
 
-def generate_plantuml(classes_and_interfaces):
-    plantuml = "@startuml\n"
+def add_start_end_tag(plantuml: str):
+    return "@startuml\n" + plantuml + "@enduml\n"
+
+def generate_plantuml(classes_and_interfaces : list):
+    plantuml = ""
     for class_or_interface in classes_and_interfaces:
         if class_or_interface["class_name"]:
             plantuml += f"class {class_or_interface['class_name']} {{\n"

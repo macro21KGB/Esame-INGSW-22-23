@@ -27,6 +27,10 @@ const PopupContainer = styled.div`
     font-size: 1.5rem;
     text-align: center;
     font-weight: bold;
+
+    @media screen and (min-width: 768px) {
+        width: 50%;
+    }
 `;
 
 const PopupBackground = styled.div`

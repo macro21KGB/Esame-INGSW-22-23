@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { Elemento } from '../entities/menu';
 import { DateString, InfoGiorno, TokenPayload } from './constants';
 import { table } from 'console';
+import { string } from 'prop-types';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -159,8 +160,11 @@ export function getDifferenzaInMinuti(date1: Date | string, date2: Date | string
 	return `${addZeroPrefix(ore)}:${addZeroPrefix(minuti)}`;
 }
 
-export function isValoriNonSettati(obj: Record<string, any>): boolean {
+export function isValoriNonSettati(obj: Record<string, any>, except?: string[]): boolean {
 	for (let key in obj) {
+		if (except?.includes(key))
+			continue;
+
 		if (typeof obj[key] === 'string' && obj[key] === '') {
 			return true;
 		} else if (Array.isArray(obj[key]) && obj[key].length === 0) {
@@ -170,6 +174,7 @@ export function isValoriNonSettati(obj: Record<string, any>): boolean {
 	return false;
 }
 
+isValoriNonSettati({ a: "uno", b: "due" }, ["a"]);
 
 export function convertToDateString(date: Date): DateString {
 	return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
