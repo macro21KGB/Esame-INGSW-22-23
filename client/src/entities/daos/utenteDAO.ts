@@ -133,8 +133,7 @@ class UtenteDAO implements IUtenteDAO {
 			return handleError(error);
 		}
 		function handleSuccessRequest(data: Result<LoginPayload>): Result<LoginPayload> {
-			if (!data.success) toast.error("Errore sconosciuto");
-			console.log(data);
+			if (!data.success) return data;
 			return {
 				data: {
 					token: data.data.token,
@@ -146,8 +145,6 @@ class UtenteDAO implements IUtenteDAO {
 		}
 
 		function handleError(error: AxiosError<any>): Result<LoginPayload> {
-			const errorMessage = error.message || "Errore sconosciuto";
-			toast.error(errorMessage);
 			return {
 				data: {
 					token: "",

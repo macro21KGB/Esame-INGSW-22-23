@@ -84,6 +84,7 @@ export default function Login() {
 
 			if (password !== passwordVerifica) {
 				toast.error("Le password non coincidono");
+				setIsLoading(false);
 				return;
 			}
 
@@ -95,6 +96,7 @@ export default function Login() {
 			if (isUserCreatedSuccessfully) {
 				toast.success("Utente creato con successo");
 				logEventToFirebase("register", { email })
+				setIsLoading(false);
 				setIsLogging(true);
 				return;
 			}

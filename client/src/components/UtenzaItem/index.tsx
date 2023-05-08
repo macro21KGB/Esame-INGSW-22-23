@@ -55,6 +55,12 @@ export const UtenzaItemContainer = styled.div`
             font-style: italic;
         }
 
+		& > .email-utente {
+			font-size: 0.8rem;
+			font-weight: 400;
+			font-style: italic;
+			color: rgba(255, 255, 255, 0.7);
+		}
 `;
 
 
@@ -68,7 +74,8 @@ export default function UtenzaItem({ utente, onModifica }: UtenzaItemProps) {
 		<UtenzaItemContainer>
 			<div id="info">
 				<h3>{utente.nome}</h3>
-				<p>{utente.ruolo}</p>
+				<p>{utente.ruolo.replace(/_/g, " ")}</p>
+				<p className="email-utente">{utente.email}</p>
 			</div>
 
 			<div id="buttons">

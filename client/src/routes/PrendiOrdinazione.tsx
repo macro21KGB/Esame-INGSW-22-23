@@ -11,6 +11,7 @@ import { Controller } from "../entities/controller";
 import LoadingCircle from "../components/LoadingCircle";
 import { logEventToFirebase } from "../firebase";
 import { AppEvents } from "../utils/constants";
+import { useCheckFirstAccessPassword } from "../utils/hooks";
 const ResettaPasswordPopup = lazy(() => import("../components/ResettaPasswordPopup"));
 
 const PrendiOrdinazioneContainer = styled.div`
@@ -47,17 +48,7 @@ export default function PrendiOrdinazioneRoute() {
 	const controller = Controller.getInstance();
 	const queryClient = useQueryClient();
 
-	const queryCambioPassword = useQuery<boolean>(["cambioPassword"], () => controller.isUtenteUsingDefaultPassword());
-
-	const mutationCambiaPassword = useMutation((nuovaPassword: string) => controller.cambiaPasswordDefault(nuovaPassword), {
-		onSuccess: () => {
-			queryClient.invalidateQueries("cambioPassword");
-			toast.success("Password cambiata con successo");
-		},
-		onError: () => {
-			toast.error("Errore nel cambiare la password");
-		}
-	});
+	const [isUsingFirstAccessPassword, cambiaPassword] = useCheckFirstAccessPassword();
 
 	const iniziaOrdinazione = () => {
 		console.log("Inizia ordinazione");
@@ -72,10 +63,10 @@ export default function PrendiOrdinazioneRoute() {
 
 	return (
 		<PrendiOrdinazioneContainer>
-			{NavbarFactory.generateNavbarAddAndMenu(() => { })}
-			{(queryCambioPassword.isSuccess && !queryCambioPassword.data) && (
+			{NavbarFactory.generateNavbarOnlyMenu()}
+			{(isUsingFirstAccessPassword.data !== true) && (
 				<Suspense fallback={<LoadingCircle />}>
-					<ResettaPasswordPopup onConfirm={(pwd) => { mutationCambiaPassword.mutate(pwd) }} />
+					<ResettaPasswordPopup onConfirm={(pwd) => { cambiaPassword(pwd) }} />
 				</Suspense>
 			)}
 

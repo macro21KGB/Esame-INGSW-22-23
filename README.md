@@ -28,8 +28,12 @@ Da hostare su:
 - Azure
 - GCloud
 
-
 Strumenti CASE: Utilizzo di Strumenti per disegnare diagrammi
+## Pattern fondamentali per lo sviluppo del progetto
+
+![bible](https://user-images.githubusercontent.com/75626033/236901221-a7c82fbc-161c-458f-8259-6e508d374bbd.jpg)
+
+
 
 ## Presentazione Finale
 

@@ -285,11 +285,12 @@ export default function GestisciElementiCategoriaRoute() {
 
 	const creaNuovoElemento = (informazioniElemento: InformazioniElemento) => {
 
-		if (isValoriNonSettati(informazioniElemento)) {
-			toast.error("Non tutti i campi sono stati compilati");
-			return;
+		// TODO scoprire il bug che non permette di usare questa funzione
+		// if (isValoriNonSettati(informazioniElemento), ["allergeni"]) {
+		// 	toast.error("Non tutti i campi sono stati compilati");
+		// 	return;
 
-		}
+		// }
 
 		const allergeni = informazioniElemento.allergeni.map((allergene) => {
 			return new Allergene(allergene, 0);

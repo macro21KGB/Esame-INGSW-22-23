@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import styled from "styled-components";
 import ItemOrdinazione from "../components/ItemOrdinazioneCucina";
 import { NavbarFactory } from "../components/NavBar";
@@ -6,6 +6,9 @@ import { useQueries, useQuery } from "react-query";
 import { Controller } from "../entities/controller";
 import { OrdinazioneConCodice } from "../utils/constants";
 import { Ordinazione } from "../entities/ordinazione";
+import { useCheckFirstAccessPassword } from "../utils/hooks";
+import LoadingCircle from "../components/LoadingCircle";
+import ResettaPasswordPopup from "../components/ResettaPasswordPopup";
 
 // center popup on center of the screen that tell the user to rotate the device
 const WrongOrentation = styled.div`
@@ -92,6 +95,9 @@ export default function CucinaRoute() {
         window.addEventListener("resize", checkScreenSize);
     }, [])
 
+    const [isUsingFirstAccessPassword, cambiaPassword] = useCheckFirstAccessPassword();
+
+
     const queryOrdinazioni = useQueries([
         {
             queryKey: ["ordinazioni", "cucina", "nonevase"],
@@ -112,7 +118,7 @@ export default function CucinaRoute() {
     return (
         <CucinaRouteContainer>
             {NavbarFactory.generateNavbarOnlyMenu()}
-            {isScreenTooSmall ? (
+            {isScreenTooSmall && (
                 <PopupBackground>
                     <WrongOrentation>
                         <svg
@@ -132,7 +138,16 @@ export default function CucinaRoute() {
                         Per favore ruota il tuo dispositivo
                     </WrongOrentation>
                 </PopupBackground>
-            ) : null}
+            )}
+
+            {(isUsingFirstAccessPassword.data === false) ? (
+                <Suspense fallback={<LoadingCircle />}>
+                    <ResettaPasswordPopup onConfirm={(pwd) => { cambiaPassword(pwd) }} />
+                </Suspense>
+
+            ) : null
+            }
+
 
             <div id="sections">
                 <MacroSection title="Ordinazioni da evadere" bgColor="red">

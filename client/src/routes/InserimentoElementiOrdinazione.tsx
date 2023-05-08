@@ -159,7 +159,6 @@ export default function InserimentoElementiOrdinazioneRoute() {
 				codice_tavolo: codiceTavolo,
 				elementi: elementiConQuantita.map((e) => {
 					return {
-						id: e.id_elemento,
 						nome: e.nome,
 						quantita: e.quantita
 					}
@@ -229,7 +228,9 @@ export default function InserimentoElementiOrdinazioneRoute() {
 								onChangeQuantita={aggiornaElementiScelti}
 							/>
 						))
-					))}
+					)
+					)
+				}
 			</Content>
 
 			<SlideUpModal showModal={showModal} setShowModal={setShowModal}>
