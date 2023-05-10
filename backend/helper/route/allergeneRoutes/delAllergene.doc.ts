@@ -11,7 +11,7 @@ const delAllergene = {
             {
                 name: "id_allergene",
                 in: "path",
-                description: "id della allergene da cancellare",
+                description: "id dell' allergene da cancellare",
                 type: "string",
                 example: "1"
             }

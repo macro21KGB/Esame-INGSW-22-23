@@ -1,7 +1,7 @@
 import { ROUTE_TAGS } from "../../documentation";
-const editCategoria = {
-    tags: [ROUTE_TAGS.CATEGORIA],
-        description: "Modifica una categoria",
+const editConto = {
+    tags: [ROUTE_TAGS.CONTO],
+        description: "Chiude un conto",
         security: [
             {
                "bearerAuth": []
@@ -9,39 +9,23 @@ const editCategoria = {
         ],
         parameters : [
             {
-                name: "id_categoria",
+                name: "id_conto",
                 in: "path",
-                description: "id della categoria da modificare",
+                description: "id del conto",
                 type: "string",
                 example: "1"
             }
         ],
-        requestBody:{
-            content: {
-                "application/json": {
-                    schema :{
-                        type : "object",
-                        properties :{
-                            nome : {
-                                type: "string",
-                                description: "nome della categoria",
-                                example: "Bevande"
-                            },
-                        }
-                    }
-                }
-            }
-        },
         responses: {
             200:{
-                description: "Categoria modificata con successo",
+                description: "Conto modificato con successo",
                 content: {
                     "application/json": {
                         schema :{
                             type : "object",
                             example :{
                                 "success": true,
-                                "data": "Modifica avvenuta con successo"
+                                "data": "Conto chiuso con successo"
                             }
                         }
                     }
@@ -78,4 +62,4 @@ const editCategoria = {
         }
 };
 
-export {editCategoria};
+export {editConto};

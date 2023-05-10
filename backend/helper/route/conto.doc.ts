@@ -1,9 +1,11 @@
-import { ROUTE_TAGS } from "../documentation"
+import { editConto } from "./contoRoutes/editConto.doc";
+import { getConti } from "./contoRoutes/getConti.doc";
+
 export const contoRoutes ={
     "/conti":{
-        get: {tags: [ROUTE_TAGS.CONTO],security:[{"bearerAuth": []}]}, // TODO
+        get: getConti
     },
     "/conto/{id_conto}":{
-        put: {tags: [ROUTE_TAGS.CONTO],security:[{"bearerAuth": []}]}, // TODO
+        put: editConto
     },
 }

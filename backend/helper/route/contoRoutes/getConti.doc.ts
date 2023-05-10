@@ -1,7 +1,35 @@
-import { ROUTE_TAGS } from "../../documentation";
-const editCategoria = {
-    tags: [ROUTE_TAGS.CATEGORIA],
-        description: "Modifica una categoria",
+import { ROUTE_TAGS } from "../../documentation"
+const dummy = [
+    {
+        "data": "2023-05-10T11:02:20.868Z",
+        "ordini": [
+            {
+                "codice_tavolo": "1",
+                "timestamp": "2023-05-10T11:02:20.868Z",
+                "evaso": true,
+                "elementi": [
+                    {
+                        "nome": "Pasta al pesto",
+                        "descrizione": "",
+                        "prezzo": 6,
+                        "ingredienti": [],
+                        "allergeni": [],
+                        "ordine": 0,
+                        "id_elemento": 0,
+                        "quantita": 2
+                    }
+                ],
+                "id": 3
+            }
+        ],
+        "codice_tavolo": "1",
+        "id_conto": 1,
+        "chiuso": false
+    }
+]
+const getConti = {
+        tags: [ROUTE_TAGS.CONTO],
+        description: "Lista di tutti i conti del ristorante",
         security: [
             {
                "bearerAuth": []
@@ -9,40 +37,22 @@ const editCategoria = {
         ],
         parameters : [
             {
-                name: "id_categoria",
+                name: "id_ristorante",
                 in: "path",
-                description: "id della categoria da modificare",
+                description: "id del ristorante",
                 type: "string",
                 example: "1"
             }
         ],
-        requestBody:{
-            content: {
-                "application/json": {
-                    schema :{
-                        type : "object",
-                        properties :{
-                            nome : {
-                                type: "string",
-                                description: "nome della categoria",
-                                example: "Bevande"
-                            },
-                        }
-                    }
-                }
-            }
-        },
         responses: {
             200:{
-                description: "Categoria modificata con successo",
+                description: "OK",
                 content: {
                     "application/json": {
                         schema :{
                             type : "object",
-                            example :{
-                                "success": true,
-                                "data": "Modifica avvenuta con successo"
-                            }
+                            example :dummy
+                            
                         }
                     }
                 }
@@ -76,6 +86,6 @@ const editCategoria = {
                 }
             }
         }
-};
+}
 
-export {editCategoria};
+export {getConti };
