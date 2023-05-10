@@ -1,10 +1,10 @@
 export class Allergene {
 
-    id: number;
+    id_elemento: number;
     nome: string;
 
     constructor(nome: string, id?: number) {
         this.nome = nome;
-        this.id = id || 0;
+        this.id_elemento = id || 0;
     }
 }

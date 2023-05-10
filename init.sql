@@ -141,10 +141,9 @@ INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) V
 INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 5, 'Tiramisù', 'descrizione tiramisù', 4.00, 'caffe, panna, biscotti');
 INSERT INTO "Elemento" ( id_categoria, nome, descrizione, prezzo, ingredienti) VALUES ( 5, 'Cheesecake', 'descrizione tiramisù', 6.00, 'biscotti, panna, berry');
 
-INSERT INTO "Allergene" (id_elemento, nome) VALUES (2,'Glutine');
-INSERT INTO "Allergene" (id_elemento, nome) VALUES (2,'Lattosio');
-INSERT INTO "Allergene" (id_elemento, nome) VALUES (3,'Graminacee');
-INSERT INTO "Allergene" (id_elemento, nome) VALUES (4,'Frutta a guscio');
+INSERT INTO "Allergene" (id_elemento, nome) VALUES (2,'glutine');
+INSERT INTO "Allergene" (id_elemento, nome) VALUES (2,'lattosio');
+INSERT INTO "Allergene" (id_elemento, nome) VALUES (4,'frutta a guscio');
 /*Ristorante 2*/
 
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,telefono) VALUES ( 'Pier', 'Nicolini', 'pier@gmail.com','$2a$12$FQ1jKNMjzBK74v5PMwBtj.pBZwrJaZbFMMSJz8KsHhVOza7va0eXy','ADMIN','3333333333');

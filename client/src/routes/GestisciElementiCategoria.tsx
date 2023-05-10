@@ -299,7 +299,6 @@ export default function GestisciElementiCategoriaRoute() {
 		return controller.modificaElementoCategoria(elementoDaModificare);
 	}, {
 		onSuccess: () => {
-			console.log(informazioniElemento)
 			toast.success("Elemento aggiunto/modificato con successo");
 			queryClient.invalidateQueries(["elementi", idCategoria]);
 			setShowModal(false);
@@ -313,7 +312,7 @@ export default function GestisciElementiCategoriaRoute() {
 
 	const modificaElemento = (informazioniElemento: InformazioniElemento) => {
 		const allergeni = informazioniElemento.allergeni.map((allergene) => {
-			return new Allergene(allergene, 0);
+			return new Allergene(allergene, idElementoCorrente);
 		});
 
 		const elementoDaModificare = new Elemento(informazioniElemento.nome,
@@ -385,9 +384,15 @@ export default function GestisciElementiCategoriaRoute() {
 				onClose={closeModal}
 			>
 				<p>{isModifica ? "Modifica Elemento" : "Nuovo Elemento"}</p>
-				<AutoCompleteComponent onClick={acceptSuggestion}
-					valueToSearch={informazioniElemento.nome}
-					placeholder="Suggestion Here" />
+				{
+					isModifica ?
+						null
+						:
+						<AutoCompleteComponent onClick={acceptSuggestion}
+							valueToSearch={informazioniElemento.nome}
+							placeholder="Suggestion Here" />
+
+				}
 				<InputBox
 					placeholder="Nome Elemento"
 					value={informazioniElemento.nome}

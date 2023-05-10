@@ -199,17 +199,33 @@ class ElementoDAOPostgresDB implements IElementoDAO {
             throw err;
         }
     }
-    updateElemento(id: number, elemento: Elemento): Promise<Boolean> {
+    updateElemento(idElemento: number, elemento: Elemento): Promise<Boolean> {
+        const allergeneDAO = new AllergeneDAOPostgresDB();
         return new Promise((resolve, reject) => {
             conn.query('UPDATE "Elemento" SET nome = $1, descrizione = $2, prezzo = $3, ingredienti = $4 WHERE id_elemento = $5;',
                 [elemento.nome, elemento.descrizione, elemento.prezzo,
-                elemento.ingredienti.join(','), id
+                elemento.ingredienti.join(','), idElemento
                 ], (err: any, results: any) => {
                     if (err) {
                         return reject(err);
                     }
 
-                    resolve(true);
+                    // reset allergeni
+                    conn.query('DELETE FROM "Allergene" WHERE id_elemento = $1;', [idElemento], (err: any, results: any) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        //@ts-ignore
+                        const allergeniElementi = elemento.allergeni.map((allergene: string) => {
+                            return new Allergene(allergene, idElemento, idElemento);
+                        });
+
+                        allergeniElementi.forEach((allergene: Allergene) => {
+                            allergeneDAO.addAllergene(allergene);
+                        });
+
+                        resolve(true);
+                    });
                 }
             );
         });
@@ -295,9 +311,11 @@ class AllergeneMapper implements IMapper<Allergene>{
 //INSERT INTO "Allergene" (id_elemento, nome) VALUES (2,'farina');
 class AllergeneDAOPostgresDB implements IAllergeneDAO {
     allergeneMapper: AllergeneMapper = new AllergeneMapper();
+
+
     getAllergeni(id_elemento: number): Promise<Allergene[]> {
         return new Promise((resolve, reject) => {
-            conn.query('SELECT * FROM  "Allergene" where id_elemento = $1;', [id_elemento], (err: any, results: any) => {
+            conn.query('SELECT * FROM  "Allergene" where id_elemento = $1 ORDER BY id;', [id_elemento], (err: any, results: any) => {
                 if (err) {
                     return reject(err);
                 }
@@ -307,6 +325,7 @@ class AllergeneDAOPostgresDB implements IAllergeneDAO {
         }
         );
     }
+
     addAllergene(allergene: Allergene): Promise<Boolean> {
         return new Promise((resolve, reject) => {
             conn.query('INSERT INTO "Allergene" (id_elemento, nome) VALUES ($1, $2);', [allergene.id_elemento, allergene.nome], (err: any, results: any) => {
