@@ -6,7 +6,7 @@ export const resturantRoutes ={
     "/resturants":{
         get: listaRistoranti
     },
-    "/resturant/{id}":{
+    "/resturant/{id_ristorante}":{
         get: getResturant
     },
     "/resturant":{

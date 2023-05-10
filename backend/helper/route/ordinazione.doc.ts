@@ -7,9 +7,9 @@ export const ordinazioneRoutes ={
         post:{tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]}, // TODO
     },
     "/ordinazioni/{is_evase}":{
-        get: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]}
+        get: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]} // TODO
     },
     "/ordinazione/{id_ordinazione}":{
-        get: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]}
+        get: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]} // TODO
     },
 }
