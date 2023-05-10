@@ -1,0 +1,94 @@
+[
+    {
+        "name" : "Coca Cola",
+        "ingredients": ["Zucchero","750ml"] 
+    },
+    {
+        "name" : "Coca Cola Zero",
+        "ingredients": ["750ml"] 
+    },
+    {
+        "name" : "Fanta",
+        "ingredients": ["Zucchero","150ml"] 
+    },
+    {
+        "name" : "Pepsi",
+        "ingredients": ["Zucchero","250ml"] 
+    },
+    {
+        "name" : "Sprite",
+        "ingredients": ["Zucchero","250ml"] 
+    },
+    {
+        "name" : "Mirinda",
+        "ingredients": ["Zucchero","200ml"] 
+    },
+    {
+        "name" : "Schweppes Tonic Water",
+        "ingredients": ["Acqua","Zucchero","Aroma Tonico"] 
+    },
+    {
+        "name" : "7up",
+        "ingredients": ["Acqua carbonata","Sciroppo di glucosio-fruttosio","Aromi naturali","Acido citrico","Citrato di sodio","Aspartame","Acesulfame K"] 
+    },
+    {
+        "name" : "Mountain Dew",
+        "ingredients": ["Acqua carbonata","Sciroppo di mais ad alto contenuto di fruttosio","Aromi naturali","Acidificante acido citrico","Sorbato di potassio","Citrato di sodio","Cafeina"] 
+    },
+    {
+        "name" : "Dr. Pepper",
+        "ingredients": ["Acqua carbonata","Sciroppo di mais ad alto contenuto di fruttosio","Caramello colorante","Acido fosforico","Aromi naturali","Caffeina","Acido citrico"] 
+    },
+    {
+        "name" : "Red Bull",
+        "ingredients": ["Acqua carbonata","Saccarosio","Glucosio","Acido citrico","Taurina","Sodio bicarbonato","Magnesio gluconato","Caffeina","Niacina","Acido pantotenico","Vitamina B6","Vitamina B12","Aromi naturali"] 
+    },
+    {
+        "name" : "Monster Energy",
+        "ingredients": ["Acqua carbonata","Zucchero","Sciroppo di glucosio","Aromi naturali","Acidificante acido citrico","Taurina","Caffeina","Inositolo","Colorante caramello","Glucuronolattone","Panax ginseng","L-carnitina","Acido pantotenico","Niacina","Tiamina","Vitamina B6","Riboflavina","Vitamina B12"] 
+    },
+    {
+        "name" : "Rockstar Energy",
+        "ingredients": ["Acqua carbonata","Zucchero","Sciroppo di glucosio","Taurina","Acido citrico","Succo di mela concentrato","Caffeina","Caramello colorante","Gomma di guar","Inositolo","Glucuronolattone","Vitamina B3","Vitamina B5","Vitamina B6","Vitamina B12","Aromi naturali"] 
+    },
+    {
+      "name": "Pizza Margherita",
+      "ingredients": ["farina", "lievito", "acqua", "sale", "pomodoro", "mozzarella", "basilico"]
+    },
+    {
+      "name": "Lasagne alla bolognese",
+      "ingredients": ["sfoglie di lasagne", "ragù di carne", "besciamella", "parmigiano"]
+    },
+    {
+      "name": "Tiramisù",
+      "ingredients": ["savoiardi", "caffè", "mascarpone", "uova", "zucchero", "cacao"]
+    },
+    {
+      "name": "Risotto ai funghi",
+      "ingredients": ["riso", "funghi porcini", "cipolla", "prezzemolo", "parmigiano"]
+    },
+    {
+      "name": "Spaghetti alla carbonara",
+      "ingredients": ["spaghetti", "uova", "pancetta", "pecorino", "pepe nero"]
+    },
+    {
+      "name": "Pollo alla cacciatora",
+      "ingredients": ["pollo", "pomodoro", "cipolla", "olive", "capperi", "rosmarino"]
+    },
+    {
+      "name": "Insalata di cesare",
+      "ingredients": ["lattuga", "pollo", "pane tostato", "parmigiano", "salsa cesare"]
+    },
+    {
+      "name": "Gelato alla vaniglia",
+      "ingredients": ["crema di latte", "zucchero", "vaniglia"]
+    },
+    {
+      "name": "Cannoli siciliani",
+      "ingredients": ["farina", "zucchero", "burro", "cannella", "ricotta", "cioccolato", "canditi"]
+    },
+    {
+      "name": "Tagliatelle al ragù di cinghiale",
+      "ingredients": ["tagliatelle", "cinghiale", "pomodoro", "cipolla", "carote"]
+    }
+]

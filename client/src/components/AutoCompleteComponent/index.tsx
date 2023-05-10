@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-
+import offlineJSONautocomplete from './offline-autocomplete.json'
 const AutoCompleteContainer = styled.button`
     all:unset;
 
@@ -37,26 +37,74 @@ interface AutoCompleteProps {
     valueToSearch: string;
 }
 
+interface ElementSuggestion {
+    name : string;
+    ingredients: string[]
+}
 
 export default function AutoCompleteComponent({ placeholder, onClick, valueToSearch }: AutoCompleteProps) {
 
     const [autoCompleteString, setAutoCompleteString] = useState<string>(placeholder);
     const [ingredients, setIngredients] = useState<string>("");
 
-    const fetchSuggestions = async () => {
+    async function fetchOnlineSuggestion() : Promise<ElementSuggestion> {
         const response = await axios.get<{ meals: any[] }>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${valueToSearch.replace(" ", "_")}`);
 
         const data = response.data;
+        let suggestion : ElementSuggestion = {
+            name:"",
+            ingredients : []
+        };
+
         if (data["meals"]) {
-            setAutoCompleteString(data["meals"][0]["strMeal"]);
             const ingredients = [];
             for (let i = 1; i < 20; i++) {
                 if (data["meals"][0][`strIngredient${i}`] !== "" && data["meals"][0][`strIngredient${i}`] !== null) {
                     ingredients.push(data["meals"][0][`strIngredient${i}`]);
                 }
             }
-            setIngredients(ingredients.join(", "));
+            suggestion.name = data["meals"][0]["strMeal"];
+            suggestion.ingredients = ingredients;
         }
+        return suggestion;
+    }
+    function stringSimilarity(str1: string, str2: string): number {
+        const set1 = new Set(str1.split(""));
+        const set2 = new Set(str2.split(""));
+        const intersection = new Set([...set1].filter(char => set2.has(char)));
+        const union = new Set([...set1, ...set2]);
+        return intersection.size / union.size;
+    }
+    function fetchOfflineSuggestion() : ElementSuggestion{
+        let suggestion : ElementSuggestion = {
+            name:"",
+            ingredients : []
+        };
+        let maxScore = -1;
+        offlineJSONautocomplete.forEach(element => {
+            const score = stringSimilarity(valueToSearch.toLowerCase(),element.name.toLowerCase())
+            if(score>=.5 && score > maxScore)
+            {
+                maxScore = score;
+                suggestion.ingredients = element.ingredients;
+                suggestion.name = element.name
+            }   
+        });
+        return suggestion;
+    }
+
+    const fetchSuggestion = async () => {
+        let suggestion : ElementSuggestion = await fetchOnlineSuggestion();
+        
+        if(suggestion.ingredients.length==0)
+            suggestion = fetchOfflineSuggestion();
+
+        if(suggestion.ingredients.length!=0)
+        {
+            setAutoCompleteString(suggestion.name);
+            setIngredients(suggestion.ingredients.join(", "));  
+        }
+            
     }
 
     const handleOnClick = () => {
@@ -71,7 +119,7 @@ export default function AutoCompleteComponent({ placeholder, onClick, valueToSea
     }
     useEffect(() => {
         if (valueToSearch && valueToSearch.length > 3) {
-            fetchSuggestions();
+            fetchSuggestion();
         }
 
         if (valueToSearch.length < 3) {
