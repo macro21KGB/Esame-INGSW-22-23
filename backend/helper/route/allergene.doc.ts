@@ -1,12 +1,14 @@
-import { ROUTE_TAGS } from "../documentation"
+import { creaAllergene } from "./allergeneRoutes/creaAllergene.doc"
+import { delAllergene } from "./allergeneRoutes/delAllergene.doc"
+import { getAllergeniElemento } from "./allergeneRoutes/getAllergeni"
 export const allergeneRoutes ={
     "/allergene":{
-        post: {tags: [ROUTE_TAGS.ALLERGENE],security:[{"bearerAuth": []}]}, // TODO
+        post: creaAllergene
     },
     "/allergeni/{id_elemento}":{
-        get: {tags: [ROUTE_TAGS.ALLERGENE],security:[{"bearerAuth": []}]}, // TODO
+        get: getAllergeniElemento
     },
     "/allergene/{id_allergene}":{
-        delete: {tags: [ROUTE_TAGS.ALLERGENE],security:[{"bearerAuth": []}]}, // TODO
+        delete: delAllergene
     },
 }
