@@ -1,13 +1,16 @@
-import { ROUTE_TAGS } from "../documentation"
+import { creaCategoria } from "./categoryRoutes/creaCategoria.doc"
+import { delCategoria } from "./categoryRoutes/delCategoria.doc"
+import { editCategoria } from "./categoryRoutes/editCategoria.doc"
+import { getCategorieRistorante } from "./categoryRoutes/getCategorieRistorante.doc"
 export const menuRoutes ={
     "/categorie/{id_ristorante}":{
-        get: {tags: [ROUTE_TAGS.MENU],security:[{"bearerAuth": []}]} // TODO
+        get: getCategorieRistorante
     },
     "/categoria":{
-        post:{tags: [ROUTE_TAGS.MENU],security:[{"bearerAuth": []}]}, // TODO
+        post:creaCategoria
     },
     "/categoria/{id_categoria}":{
-        delete: {tags: [ROUTE_TAGS.MENU],security:[{"bearerAuth": []}]}, // TODO
-        put: {tags: [ROUTE_TAGS.MENU],security:[{"bearerAuth": []}]} // TODO
+        delete: delCategoria,
+        put: editCategoria
     },
 }

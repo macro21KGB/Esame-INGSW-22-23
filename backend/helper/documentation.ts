@@ -1,7 +1,7 @@
 export enum ROUTE_TAGS {
 	UTENTE = "Utente",
     RISTORANTE = "Ristorante",
-    MENU = "Menu",
+    CATEGORIA = "Categoria",
     ORDINAZIONE = "Ordinazione",
     ELEMENTO = "Elemento",
     CONTO = "Conto",

@@ -2,7 +2,6 @@ import { login } from "./userRoutes/login.doc"
 import { register } from "./userRoutes/register.doc";
 import { creaUtenza } from "./userRoutes/creaUtenza.doc";
 import { getUtentiRistorante } from "./userRoutes/getUtentiRistorante";
-import { ROUTE_TAGS } from "../documentation"
 import { getPw } from "./userRoutes/getPw.doc";
 import { changePw } from "./userRoutes/changePw.doc";
 import { delUser } from "./userRoutes/deleteUtente.doc";
