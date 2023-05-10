@@ -63,11 +63,9 @@ class OrdinazioneDAO implements IOrdinazioneDAO {
 
             const data = result.data;
             const arrayOfDates = createInfoGiorniFromDateToDate(from, to, data);
-            console.log(arrayOfDates);
             return arrayOfDates;
         }
         catch (err) {
-            console.log(err);
             return [];
         }
     }

@@ -188,23 +188,6 @@ export function convertFullDateStringToDateString(date: string): DateString {
 	return date.split("T")[0] as DateString;
 }
 
-export class ElementiOrderSaver {
-
-	public static salvaOrdineElementi(elementi: Elemento[]): void {
-		localStorage.setItem("elementiOrdinati", JSON.stringify(elementi));
-	}
-
-	public static prendiOrdineElementi(): Elemento[] {
-		const elementi = localStorage.getItem("elementiOrdinati");
-		if (elementi) {
-			const elementiConOrdine: Elemento[] = JSON.parse(elementi);
-			const elementiOrdinati = elementiConOrdine.sort((a, b) => a.ordine - b.ordine);
-			return elementiOrdinati;
-		}
-		return [];
-	}
-}
-
 const addZeroPrefix = (num: number): string => {
 	return num < 10 ? `0${num}` : `${num}`;
 };

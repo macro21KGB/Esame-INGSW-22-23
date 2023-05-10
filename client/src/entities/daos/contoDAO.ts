@@ -31,7 +31,6 @@ export class ContoDAO implements IContoDAO {
 
             return data;
         } catch (error) {
-            console.log(error);
             return false;
         }
     }
@@ -50,11 +49,9 @@ export class ContoDAO implements IContoDAO {
             })
 
             const data: Result<string> = result.data;
-            console.log(data);
             return data;
 
         } catch (error) {
-            console.log(error);
             return {
                 success: false,
                 data: "Errore durante l'aggiornamento del conto"
@@ -85,7 +82,6 @@ export class ContoDAO implements IContoDAO {
 
             return data;
         } catch (err) {
-            console.log(err);
             return [];
         }
     }

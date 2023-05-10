@@ -26,7 +26,7 @@ const app = express();
 const router = Router();
 const port = 3000;
 
-const swagger = require("swagger-ui-express");
+import swagger from "swagger-ui-express";
 
 const secret = 'ilMioSegretoSegretissimo';
 
@@ -116,12 +116,12 @@ export function blockAccessToOtherResturantsEmployees(req: Request, res: Respons
 const swaggerUiOptions = {
   swaggerOptions: {
     bearerAuth: {
-      name:   'Authorization',
+      name: 'Authorization',
       schema: {
         type: 'bearer',
-        in:   'header'
+        in: 'header'
       },
-      value:  'Bearer <token>'
+      value: 'Bearer <token>'
     }
   }
 }
@@ -129,8 +129,8 @@ const swaggerUiOptions = {
 // Middleware
 app.use(cors())
 app.use('/api', router);
-app.use('/doc',swagger.serve);
-app.use('/doc',swagger.setup(swaggerSetup,swaggerUiOptions));
+app.use('/doc', swagger.serve);
+app.use('/doc', swagger.setup(swaggerSetup, swaggerUiOptions));
 router.use(express.json());
 
 // UTENTI
@@ -733,11 +733,11 @@ router.put('/scambia-elementi/:id_elemento1/:id_elemento2', authenticateToken, r
     return;
   }
   try {
-    if( id_elemento1 == id_elemento2) {
+    if (id_elemento1 == id_elemento2) {
       res.status(200).send({ success: true, data: 'Non ha senso scambiare lo stesso elemento' });
       return;
     }
-    if(+id_elemento1 < 0 || +id_elemento2 <0 ) {
+    if (+id_elemento1 < 0 || +id_elemento2 < 0) {
       res.status(200).send({ success: false, data: 'Errore: id negativi' });
       return;
     }
@@ -786,7 +786,7 @@ router.put('/elemento/:id_elemento', authenticateToken, requiresSupervisor, asyn
   }
   const elemento = new Elemento(nome, descrizione, prezzo, {
     ingredienti: ingredienti.split(','),
-    allergeni: [],
+    allergeni: allergeni.split(','),
     ordine: 0,
   });
   try {

@@ -18,7 +18,6 @@ export const useCheckFirstAccessPassword = () => {
   const controller = Controller.getInstance();
 
   const queryCambioPassword = useQuery<boolean>(["cambioPassword"], () => controller.isUtenteUsingDefaultPassword());
-  console.log(queryCambioPassword.data);
   const mutationCambiaPassword = useMutation((nuovaPassword: string) => controller.cambiaPasswordDefault(nuovaPassword), {
     onSuccess: () => {
       queryClient.invalidateQueries("cambioPassword");

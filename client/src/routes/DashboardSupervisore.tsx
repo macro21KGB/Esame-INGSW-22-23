@@ -3,6 +3,14 @@ import styled from "styled-components"
 import { NavbarFactory } from "../components/NavBar"
 import SoftButton from "../components/SoftButton";
 import { useStore } from "../stores/store";
+import { useCheckFirstAccessPassword } from "../utils/hooks";
+import { Suspense, useEffect, useState } from "react";
+import LoadingCircle from "../components/LoadingCircle";
+import ResettaPasswordPopup from "../components/ResettaPasswordPopup";
+import WelcomePanel from "../components/WelcomePanel";
+import { decodeJWTPayload, getTokenDaCookie } from "../utils/utils";
+import { Controller } from "../entities/controller";
+import { useQuery } from "react-query";
 
 const Container = styled.div`
     display: flex;
@@ -23,16 +31,31 @@ const Content = styled.div`
 
 export default function DashboardSupervisore() {
 
-    const { id } = useParams();
+    const [isUsingFirstAccessPassword, cambiaPassword] = useCheckFirstAccessPassword();
+    const controller = Controller.getInstance();
+
+    const idRistoranteQuery = useQuery("idRistorante", async () => {
+        const ristorante = await controller.getRistoranteAttuale();
+        return ristorante.id;
+    })
 
     return (
         <Container>
             {NavbarFactory.generateNavbarOnlyMenu()}
+            {(isUsingFirstAccessPassword.data === false) && (
+                <Suspense fallback={<LoadingCircle />}>
+                    <ResettaPasswordPopup onConfirm={(pwd) => { cambiaPassword(pwd) }} />
+                </Suspense>
+            )}
             <Content>
-                <Link to={`/dashboard/${id}/menu`} >
-                    <SoftButton text="Gestisci Menu" />
-                </Link>
-                <Link to={`/supevisore/cassa`}>
+                <WelcomePanel title="Benvenuto" subtitle="Supervisore" />
+                {
+                    idRistoranteQuery.data &&
+                    <Link to={`/dashboard/${idRistoranteQuery.data}/menu`} >
+                        <SoftButton text="Gestisci Menu" />
+                    </Link>
+                }
+                <Link to={`/supervisore/cassa`}>
                     <SoftButton text="Gestisci Conti" />
                 </Link>
             </Content>

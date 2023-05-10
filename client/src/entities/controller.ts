@@ -123,8 +123,8 @@ export class Controller {
 	aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): Promise<Result<string>> {
 		return this.elementoMenuDAO.addElemento(elemento, idCategoria)
 	}
-	modificaElementoCategoria(elemento: Elemento, idCategoria: number): Promise<Result<string>> {
-		throw new Error("Method not implemented.");
+	modificaElementoCategoria(elemento: Elemento): Promise<Result<string>> {
+		return this.elementoMenuDAO.updateElemento(elemento);
 	}
 
 	spostaElementiCategoria(idElemento1: number, idElemento2: number): Promise<Result<string>> {

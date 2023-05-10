@@ -53,8 +53,12 @@ class UtenteDAO implements IUtenteDAO {
 			}
 		});
 
-		const data: string = response.data;
-		return !!data;
+		const data = response.data;
+		if (data == "true")
+			return true;
+		else
+			return false;
+
 	}
 
 	promuoviASupervisore(utente: Utente): Promise<Utente> {

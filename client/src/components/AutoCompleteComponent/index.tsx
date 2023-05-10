@@ -38,7 +38,6 @@ interface AutoCompleteProps {
 }
 
 
-
 export default function AutoCompleteComponent({ placeholder, onClick, valueToSearch }: AutoCompleteProps) {
 
     const [autoCompleteString, setAutoCompleteString] = useState<string>(placeholder);
@@ -50,14 +49,13 @@ export default function AutoCompleteComponent({ placeholder, onClick, valueToSea
         const data = response.data;
         if (data["meals"]) {
             setAutoCompleteString(data["meals"][0]["strMeal"]);
-
+            const ingredients = [];
             for (let i = 1; i < 20; i++) {
-                if (data["meals"][0][`strIngredient${i}`]) {
-                    setIngredients((ingredients) => ingredients + data["meals"][0][`strIngredient${i}`] + ", ");
+                if (data["meals"][0][`strIngredient${i}`] !== "" && data["meals"][0][`strIngredient${i}`] !== null) {
+                    ingredients.push(data["meals"][0][`strIngredient${i}`]);
                 }
-                console.log(ingredients)
             }
-
+            setIngredients(ingredients.join(", "));
         }
     }
 

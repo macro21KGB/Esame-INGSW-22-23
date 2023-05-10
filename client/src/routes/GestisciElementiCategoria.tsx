@@ -12,7 +12,6 @@ import SlideUpModal from "../components/SlideUpModal";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Elemento } from "../entities/menu";
-import { ElementiOrderSaver, isValoriNonSettati } from "../utils/utils";
 import { ALLERGENI } from "../utils/constants";
 import { toast } from "react-toastify";
 import { Allergene } from "../entities/allergene";
@@ -113,13 +112,13 @@ export default function GestisciElementiCategoriaRoute() {
 	const queryClient = useQueryClient();
 
 	// get elementi
-	const query = useQuery(["elementi", idCategoria], () => {
+	const queryElementiCategoria = useQuery(["elementi", idCategoria], () => {
 		return controller.getElementiCategoria(parseInt(idCategoria || "-1"));
 	});
 
 	const [isModifica, setIsModifica] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [IdElementoCancellare, setIdElementoCancellare] = useState<number>(-1);
+	const [idElementoCorrente, setIdElementoCorrente] = useState<number>(-1);
 
 	const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setInformazioniElemento({
@@ -172,18 +171,13 @@ export default function GestisciElementiCategoriaRoute() {
 	};
 
 
-	const mutationAggiungiModifica = useMutation((elemento: Elemento) => {
+	const mutationAggiungiElemento = useMutation((elemento: Elemento) => {
 		if (idCategoria === undefined) return Promise.reject(
 			new Error("Non è stato possibile recuperare l'id della categoria")
 		);
 
-		if (isModifica) {
-			logEventToFirebase("modify_element_from_category")
-			return controller.modificaElementoCategoria(elemento, +idCategoria);
-		} else {
-			logEventToFirebase("add_element_to_category")
-			return controller.aggiungiElementoCategoria(elemento, +idCategoria);
-		}
+		logEventToFirebase("add_element_to_category")
+		return controller.aggiungiElementoCategoria(elemento, +idCategoria);
 	}, {
 		onSuccess: () => {
 			toast.success("Elemento aggiunto/modificato con successo");
@@ -257,7 +251,7 @@ export default function GestisciElementiCategoriaRoute() {
 	});
 
 	const spostaElementoVerso = (elementi: Elemento[], elemento: Elemento, verso: "su" | "giu") => {
-		if (query.isError || query.isLoading) return;
+		if (queryElementiCategoria.isError || queryElementiCategoria.isLoading) return;
 
 		const indexElementoDaSpostare = elementi.findIndex((e) => e.id_elemento === elemento.id_elemento);
 
@@ -285,13 +279,6 @@ export default function GestisciElementiCategoriaRoute() {
 
 	const creaNuovoElemento = (informazioniElemento: InformazioniElemento) => {
 
-		// TODO scoprire il bug che non permette di usare questa funzione
-		// if (isValoriNonSettati(informazioniElemento), ["allergeni"]) {
-		// 	toast.error("Non tutti i campi sono stati compilati");
-		// 	return;
-
-		// }
-
 		const allergeni = informazioniElemento.allergeni.map((allergene) => {
 			return new Allergene(allergene, 0);
 		});
@@ -305,13 +292,46 @@ export default function GestisciElementiCategoriaRoute() {
 			});
 
 
-		mutationAggiungiModifica.mutate(nuovoElemento);
+		mutationAggiungiElemento.mutate(nuovoElemento);
 	}
 
-	const modificaElemento = (elemento: Elemento) => {
+	const mutationModificaElemento = useMutation((elementoDaModificare: Elemento) => {
+		return controller.modificaElementoCategoria(elementoDaModificare);
+	}, {
+		onSuccess: () => {
+			console.log(informazioniElemento)
+			toast.success("Elemento aggiunto/modificato con successo");
+			queryClient.invalidateQueries(["elementi", idCategoria]);
+			setShowModal(false);
+			resettaCampi();
+		}
+		,
+		onError: (error: any) => {
+			toast.error(error);
+		}
+	});
+
+	const modificaElemento = (informazioniElemento: InformazioniElemento) => {
+		const allergeni = informazioniElemento.allergeni.map((allergene) => {
+			return new Allergene(allergene, 0);
+		});
+
+		const elementoDaModificare = new Elemento(informazioniElemento.nome,
+			informazioniElemento.descrizione,
+			+informazioniElemento.costo,
+			{
+				allergeni: allergeni,
+				ingredienti: [],
+				ordine: 0,
+			}, idElementoCorrente);
+
+		mutationModificaElemento.mutate(elementoDaModificare);
+	}
+
+	const setupModificaElemento = (elemento: Elemento) => {
 		setIsModifica(true)
 		setShowModal(true);
-		setIdElementoCancellare(elemento.id_elemento);
+		setIdElementoCorrente(elemento.id_elemento);
 		setInformazioniElemento({
 			nome: elemento.nome,
 			descrizione: elemento.descrizione,
@@ -328,7 +348,7 @@ export default function GestisciElementiCategoriaRoute() {
 		setShowModal(false);
 		resettaCampi();
 		setIsModifica(false);
-		setIdElementoCancellare(-1);
+		setIdElementoCorrente(-1);
 	}
 
 	return (
@@ -337,21 +357,21 @@ export default function GestisciElementiCategoriaRoute() {
 				setShowModal(true);
 			})}
 			<WelcomePanel title="Gestione" subtitle="Categoria" />
-			{query.isLoading ? (
+			{queryElementiCategoria.isLoading ? (
 				<DashboardContent>
 					<LoadingCircle />
 				</DashboardContent>
 			) : (
 				<>
 					<ListaElementi>
-						{query.data?.map((elemento: Elemento) => (
+						{queryElementiCategoria.data?.map((elemento: Elemento) => (
 							<ItemElementoCategoria
-								key={elemento.id_elemento}
+								key={elemento.id_elemento + elemento.nome}
 								onClickElemento={() => {
-									modificaElemento(elemento);
+									setupModificaElemento(elemento);
 								}}
-								onClickUp={() => { spostaElementoVerso(query.data, elemento, "su") }}
-								onClickDown={() => { spostaElementoVerso(query.data, elemento, "giu") }}
+								onClickUp={() => { spostaElementoVerso(queryElementiCategoria.data, elemento, "su") }}
+								onClickDown={() => { spostaElementoVerso(queryElementiCategoria.data, elemento, "giu") }}
 								elemento={elemento}
 
 							/>
@@ -402,12 +422,17 @@ export default function GestisciElementiCategoriaRoute() {
 				</AllergeniContainer>
 				{isModifica && (
 					<BigButton onClick={() => {
-						cancellaElemento(IdElementoCancellare);
+						cancellaElemento(idElementoCorrente);
 						closeModal();
 					}} color="red" text="Elimina Elemento" />
 				)}
 				<br />
-				<BigButton onClick={() => { creaNuovoElemento(informazioniElemento) }} text="Crea" />
+				<BigButton onClick={() => {
+					if (isModifica)
+						modificaElemento(informazioniElemento);
+					else
+						creaNuovoElemento(informazioniElemento)
+				}} text={isModifica ? 'Modifica' : 'Crea'} />
 			</SlideUpModal>
 		</DashboardContainer>
 	);

@@ -45,13 +45,10 @@ const Content = styled.div`
 export default function PrendiOrdinazioneRoute() {
 	const [codiceTavolo, setCodiceTavolo] = useState("");
 	const navigate = useNavigate();
-	const controller = Controller.getInstance();
-	const queryClient = useQueryClient();
 
 	const [isUsingFirstAccessPassword, cambiaPassword] = useCheckFirstAccessPassword();
 
 	const iniziaOrdinazione = () => {
-		console.log("Inizia ordinazione");
 
 		if (codiceTavolo === "") {
 			toast.error("Inserisci un codice tavolo");
@@ -64,7 +61,7 @@ export default function PrendiOrdinazioneRoute() {
 	return (
 		<PrendiOrdinazioneContainer>
 			{NavbarFactory.generateNavbarOnlyMenu()}
-			{(isUsingFirstAccessPassword.data !== true) && (
+			{(isUsingFirstAccessPassword.data === false) && (
 				<Suspense fallback={<LoadingCircle />}>
 					<ResettaPasswordPopup onConfirm={(pwd) => { cambiaPassword(pwd) }} />
 				</Suspense>

@@ -13,6 +13,7 @@ import ELementoOrdinazioneSupervisore from "../components/ElementoOrdinazioneSup
 import { toast } from "react-toastify";
 import { logEventToFirebase } from "../firebase";
 import { AppEvents } from "../utils/constants";
+import { useNavigate } from "react-router";
 
 const Container = styled.div`
     display: flex;
@@ -79,6 +80,7 @@ export default function GestisciContiRoute() {
 
     const controller = Controller.getInstance();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const [contoSelezionato, setContoSelezionato] = useState<Conto | undefined>(undefined);
     const idRistorante = useStore(state => state.idRistorante)
@@ -113,7 +115,12 @@ export default function GestisciContiRoute() {
     return (
         <Container>
             {NavbarFactory.generateNavbarBackAndMenu(() => {
-                setContoSelezionato(undefined);
+                if (contoSelezionato) {
+                    setContoSelezionato(undefined);
+                } else {
+                    navigate("/supervisore");
+                }
+
             })}
 
             {!contoSelezionato ? (
