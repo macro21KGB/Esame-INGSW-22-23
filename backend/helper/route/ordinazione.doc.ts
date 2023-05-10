@@ -1,15 +1,18 @@
-import { ROUTE_TAGS } from "../documentation"
+import { creaOrdine } from "./ordinazioneRoutes/creaOrdine.doc"
+import { delOrdinazione } from "./ordinazioneRoutes/delOrdinazione.doc"
+import { filterOrdiniByDate } from "./ordinazioneRoutes/filterDataOrdinazioni.doc"
+import { getOrdinazioniEvase } from "./ordinazioneRoutes/getOrdinazioniEvase"
 export const ordinazioneRoutes ={
     "/ordina/{id_ristorante}":{
-        post: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]} // TODO
+        post: creaOrdine
     },
     "/ordinazioni/evase/":{
-        post:{tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]}, // TODO
+        post: filterOrdiniByDate
     },
-    "/ordinazioni/{is_evase}":{
-        get: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]} // TODO
+    "/ordinazioni/{are_evase}":{
+        get: getOrdinazioniEvase
     },
     "/ordinazione/{id_ordinazione}":{
-        get: {tags: [ROUTE_TAGS.ORDINAZIONE],security:[{"bearerAuth": []}]} // TODO
+        delete: delOrdinazione
     },
 }

@@ -1,42 +1,52 @@
-import { ROUTE_TAGS } from "../../documentation"
-const dummyResturants = JSON.parse("[{\"id\":1,\"nome\":\"Ristorante 1\",\"indirizzo\":\"Via Roma 1\",\"telefono\":\"3333333333\",\"sitoWeb\":\"www.ristorante1.it\",\"fotoPath\":\"foto1.jpg\",\"personale\":{\"camerieri\":[],\"addettiAllaCucina\":[]}}]");
-const listaRistoranti = {
-        tags: [ROUTE_TAGS.RISTORANTE],
-        description: "Lista di tutti i ristoranti dell' amministratore autenticato",
+import { ROUTE_TAGS } from "../../documentation";
+const delOrdinazione = {
+    tags: [ROUTE_TAGS.ORDINAZIONE],
+        description: "Cancella una ordinazione",
         security: [
             {
                "bearerAuth": []
             }
         ],
+        parameters : [
+            {
+                name: "id_ordinazione",
+                in: "path",
+                description: "id dell' ordinazione da cancellare",
+                type: "string",
+                example: "1"
+            }
+        ],
         responses: {
             200:{
-                description: "OK",
+                description: "Ordinazione cancellata con successo",
                 content: {
                     "application/json": {
                         schema :{
                             type : "object",
-                            example :dummyResturants
-                            
+                            example :{
+                                "success": true,
+                                "data": "Ordinazione cancellata con successo"
+                            }
                         }
                     }
                 }
             },
             400:{
-                description:"Devi fornire un token",
+                description:"Bad request",
                 content: {
                     "application/json": {
                         schema : {
                             type : "object",
                             example :{
                                 "success": false,
-                                "data": "Token not provided"
+                                "data": "Bad request"
                             }
                         }
                     }
                 }
             },
             403:{
-                description:"Accesso consentito solo a un admin",
+                description:"Accesso non consentito",
                 content: {
                     "application/json": {
                         schema : {
@@ -50,6 +60,6 @@ const listaRistoranti = {
                 }
             }
         }
-}
+};
 
-export {listaRistoranti};
+export {delOrdinazione};

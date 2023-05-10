@@ -1,4 +1,3 @@
-import { ROUTE_TAGS } from "../documentation"
 import { creaElemento } from "./elementoRoutes/creaElemento.doc"
 import { delElemento } from "./elementoRoutes/delElemento.doc"
 import { editElemento } from "./elementoRoutes/editElemento.doc"
