@@ -9,7 +9,7 @@ export enum ROUTE_TAGS {
 }
 import {userRoutes} from "./route/user.doc";
 import {resturantRoutes} from "./route/resturant.doc";
-import { menuRoutes } from "./route/menu.doc";
+import { menuRoutes } from "./route/categoria.doc";
 import { ordinazioneRoutes } from "./route/ordinazione.doc";
 import { elementoRoutes } from "./route/elemento.doc";
 import { contoRoutes } from "./route/conto.doc";

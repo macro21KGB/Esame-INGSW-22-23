@@ -1,7 +1,13 @@
 import { login } from "./userRoutes/login.doc"
 import { register } from "./userRoutes/register.doc";
 import { creaUtenza } from "./userRoutes/creaUtenza.doc";
+import { getUtentiRistorante } from "./userRoutes/getUtentiRistorante";
 import { ROUTE_TAGS } from "../documentation"
+import { getPw } from "./userRoutes/getPw.doc";
+import { changePw } from "./userRoutes/changePw.doc";
+import { delUser } from "./userRoutes/deleteUtente.doc";
+import { editUser } from "./userRoutes/editUser.doc";
+import { getUtenteFromId } from "./userRoutes/getUtenteFromId.doc";
 export const userRoutes ={
     "/login":{
         post: login
@@ -13,19 +19,19 @@ export const userRoutes ={
         post: creaUtenza
     },
     "/utenti/{id_ristorante}":{
-        get: {tags: [ROUTE_TAGS.UTENTE],security:[{"bearerAuth": []}]} // TODO
+        get: getUtentiRistorante
     },
     "/utente/{email}":{
-        put:{tags: [ROUTE_TAGS.UTENTE],security:[{"bearerAuth": []}]}, // TODO
-        delete:{tags: [ROUTE_TAGS.UTENTE],security:[{"bearerAuth": []}]}, // TODO
+        put: editUser,
+        delete: delUser
     },
     "/utente/{id}":{
-        get:{tags: [ROUTE_TAGS.UTENTE],security:[{"bearerAuth": []}]} // TODO
+        get:getUtenteFromId
     },
     "/pw-changed":{
-        get:{tags: [ROUTE_TAGS.UTENTE],security:[{"bearerAuth": []}]}// TODO
+        get: getPw
     },
     "/pw-change":{
-        post:{tags: [ROUTE_TAGS.UTENTE],security:[{"bearerAuth": []}]} // TODO
+        post: changePw
     }
 }
