@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import offlineJSONautocomplete from './offline-autocomplete.json'
+import { stringSimilarity } from "../../utils/utils";
 const AutoCompleteContainer = styled.button`
     all:unset;
 
@@ -38,7 +39,7 @@ interface AutoCompleteProps {
 }
 
 interface ElementSuggestion {
-    name : string;
+    name: string;
     ingredients: string[]
 }
 
@@ -47,13 +48,16 @@ export default function AutoCompleteComponent({ placeholder, onClick, valueToSea
     const [autoCompleteString, setAutoCompleteString] = useState<string>(placeholder);
     const [ingredients, setIngredients] = useState<string>("");
 
-    async function fetchOnlineSuggestion() : Promise<ElementSuggestion> {
-        const response = await axios.get<{ meals: any[] }>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${valueToSearch.replace(" ", "_")}`);
+    async function fetchOnlineSuggestion(): Promise<ElementSuggestion> {
+        const response = await axios.get<{ meals: any[] }>(`http://www.themealdb.com/api/json/v1/1/search.php?s=${valueToSearch.replace(" ", "_")}`, {
+            method: "GET",
+        });
+
 
         const data = response.data;
-        let suggestion : ElementSuggestion = {
-            name:"",
-            ingredients : []
+        let suggestion: ElementSuggestion = {
+            name: "",
+            ingredients: []
         };
 
         if (data["meals"]) {
@@ -68,43 +72,50 @@ export default function AutoCompleteComponent({ placeholder, onClick, valueToSea
         }
         return suggestion;
     }
-    function stringSimilarity(str1: string, str2: string): number {
-        const set1 = new Set(str1.split(""));
-        const set2 = new Set(str2.split(""));
-        const intersection = new Set([...set1].filter(char => set2.has(char)));
-        const union = new Set([...set1, ...set2]);
-        return intersection.size / union.size;
-    }
-    function fetchOfflineSuggestion() : ElementSuggestion{
-        let suggestion : ElementSuggestion = {
-            name:"",
-            ingredients : []
+
+    function fetchOfflineSuggestion(): ElementSuggestion {
+        let suggestion: ElementSuggestion = {
+            name: "",
+            ingredients: []
         };
         let maxScore = -1;
         offlineJSONautocomplete.forEach(element => {
-            const score = stringSimilarity(valueToSearch.toLowerCase(),element.name.toLowerCase())
-            if(score>=.5 && score > maxScore)
-            {
+            const score = stringSimilarity(valueToSearch.toLowerCase(), element.name.toLowerCase())
+            if (score >= .5 && score > maxScore) {
                 maxScore = score;
                 suggestion.ingredients = element.ingredients;
                 suggestion.name = element.name
-            }   
+            }
         });
         return suggestion;
     }
 
     const fetchSuggestion = async () => {
-        let suggestion : ElementSuggestion = await fetchOnlineSuggestion();
-        
-        if(suggestion.ingredients.length==0)
-            suggestion = fetchOfflineSuggestion();
 
-        if(suggestion.ingredients.length!=0)
-        {
-            setAutoCompleteString(suggestion.name);
-            setIngredients(suggestion.ingredients.join(", "));  
+        let suggestion!: ElementSuggestion;
+
+        try {
+            suggestion = await fetchOnlineSuggestion();
+
+            if (suggestion.name === "") {
+                suggestion = fetchOfflineSuggestion();
+            }
+
+        } catch (err) {
+            console.log("Possibile errore di rete");
+            suggestion = fetchOfflineSuggestion();
         }
-            
+
+        if (suggestion.name === "") {
+            setAutoCompleteString("No results found");
+            return;
+        }
+
+        if (suggestion.ingredients.length != 0) {
+            setAutoCompleteString(suggestion.name);
+            setIngredients(suggestion.ingredients.join(", "));
+        }
+
     }
 
     const handleOnClick = () => {

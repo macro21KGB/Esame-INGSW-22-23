@@ -1,5 +1,4 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams } from "react-router";
 import styled from "styled-components";
@@ -12,11 +11,12 @@ import SlideUpModal from "../components/SlideUpModal";
 import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Elemento } from "../entities/menu";
-import { ALLERGENI } from "../utils/constants";
+import { ALLERGENI, AppEvents } from "../utils/constants";
 import { toast } from "react-toastify";
 import { Allergene } from "../entities/allergene";
 import AutoCompleteComponent from "../components/AutoCompleteComponent";
 import { logEventToFirebase } from "../firebase";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const DashboardContainer = styled.div`
 display: flex;
@@ -136,6 +136,7 @@ export default function GestisciElementiCategoriaRoute() {
 		});
 	};
 
+	const [parent] = useAutoAnimate();
 
 	const acceptSuggestion = (suggestion: string, ingredienti: string) => {
 		setInformazioniElemento({
@@ -279,6 +280,11 @@ export default function GestisciElementiCategoriaRoute() {
 
 	const creaNuovoElemento = (informazioniElemento: InformazioniElemento) => {
 
+		if (informazioniElemento.nome == "" || informazioniElemento.descrizione == "" || informazioniElemento.costo == "") {
+			toast.error("Compila tutti i campi");
+			return;
+		}
+
 		const allergeni = informazioniElemento.allergeni.map((allergene) => {
 			return new Allergene(allergene, 0);
 		});
@@ -301,6 +307,7 @@ export default function GestisciElementiCategoriaRoute() {
 		onSuccess: () => {
 			toast.success("Elemento aggiunto/modificato con successo");
 			queryClient.invalidateQueries(["elementi", idCategoria]);
+			logEventToFirebase(AppEvents.MODIFY_ELEMENT_FROM_CATEGORY);
 			setShowModal(false);
 			resettaCampi();
 		}
@@ -362,7 +369,7 @@ export default function GestisciElementiCategoriaRoute() {
 				</DashboardContent>
 			) : (
 				<>
-					<ListaElementi>
+					<ListaElementi ref={parent}>
 						{queryElementiCategoria.data?.map((elemento: Elemento) => (
 							<ItemElementoCategoria
 								key={elemento.id_elemento + elemento.nome}

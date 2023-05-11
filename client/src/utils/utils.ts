@@ -222,6 +222,25 @@ export function isContoClosed(conto: Conto): boolean {
 	return conto.ordini.every(ordinazione => ordinazione.evaso === true);
 }
 
+/**
+ * Calcola la similarità tra due stringhe
+ * @param str1 stringa 1 da confrontare
+ * @param str2 stringa 2 da confrontare
+ * @returns un numero tra 0 e 1 che indica la similarità tra le due stringhe
+ */
+export function stringSimilarity(str1: string, str2: string): number {
+	const set1 = new Set(str1.split(""));
+	const set2 = new Set(str2.split(""));
+	const intersection = new Set([...set1].filter(char => set2.has(char)));
+	const union = new Set([...set1, ...set2]);
+	return intersection.size / union.size;
+}
+
+/**
+ * 
+ * @param token token AWT da decodificare
+ * @returns il payload del token
+ */
 export const decodeJWTPayload = (token: string): TokenPayload => {
 	const payload = token.split(".")[1];
 	const decodedPayload = atob(payload);
