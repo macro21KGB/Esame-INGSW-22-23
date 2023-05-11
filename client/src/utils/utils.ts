@@ -246,3 +246,18 @@ export const decodeJWTPayload = (token: string): TokenPayload => {
 	const decodedPayload = atob(payload);
 	return JSON.parse(decodedPayload);
 }
+
+type ObjectsKey<TObj> = keyof TObj;
+
+export function isAllFieldDefined<T extends Record<string, any>>(obj: T, except?: ObjectsKey<T>[]) {
+	let isAllOk = true;
+
+	Object.keys(obj).forEach(currentKey => {
+		const currentValue = obj[currentKey];
+		if (currentValue === null || currentValue === "" || currentValue === undefined || currentValue?.length === 0)
+			if (!except?.includes(currentKey))
+				isAllOk = false;
+	})
+
+	return isAllOk;
+}
