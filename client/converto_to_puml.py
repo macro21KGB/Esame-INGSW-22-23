@@ -30,7 +30,7 @@ def add_start_end_tag(plantuml: str):
     return "@startuml\n" + plantuml + "@enduml\n"
 
 def generate_plantuml(classes_and_interfaces : list):
-    plantuml = ""
+    plantuml = "@startuml\n"
     for class_or_interface in classes_and_interfaces:
         if class_or_interface["class_name"]:
             plantuml += f"class {class_or_interface['class_name']} {{\n"

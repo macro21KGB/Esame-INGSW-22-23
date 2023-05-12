@@ -111,7 +111,7 @@ export default function Login() {
 
 			if (result.success) {
 				toast.success("Accesso eseguito con successo");
-				logEventToFirebase("login", result.data)
+				logEventToFirebase("login", { email })
 				salvaTokenInCookie(result.data.token, 3600);
 
 				// route per il supervisore
@@ -131,8 +131,6 @@ export default function Login() {
 						navigate("/cucina", { replace: true });
 						break;
 				}
-
-
 
 			} else {
 				setIsLoading(false);
@@ -188,6 +186,11 @@ export default function Login() {
 					onChange={handleInfoLogin}
 					type="password"
 					name="password"
+					onKeyDown={(e) => {
+						if (e.key === "Enter" && isLogging) {
+							handleLoginRegister(loginInfo.email, loginInfo.password, loginInfo.confirmPassword || "");
+						}
+					}}
 				/>
 				{!isLogging && (
 					<InputBox
@@ -196,6 +199,7 @@ export default function Login() {
 						onChange={handleInfoLogin}
 						type="password"
 						name="confirmPassword"
+
 					/>
 				)}
 			</div>
@@ -210,7 +214,6 @@ export default function Login() {
 				/>
 
 				<br />
-				{/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 				<p
 					onClick={() => {
 						setIsLogging(!isLogging);

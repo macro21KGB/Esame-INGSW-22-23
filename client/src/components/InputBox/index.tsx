@@ -8,6 +8,7 @@ interface InputBoxProps {
 	name?: string;
 	type?: string;
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const InputBoxContainer = styled.input`
@@ -27,6 +28,7 @@ export default function InputBox(props: InputBoxProps) {
 			type={props.type || "text"}
 			placeholder={props.placeholder || ""}
 			name={props.name || ""}
+			onKeyDown={props.onKeyDown}
 		/>
 	);
 }

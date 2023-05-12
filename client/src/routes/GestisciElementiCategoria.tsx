@@ -177,12 +177,12 @@ export default function GestisciElementiCategoriaRoute() {
 			new Error("Non è stato possibile recuperare l'id della categoria")
 		);
 
-		logEventToFirebase("add_element_to_category")
 		return controller.aggiungiElementoCategoria(elemento, +idCategoria);
 	}, {
 		onSuccess: () => {
 			toast.success("Elemento aggiunto/modificato con successo");
 			queryClient.invalidateQueries(["elementi", idCategoria]);
+			logEventToFirebase("add_element_to_category")
 			setShowModal(false);
 			resettaCampi();
 		},
