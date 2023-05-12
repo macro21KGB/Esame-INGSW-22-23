@@ -1,4 +1,4 @@
-import { DateString, LoginPayload, OrdinazioneConCodice, Result } from "./../utils/constants";
+import { DateString, InfoGiorno, LoginPayload, OrdinazioneConCodice, Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
 import { generaFakeDataCharts, wait } from "./../utils/utils";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
@@ -159,7 +159,7 @@ export class Controller {
 	}
 
 
-	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordinazioni: number }[]> {
+	getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<InfoGiorno[]> {
 		return this.ordinazioneDAO.getOrdinazioniEvasiPerUtente(selectedUserEmail, from, to);
 	}
 
