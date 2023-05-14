@@ -1,0 +1,176 @@
+@startuml
+
+class Allergene <<Entity>>{
+        -id_elemento : number;
+	-nome: string
+	-id: number
++getters() & setters()
+}
+
+class Conto <<Entity>>{
+	-id_conto: number
+	-data: Date
+	-codice_tavolo: string
+	-chiuso: boolean
+
+	+getImportoTotale(): number
+
++getters() & setters()
+}
+
+class Menu <<Entity>>{
+	-nome: string
+
+	+getNome(): string 
+	+getCategorie(): Categoria[] 
+
++getters() & setters()
+}
+
+class Categoria <<Entity>>{
+	-nome: string
+	-id_categoria: number
+	-id_ristorante: number
+
++getters() & setters()
+}
+
+
+class Elemento <<Entity>>{
+	-id_elemento: number
+	-nome: string
+	-descrizione: string
+	-prezzo: number
+	-ingredienti: string[]
+	-ordine: number
+        
+	+getOrdine(): number 
+	+getPrezzo(): number 
+	+getAllergeni(): Allergene[] 
++getters() & setters()
+}
+
+class ElementoConQuantita <<Entity>> extends Elemento {
+  -quantita : int
++getters() & setters()
+}
+
+class Ordinazione <<Entity>>{
+	-id: number
+	-codice_tavolo: string
+	-timestamp: Date
+	-evasaDa: number
+	-evaso: boolean
+
++setElementi(elementi: ElementoConQuantita[])
++setEvasaDa(evasaDa: number)
+	+getTotaleElementi(): number
+	+getImporto(): number
++getters() & setters()
+}
+
+interface Personale {
+}
+class Ristorante <<Entity>>{
+	-id: number
+	-nome: string
+	-indirizzo: string
+	-telefono: string
+	-sitoWeb: string
+	-fotoPath: string
++getters() & setters()
+}
+
+
+interface IUtenteAbstractFactory {
+
+	+createUtente(): Utente
+}
+
+class AdminFactory <<Entity>> implements IUtenteAbstractFactory {
+	-nome: string
+	-cognome: string
+	-telefono: string
+	-email: string
+	-ruolo: RUOLI
+	+createUtente(): Utente 
+}
+class CameriereFactory<<Entity>> implements IUtenteAbstractFactory {
+	-nome: string;
+	-cognome: string;
+	-telefono: string;
+	-email: string;
+	-ruolo: RUOLI;
+	-supervisore: boolean;
+	+createUtente(): Utente 
+}
+
+class AddettoCucinaFactory<<Entity>> implements IUtenteAbstractFactory {
+	-nome: string
+	-cognome: string
+	-telefono: string
+	-email: string;
+	-ruolo: RUOLI
+	-supervisore: boolean
+	+createUtente(): Utente 
+}
+
+class UtenteFactory<<Entity>> {
+	+creaUtente(nome: string, cognome: string, telefono: string, email: string, ruolo: RUOLI, supervisore: boolean = false): Utente
+    +getUtente(factory : IUtenteAbstractFactory)
+}
+
+AddettoCucinaFactory --* "UtenteFactory" : use
+CameriereFactory --* "UtenteFactory" : use
+AdminFactory --* "UtenteFactory" : use
+
+
+class Utente <<Entity>>{
+	-nome: string
+	-cognome: string
+	-telefono: string
+	-email: string
+	-ruolo: RUOLI
+
+	+fromJson(jsonText: string): Utente
++getters() & setters()
+}
+
+enum RUOLI {
+        ADMIN
+	ADDETTO_CUCINA
+	CAMERIERE
+}
+
+
+class Admin<<Entity>> extends Utente {
+
+	+setRistoranti(ristoranti: Ristorante[])
+
+	+getRistoranti(): Ristorante[] 
+
++getters() & setters()
+	
+}
+
+class Cameriere<<Entity>> extends Utente {
+	-supervisore: boolean
++getters() & setters()
+}
+class AddettoAllaCucina extends Utente {
+	-supervisore: boolean
++getters() & setters()
+}
+Conto"1" *-- "*" Ordinazione
+
+Personale "1" o-- "*" Cameriere
+Personale "1" o-- "*" AddettoAllaCucina
+Ristorante "1" *--"1" Personale
+
+Ordinazione "1"*--"*" ElementoConQuantita
+Elemento "1"*--"*" Allergene
+Categoria "1"*--"*" Elemento
+Categoria "*"--*"1" Menu
+Ristorante "1"*--"1" Menu
+Ristorante "*"--*"1" Admin
+@enduml

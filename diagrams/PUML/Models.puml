@@ -1,0 +1,79 @@
+@startuml
+
+interface IAllergeneDAO <<Model>>{
+    +getAllergeni(id_elemento: number): Promise<Allergene[]>
+    +addAllergene(allergene: Allergene): Promise<Boolean>
+    +deleteAllergene(id : number): Promise<Boolean>
+}
+
+interface ICategoriaDAO <<Model>>{
+	+getElementiCategoria(id_categoria : number): Promise<Elemento[]>
+	+getCategoria(idCategoria: number): Promise<Categoria | null>
+	+getCategorie(id_ristorante : number): Promise<Categoria[]>
+	+addCategoria(categoria: Categoria): Promise<Boolean>
+	+updateCategoria(id_categoria : number,nuovo_nome : string): Promise<Boolean>
+	+deleteCategoria(id_categoria : number): Promise<Boolean>
+	+getElementiCategoria(id_categoria : number): Promise<Elemento[]>
+}
+
+interface IContoDAO <<Model>>{
+    +creaConto(conto: Conto, idRistorante: number): Promise<number>
+    +getContoByData(data: Date): Promise<Conto>
+    +getConti(idRistorante: number): Promise<Conto[]>
+    +getContiByData(data: Date): Promise<Conto[]>
+
+    +chiudiConto(idConto: number): Promise<boolean>
+    +stampaConto(conto: Conto): Promise<boolean>
+}
+
+interface IElementoDAO <<Model>>{
+    +getElementi(id_categoria: number): Promise<Elemento[]>
+    +getElemento(id: number): Promise<Elemento | null>
+    +addElemento(elemento: Elemento, id_categoria: number): Promise<Boolean>
+    +updateElemento(id: number, elemento: Elemento): Promise<Boolean>
+    +deleteElemento(id: number): Promise<Boolean>
+    +scambiaOrdineElementi(id1: number, id2: number): Promise<Boolean>
+    +getAllergeniElemento(id: number): Promise<Allergene[]>
+}
+
+
+interface IOrdinazioneDAO <<Model>> {
+    +getOrdinazioni(idRistorante: number, evase: boolean): Promise<Ordinazione[]>
+    +getOrdinazioniNonEvase(): Promise<Ordinazione[]>
+    +getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>
+    +getOrdinazione(id: number): Promise<Ordinazione>
+    +evadiOrdinazione(idOrdinazione: number, idUtente: number): Promise<boolean>
+    +getOrdinazioneEvaseDa(emailUtente: string, opzioni: OpzioniTemporali): Promise<{ giorno: DateString, numero_ordinazioni: number }[]>
+    +addOrdinazione(ordinazione: Ordinazione, idConto: number): Promise<boolean>
+    +updateOrdinazione(ordinazione: Ordinazione): Promise<Ordinazione>
+    +deleteOrdinazione(id: number): Promise<boolean>
+}
+
+interface IRistoranteDAO <<Model>>{
+    +getRistoranti(): Promise<Ristorante[]>
+    +getRistorante(id: number): Promise<Ristorante | null>
+    +addRistorante(ristorante: Ristorante, id_utente:number): Promise<Boolean>
+    +updateRistorante(ristorante: Ristorante): Promise<Ristorante>
+    +deleteRistorante(id: number): Promise<Ristorante>
+}
+
+interface IUtenteDAO <<Model>>{
+	+isPasswordChanged(email: string): Promise<boolean>
+	+registraUtente(email: string, password: string): Promise<boolean>
+	+accediUtente(email: string, password: string): Promise<Utente | null>
+	+getUtenteById(id_utente: number): Promise<Utente | null>
+	+getUtente(email: string): Promise<Utente | null>
+	+getIdUtente(email: string): Promise<number | null>
+	+getUtenti(): Promise<Utente[]>
+	+getUtentiRistorante(id_ristorante : number): Promise<Utente[]>
+	+getRistoranti(email: string) : Promise<Ristorante[]>
+	+getRistorante(email:string) : Promise<Ristorante>
+	+promuoviASupervisore(utente: Utente): Promise<Utente>
+	+getAdmin(email: string): Promise<Utente | null>
+	+addUtenteImpiegato(utente: Utente, id_ristorante_impiegato:number): Promise<Boolean>
+	+updateUtente(new_utente: Utente, email:string, supervisore : boolean): Promise<Boolean>
+	+updatePassword(email: string, plain_password: string): Promise<Boolean>
+	+deleteUtente(email: string): Promise<Boolean>
+	+registraUtenza(utente : Utente, plain_password : string, id_ristorante: number) : Promise<Boolean>
+}
+@enduml
