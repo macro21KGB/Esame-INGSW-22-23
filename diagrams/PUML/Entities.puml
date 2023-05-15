@@ -93,7 +93,7 @@ class AdminFactory <<Entity>> implements IUtenteAbstractFactory {
 	-telefono: string
 	-email: string
 	-ruolo: RUOLI
-+AdminFactory (nome,cognome,telefono,email,ruolo,supervisore)
++AdminFactory (nome,cognome,telefono,email)
 +createUtente(): Utente
 }
 class CameriereFactory<<Entity>> implements IUtenteAbstractFactory {
@@ -103,7 +103,7 @@ class CameriereFactory<<Entity>> implements IUtenteAbstractFactory {
 	-email: string;
 	-ruolo: RUOLI;
 	-supervisore: boolean;
-+CameriereFactory(nome,cognome,telefono,email,ruolo,supervisore)
++CameriereFactory(nome,cognome,telefono,email,supervisore)
 +createUtente(): Utente
 }
 
@@ -114,7 +114,7 @@ class AddettoCucinaFactory<<Entity>> implements IUtenteAbstractFactory {
 	-email: string;
 	-ruolo: RUOLI
 	-supervisore: boolean
-+AddettoCucinaFactory(nome,cognome,telefono,email,ruolo,supervisore)
++AddettoCucinaFactory(nome,cognome,telefono,email,supervisore)
 +createUtente(): Utente 
 }
 
@@ -125,6 +125,7 @@ class UtenteFactory<<Entity>> {
 AddettoCucinaFactory --* "UtenteFactory" : use
 CameriereFactory --* "UtenteFactory" : use
 AdminFactory --* "UtenteFactory" : use
+
 
 
 
