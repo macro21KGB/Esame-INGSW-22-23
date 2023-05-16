@@ -1,0 +1,156 @@
+@startuml component_diagram
+class AutoCompleteComponent <<Boundary>> {
+
+    placeholder: string
+    onClick: (suggestion: string, ingredients: string) : void
+    valueToSearch: string
+
+}
+class BigButton <<Boundary>> {
+
+    onClick: () : void
+    text: string
+    color: string
+    disabled: boolean
+
+}
+class DropDownItem <<Boundary>> {
+
+    children: React.ReactNode
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
+    bgColor: string
+
+}
+class ELementoOrdinazioneSupervisore <<Boundary>> {
+
+    ordine: Ordinazione
+
+}
+class FABAddButton <<Boundary>> {
+
+	onClick: () : void
+
+}
+class InputBox <<Boundary>> {
+
+	value: string
+	placeholder: string
+	name: string
+	type: string
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) : void
+	onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) : void
+
+}
+class ItemCategoria <<Boundary>> {
+
+    categoria: Categoria
+
+}
+class ItemElementoCategoria <<Boundary>> {
+
+	elemento: Elemento
+	onClickUp: () : void
+	onClickDown: () : void
+	onClickElemento: (elemento: Elemento) : void
+	ordine: number
+
+}
+class ItemElementoConQuantita <<Boundary>> {
+
+	elemento: Elemento | ElementoConQuantita
+	quantita: number
+	onChangeQuantita: (elemento: Elemento, quantita: number) : void
+
+}
+class ItemElementoOrdinazione <<Boundary>> {
+
+	elemento: ElementoConQuantita
+
+}
+class ItemOrdineTavolo <<Boundary>> {
+
+    conto: Conto
+    onClick: () : void
+
+}
+class ItemRistorante <<Boundary>> {
+
+    ristorante: Ristorante
+    onClick: () : void
+
+}
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
+class SoftButton <<Boundary>> {
+
+    text: string
+    onClick: () : void
+
+}
+class UtenzaItem <<Boundary>> {
+
+	utente: InformazioniUtente
+	onModifica: () : void
+
+}
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class Drawer <<Boundary>> {
+
+    onClose: () : void
+    logout: () : void
+    children: React.ReactNode
+
+}
+
+class ItemOrdinazioneCucina <<Boundary>> {
+
+    ordine: Ordinazione
+    evasa: boolean
+
+}
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class QRCodeScanner <<Boundary>> {
+	
+    fps: number
+	qrbox: number
+	aspectRatio: number
+	disableFlip: boolean
+	verbose: boolean
+	qrCodeSuccessCallback: (message: string) : void
+	qrCodeErrorCallback: (error: string) : void
+
+}
+
+class ResettaPasswordPopup <<Boundary>> {
+
+    onConfirm: (password: string) : void
+    handleClickOnConfirm: () : void
+
+}
+
+class SlideUpModal <<Boundary>> {
+
+	showModal: boolean
+	setShowModal: (showModal: boolean) : void
+	children: React.ReactNode
+	onClose: () : void
+
+}
+
+@enduml

@@ -115,7 +115,7 @@ interface DrawerProps {
 	onClose: () => void;
 }
 
-function Drawer(props: DrawerProps): JSX.Element {
+function Drawer(props: DrawerProps) {
 	const { onClose } = props;
 
 	const setUserInStore = useStore((state) => state.setUser);

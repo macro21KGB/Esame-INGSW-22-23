@@ -33,7 +33,7 @@ const createConfig = (props: QRCodeScannerProps) => {
 	return config;
 };
 
-const QRCodeScanner = (props: QRCodeScannerProps) => {
+export default function QRCodeScanner(props: QRCodeScannerProps) {
 	useEffect(() => {
 		// when component mounts
 		const config = createConfig(props);
@@ -65,5 +65,3 @@ const QRCodeScanner = (props: QRCodeScannerProps) => {
 
 	return <div id={qrcodeRegionId} />;
 };
-
-export default QRCodeScanner;

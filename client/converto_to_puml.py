@@ -9,7 +9,7 @@ def extract_class_functions_attributes(file_path: str):
         raise FileNotFoundError(f"{file_path} is not a file")
     with open(file_path) as f:
         content = f.read()
-        class_regex = r"(class|interface)\s+(\w+)\s*\{([\s\S]*?)(?<=\})\s*\}"
+        class_regex = r"(class|interface)\s+([\w ]+)\s*\{([\s\S]*?)(?<=\})\s*\}"
         class_matches = re.findall(class_regex, content)
         if not class_matches:
             raise Exception(f"No class or interface found in {file_path}")
@@ -19,7 +19,7 @@ def extract_class_functions_attributes(file_path: str):
             attributes_regex = r"([\w\?]+):\s*([\w\[\]\{\} \.]+);"
             attributes_match = re.findall(attributes_regex, class_match[2])
             functions_regex = (
-                r"(\w+)\(\s?([\w\s=\[\],:]*)\)\s*:\s*([\w<>\.\{\} :,\[\]]+)\s*\{?"
+                r"(\w+)\(\s?([\w\s=\[\],:]*)\)\s*:\s*([\w<>\.\{\} :,\[\]]+)\s*\{? "
             )
             functions_match = re.findall(functions_regex, class_match[2])
             class_and_interfaces.append(

@@ -88,7 +88,9 @@ const SlideUpModal = ({
 							<CloseModalButton aria-label='Close modal' onClick={closeModal}>
 								&times;
 							</CloseModalButton>
-							<ModalContent>{children}</ModalContent>
+							<ModalContent>
+								{children}
+							</ModalContent>
 						</ModalWrapper>
 					</animated.div>
 				</ModalBackground>
