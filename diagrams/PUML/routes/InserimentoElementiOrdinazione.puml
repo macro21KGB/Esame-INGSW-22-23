@@ -2,6 +2,7 @@
 
 
 class Controller {
+  /* ... altri metodi */
   getRistoranteAttuale(): Ristorante
   getCategorie(idRistorante: number): Categoria[]
   inviaOrdineAllaCucina(codiceTavolo: string, elementi: ElementoConQuantita, idRistorante: number): void

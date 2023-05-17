@@ -2,11 +2,11 @@
 
 
 class Controller <<Control>> #coral{
-... altri metodi e attributi
+/* ... altri metodi */
 getRistorante(id : string) : Promise<Ristorante>
 }
 
-class DashboardRistorante <<Boundary>> {
+class DashboardRistoranteRoute <<Boundary>> {
 id : number
 mostraRistorante() : void
 }

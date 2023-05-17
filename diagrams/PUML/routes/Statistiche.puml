@@ -1,7 +1,7 @@
 @startuml Statistiche
 
 class Controller {
-    /* ... */
+    /* ... altri metodi */
     getUtenti(id: number): Utente[]
     getNumeroOrdiniEvasiPerUtente: {giorno: string, numero_ordinazioni: number}[]
 

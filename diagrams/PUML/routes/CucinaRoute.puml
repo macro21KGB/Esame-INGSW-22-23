@@ -9,7 +9,7 @@ mostraOrdinazioniEvaseUltime24h() : void
 }
 
 class Controller <<Control>> #coral{
-... altri metodi e attributi
+/* ... altri metodi */
 getOrdinazioniDaEvadere() : Promise<Ordinazioni>
 getOrdinazioniEvaseUltime24h() : Promise<Ordinazioni>
 

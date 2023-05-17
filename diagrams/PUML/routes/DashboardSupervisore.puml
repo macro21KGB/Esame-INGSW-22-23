@@ -2,11 +2,11 @@
 
 
 class Controller <<Control>> #coral{
-... altri metodi e attributi
+/* ... altri metodi */
 getRistoranteAttuale() : Promise<Ristorante>
 }
 
-class DashboardSupervisore <<Boundary>> {
+class DashboardSupervisoreRoute <<Boundary>> {
 isUsingFirstAccessPassword : bool
 cambiaPassword(val : bool) : void
 mostraRistoranteAttuale() : void

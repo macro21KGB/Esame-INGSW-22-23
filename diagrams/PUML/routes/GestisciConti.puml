@@ -2,12 +2,12 @@
 
 
 class Controller <<Control>> #coral{
-... altri metodi e attributi
+/* ... altri metodi */
 chiudiConto(conto : Conto) : void
 getContiTavoliUltime24h() : Promise<Conto[]>
 }
 
-class GestisciConti<<Boundary>> {
+class GestisciContiRoute<<Boundary>> {
 navigate : NavigateFunction
 idRistorante : number
 setIdRistorante(val : number)  : void

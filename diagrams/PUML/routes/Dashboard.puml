@@ -2,11 +2,11 @@
 
 
 class Controller <<Control>> #coral{
-... altri metodi e attributi
+/* ... altri metodi */
 creaRistorante(ristorante : Ristorante) : void
 }
 
-class Dashboard <<Boundary>> {
+class DashboardRoute <<Boundary>> {
 navigate : NavigateFunction
 utenteCorrente : Utente
 saveIdRistorante : number

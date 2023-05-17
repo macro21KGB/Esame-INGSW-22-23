@@ -7,9 +7,9 @@ interface InformazioniElemento {
 	allergeni: string[]
 }
 
-class Controller {
+class Controller <<Control>>{
 
-	/* ... */
+	/* ... altri metodi */
 	getElementiCategoria(idCategoria: number): Elemento[]
 	eliminaElementoCategoria(idElemento): void
 	aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): void

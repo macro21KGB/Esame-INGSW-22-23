@@ -2,12 +2,12 @@
 
 
 class Controller <<Control>> #coral{
-... altri metodi e attributi
+/* ... altri metodi */
 getCategorie() : Promise<Categoria[]>
 creaCategoria(Categoria categoria) : void 
 }
 
-class GestisciCategorie<<Boundary>> {
+class GestisciCategorieRoute<<Boundary>> {
  id : number
  showModal : bool
 setModal(val : bool) : void
