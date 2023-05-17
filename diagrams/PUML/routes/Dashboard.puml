@@ -1,0 +1,69 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+... altri metodi e attributi
+creaRistorante(ristorante : Ristorante) : void
+}
+
+class Dashboard <<Boundary>> {
+navigate : NavigateFunction
+utenteCorrente : Utente
+saveIdRistorante : number
+showModal : bool
+setModal(val : bool)
+setSavedIdRistorante(val : number) : void
+setUtenteCorrente(utente : Utente) : void
+informazioniRistorante : dictionary
+setInformazioniRistorante(info : dictionary) : void
+
+salvaIdRistoranteEAvanza = (id: number) : void
+handleOnChangeInformazioniRistorante() : void
+aggiungiRistorante() : void
+resettaCampi() : void
+}
+
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
+class ItemRistorante <<Boundary>> {
+
+    ristorante: Ristorante
+    onClick: () : void
+
+}
+
+class SlideUpModal <<Boundary>> {
+
+	showModal: boolean
+	setShowModal: (showModal: boolean) : void
+	children: React.ReactNode
+	onClose: () : void
+
+}
+
+SlideUpModal --* Dashboard: contiene
+ItemRistorante "*"--* Dashboard: contiene
+WelcomePanel--* Dashboard: contiene
+NavBar --* Dashboard: contiene
+LoadingCircle --* Dashboard: contiene
+
+Controller --* Dashboard : usa
+@enduml

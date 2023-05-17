@@ -1,17 +1,25 @@
-@startuml component_diagram
+@startuml
 class CucinaRoute <<Boundary>>{
 isUsingFirstAccessPassword : bool
 isScreenTooSmall : bool
-SetIsScreenTooSmall(val : bool) 
-cambiaPassword(val : bool)
+SetIsScreenTooSmall(val : bool)  : void
+cambiaPassword(val : bool) : void
 mostraOrdinazioniDaEvadere() : void
 mostraOrdinazioniEvaseUltime24h() : void
 }
 
-class Controller <<Controller>> #coral{
+class Controller <<Control>> #coral{
+... altri metodi e attributi
 getOrdinazioniDaEvadere() : Ordinazioni
 getOrdinazioniEvaseUltime24h() : Ordinazioni
 
+
+}
+
+class ItemOrdinazioneCucina <<Boundary>> {
+
+    ordine: Ordinazione
+    evasa: boolean
 
 }
 
@@ -23,7 +31,23 @@ class NavBar <<Boundary>> {
 	state: string[]
 }
 
+class ResettaPasswordPopup <<Boundary>> {
+
+    onConfirm: (password: string) : void
+    handleClickOnConfirm: () : void
+
+}
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
 
 NavBar --* CucinaRoute : contiene
+LoadingCircle --* CucinaRoute : contiene
+ResettaPasswordPopup --* CucinaRoute : contiene
+ItemOrdinazioneCucina "*"--* CucinaRoute : contiene
+
+
 Controller --* CucinaRoute : usa
 @enduml

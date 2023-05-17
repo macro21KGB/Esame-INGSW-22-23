@@ -1,0 +1,42 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+... altri metodi e attributi
+getRistorante(id : string) : Ristorante
+}
+
+class DashboardRistorante <<Boundary>> {
+id : number
+mostraRistorante() : void
+}
+
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
+
+
+
+WelcomePanel--* DashboardRistorante: contiene
+NavBar --* DashboardRistorante: contiene
+LoadingCircle --* DashboardRistorante: contiene
+
+Controller --* DashboardRistorante: usa
+@enduml

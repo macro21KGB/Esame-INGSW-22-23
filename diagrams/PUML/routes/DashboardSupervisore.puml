@@ -1,0 +1,51 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+... altri metodi e attributi
+getRistoranteAttuale() : Ristorante
+}
+
+class DashboardSupervisore <<Boundary>> {
+isUsingFirstAccessPassword : bool
+cambiaPassword(val : bool) : void
+mostraRistoranteAttuale() : void
+}
+
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class ResettaPasswordPopup <<Boundary>> {
+
+    onConfirm: (password: string) : void
+    handleClickOnConfirm: () : void
+
+}
+
+
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
+
+
+
+WelcomePanel--* DashboardSupervisore : contiene
+NavBar --* DashboardSupervisore : contiene
+LoadingCircle --* DashboardSupervisore : contiene
+ResettaPasswordPopup --* DashboardSupervisore : contiene
+Controller --* DashboardSupervisore : usa
+@enduml

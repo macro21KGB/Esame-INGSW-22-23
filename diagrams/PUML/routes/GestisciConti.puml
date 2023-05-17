@@ -1,0 +1,63 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+... altri metodi e attributi
+chiudiConto(conto : Conto) : void
+getContiTavoliUltime24h() : Conto[]
+}
+
+class GestisciConti<<Boundary>> {
+navigate : NavigateFunction
+idRistorante : number
+setIdRistorante(val : number)  : void
+contoSelezionato : Conto
+setContoSelezionato(conto : Conto) : void
+chiudiConto(conto : Conto) : void
+chiudiEStampaConto()
+mostraContiTavoliUltime24h()
+}
+
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+
+
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
+
+
+class ItemOrdineTavolo <<Boundary>> {
+
+    conto: Conto
+    onClick: () : void
+
+}
+class ELementoOrdinazioneSupervisore <<Boundary>> {
+
+    ordine: Ordinazione
+
+}
+ELementoOrdinazioneSupervisore "*"--* GestisciConti: contiene
+ItemOrdineTavolo "*"--* GestisciConti: contiene
+
+WelcomePanel--* GestisciConti: contiene
+NavBar --* GestisciConti: contiene
+LoadingCircle --* GestisciConti: contiene
+Controller --* GestisciConti: usa
+@enduml

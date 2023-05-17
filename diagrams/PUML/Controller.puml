@@ -1,0 +1,13 @@
+class Controller <<Control>> #coral{
+static getInstance() : Controller 
+
+getOrdinazioniDaEvadere() : Ordinazioni
+getOrdinazioniEvaseUltime24h() : Ordinazioni
+creaRistorante(ristorante : Ristorante) : void
+getRistorante(id : string) : Ristorante
+getRistoranteAttuale() : Ristorante
+getCategorie() : Categoria[]
+creaCategoria(Categoria categoria) : void 
+chiudiConto(conto : Conto) : void
+getContiTavoliUltime24h() : Conto[]
+}

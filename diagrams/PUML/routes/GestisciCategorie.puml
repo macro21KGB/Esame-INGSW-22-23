@@ -1,0 +1,64 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+... altri metodi e attributi
+getCategorie() : Categoria[]
+creaCategoria(Categoria categoria) : void 
+}
+
+class GestisciCategorie<<Boundary>> {
+ id : number
+ showModal : bool
+setModal(val : bool) : void
+nomeCategoria : string 
+setNomeCategoria(nome : string)
+aggiungiCategoria() : void
+mostraCategorie() : void
+
+}
+
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+
+
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class LoadingCircle <<Boundary>> {
+
+	loaderPosition: string
+
+}
+
+class SlideUpModal <<Boundary>> {
+
+	showModal: boolean
+	setShowModal: (showModal: boolean) : void
+	children: React.ReactNode
+	onClose: () : void
+
+}
+
+class ItemCategoria <<Boundary>> {
+
+    categoria: Categoria
+
+}
+ItemCategoria "*"--* GestisciCategorie: contiene
+SlideUpModal --* GestisciCategorie: contiene
+WelcomePanel--* GestisciCategorie: contiene
+NavBar --* GestisciCategorie: contiene
+LoadingCircle --* GestisciCategorie: contiene
+Controller --* GestisciCategorie: usa
+@enduml
