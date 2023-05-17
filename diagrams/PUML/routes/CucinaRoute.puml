@@ -1,0 +1,29 @@
+@startuml component_diagram
+class CucinaRoute <<Boundary>>{
+isUsingFirstAccessPassword : bool
+isScreenTooSmall : bool
+SetIsScreenTooSmall(val : bool) 
+cambiaPassword(val : bool)
+mostraOrdinazioniDaEvadere() : void
+mostraOrdinazioniEvaseUltime24h() : void
+}
+
+class Controller <<Controller>> #coral{
+getOrdinazioniDaEvadere() : Ordinazioni
+getOrdinazioniEvaseUltime24h() : Ordinazioni
+
+
+}
+
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+
+NavBar --* CucinaRoute : contiene
+Controller --* CucinaRoute : usa
+@enduml
