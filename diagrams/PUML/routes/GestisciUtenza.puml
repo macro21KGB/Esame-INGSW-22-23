@@ -11,7 +11,7 @@ interface InformazioniUtente {
 
 class Controller <<Control>> #coral{
   /* ... altri metodi */
-  getUtenti(idRistorante: number): Utente[]
+  getUtenti(idRistorante: number): Promise<Utente[]>
 }
 
 class GestisciUtenzaRoute {

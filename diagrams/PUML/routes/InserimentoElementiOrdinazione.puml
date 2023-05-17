@@ -4,7 +4,7 @@
 class Controller <<Control>> #coral{
   /* ... altri metodi */
   getRistoranteAttuale(): Ristorante
-  getCategorie(idRistorante: number): Categoria[]
+  getCategorie(idRistorante: number): Promise<Categoria[]>
   inviaOrdineAllaCucina(codiceTavolo: string, elementi: ElementoConQuantita, idRistorante: number): void
 
 }

@@ -10,7 +10,7 @@ interface InformazioniElemento {
 class Controller <<Control>> #coral{
 
 	/* ... altri metodi */
-	getElementiCategoria(idCategoria: number): Elemento[]
+	getElementiCategoria(idCategoria: number): Promise<Elemento[]>
 	eliminaElementoCategoria(idElemento): void
 	aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): void
 	spostaElementiCategoria(idElemento1: number, idCategoria: number): void

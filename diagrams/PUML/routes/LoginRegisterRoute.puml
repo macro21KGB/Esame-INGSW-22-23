@@ -2,8 +2,8 @@
 
 class Controller <<Control>> #coral{
   
-  registraUtente(email: string, password: string)
-  accediUtente(email: string, password: string)
+  registraUtente(email: string, password: string) : Promise<boolean>
+  accediUtente(email: string, password: string) : Promise<LoginPayLoad>
 
 }
 
