@@ -17,7 +17,7 @@ setUtenteCorrente(utente : Utente) : void
 informazioniRistorante : dictionary
 setInformazioniRistorante(info : dictionary) : void
 
-salvaIdRistoranteEAvanza = (id: number) : void
+salvaIdRistoranteEAvanza (id: number) : void
 handleOnChangeInformazioniRistorante() : void
 aggiungiRistorante() : void
 resettaCampi() : void
