@@ -1,0 +1,111 @@
+@startuml
+
+interface InformazioniElemento {
+	nome: string
+	descrizione: string
+	costo: string
+	allergeni: string[]
+}
+
+class Controller {
+
+	/* ... */
+	getElementiCategoria(idCategoria: number): Elemento[]
+	eliminaElementoCategoria(idElemento): void
+	aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): void
+	spostaElementiCategoria(idElemento1: number, idCategoria: number): void
+	modificaElementoCategoria(elementoDaModificare: Elemento): void
+}
+
+class GestisciElementiCategoriaRoute <<Boundary>> {
+	
+	idCategoria: number
+	controller: Controller
+	queryClient: QueryClient
+	mostraElementiCategoria(idCategoria: number): void
+
+	isModifica: boolean
+	showModal: boolean
+
+	setIsModifica(value: boolean): void
+	setShowModal(value: boolean): void
+
+	idElementoCorrente: number
+	setIdElementoCorrente(value: number): void
+
+	handleOnChange(e: ChangeEvent): void
+	resettaCampi(): void 
+	acceptSuggestion(suggestion: string, ingredienti: string): void
+
+	informazioniElemento: InformazioniElemento
+	setInformazioniElemento(infoElemento: InformazioniElemento): void
+
+	toggleAllergene(allergene: string): void
+
+	isAllergeneSelected(allergene: string): boolean
+	spostaElementoVerso(elementi: Elemento[], elemento: Elemento, verso: "su" | "giu"): void
+
+	creaNuovoElemento(informazioniElemento: InformazioniElemento): void
+	modificaElemento(informazioniElemento: InformazioniElemento): void
+
+	setupModificaElemento(elemento: Elemento): void
+	cancellaElemento(idElemento: number): void
+
+	closeModal(): void
+}
+
+class NavBar <<Boundary>> {
+
+	addFunc() : void
+	backFunc() : void
+	state: string[]
+	
+}
+
+class WelcomePanel <<Boundary>> {
+
+  title: string
+	subtitle: string
+
+}
+	
+class ItemElementoCategoria <<Boundary>> {
+
+	elemento: Elemento
+	onClickUp: () : void
+	onClickDown: () : void
+	onClickElemento: (elemento: Elemento) : void
+	ordine: number
+
+}
+
+class SlideUpModal <<Boundary>> {
+
+	showModal: boolean
+	setShowModal: (showModal: boolean) : void
+	children: React.ReactNode
+	onClose: () : void
+
+}
+
+class InputBox <<Boundary>> {
+
+	value: string
+	placeholder: string
+	name: string
+	type: string
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) : void
+	onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) : void
+
+}
+
+class BigButton <<Boundary>> {
+
+  onClick() : void
+  text: string
+  color: string
+  disabled: boolean
+
+}
+
+@enduml

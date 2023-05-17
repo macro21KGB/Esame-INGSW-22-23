@@ -9,7 +9,7 @@ class AutoCompleteComponent <<Boundary>> {
 
 class BigButton <<Boundary>> {
 
-  onClick: () : void
+  onClick() : void
   text: string
   color: string
   disabled: boolean
@@ -17,9 +17,9 @@ class BigButton <<Boundary>> {
 }
 
 class DropDownItem <<Boundary>> {
-
+	
   children: React.ReactNode
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
+  onChange(event: React.ChangeEvent<HTMLSelectElement>) : void
   bgColor: string
 
 }
@@ -31,7 +31,7 @@ class ELementoOrdinazioneSupervisore <<Boundary>> {
 }
 class FABAddButton <<Boundary>> {
 
-	onClick: () : void
+	onClick() : void
 
 }
 class InputBox <<Boundary>> {
@@ -44,6 +44,7 @@ class InputBox <<Boundary>> {
 	onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) : void
 
 }
+
 class ItemCategoria <<Boundary>> {
 
     categoria: Categoria
@@ -58,6 +59,7 @@ class ItemElementoCategoria <<Boundary>> {
 	ordine: number
 
 }
+
 class ItemElementoConQuantita <<Boundary>> {
 
 	elemento: Elemento | ElementoConQuantita
