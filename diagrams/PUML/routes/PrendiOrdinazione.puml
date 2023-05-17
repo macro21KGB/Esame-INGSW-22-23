@@ -45,5 +45,9 @@ class BigButton <<Boundary>> {
     disabled: boolean
 
 }
+BigButton--* PrendiOrdinazioneRoute : contiene
+NavBar--* PrendiOrdinazioneRoute : contiene
+ResettaPasswordPopup--* PrendiOrdinazioneRoute : contiene
 
+QRCodeScanner--* PrendiOrdinazioneRoute : contiene
 @enduml

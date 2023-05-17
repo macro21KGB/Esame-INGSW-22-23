@@ -7,7 +7,7 @@ interface InformazioniElemento {
 	allergeni: string[]
 }
 
-class Controller <<Control>>{
+class Controller <<Control>> #coral{
 
 	/* ... altri metodi */
 	getElementiCategoria(idCategoria: number): Elemento[]
@@ -107,5 +107,13 @@ class BigButton <<Boundary>> {
   disabled: boolean
 
 }
+BigButton--* GestisciElementiCategoriaRoute : contiene
+InputBox --* GestisciElementiCategoriaRoute : contiene
+SlideUpModal --* GestisciElementiCategoriaRoute : contiene
+ItemElementoCategoria "*"--* GestisciElementiCategoriaRoute : contiene
+WelcomePanel--* GestisciElementiCategoriaRoute : contiene
+NavBar --* GestisciElementiCategoriaRoute : contiene
+LoadingCircle --* GestisciElementiCategoriaRoute : contiene
 
+Controller --* GestisciElementiCategoriaRoute : usa
 @enduml

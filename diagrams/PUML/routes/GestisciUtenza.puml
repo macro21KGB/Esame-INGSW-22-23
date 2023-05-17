@@ -9,7 +9,7 @@ interface InformazioniUtente {
 	supervisore: boolean
 }
 
-class Controller {
+class Controller <<Control>> #coral{
   /* ... altri metodi */
   getUtenti(idRistorante: number): Utente[]
 }
@@ -98,5 +98,15 @@ class BigButton <<Boundary>> {
   disabled: boolean
 
 }
+
+BigButton--* GestisciUtenzaRoute : contiene
+InputBox --* GestisciUtenzaRoute : contiene
+SlideUpModal --* GestisciUtenzaRoute : contiene
+WelcomePanel--* GestisciUtenzaRoute : contiene
+NavBar --* GestisciUtenzaRoute : contiene
+
+DropDownItem --* GestisciUtenzaRoute : contiene
+UtenzaItem "*"--* GestisciUtenzaRoute : contiene
+Controller --* GestisciUtenzaRoute : usa
 
 @enduml

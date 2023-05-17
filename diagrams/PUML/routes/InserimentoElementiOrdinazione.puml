@@ -1,7 +1,7 @@
 @startuml
 
 
-class Controller {
+class Controller <<Control>> #coral{
   /* ... altri metodi */
   getRistoranteAttuale(): Ristorante
   getCategorie(idRistorante: number): Categoria[]
@@ -61,5 +61,12 @@ class SlideUpModal <<Boundary>> {
 	onClose: () : void
 
 }
+
+SlideUpModal --* InserimentoElementiOrdinazione : contiene
+
+NavBar --* InserimentoElementiOrdinazione : contiene
+SoftButton --* InserimentoElementiOrdinazione : contiene
+LoadingCircle --* InserimentoElementiOrdinazione : contiene
+Controller --* InserimentoElementiOrdinazione : usa
 
 @enduml

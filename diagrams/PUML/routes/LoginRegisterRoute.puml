@@ -1,6 +1,6 @@
 @startuml login_route
 
-class Controller <<Control>> {
+class Controller <<Control>> #coral{
   
   registraUtente(email: string, password: string)
   accediUtente(email: string, password: string)
@@ -45,4 +45,15 @@ class BigButton <<Boundary>> {
 
 }
 
+
+
+
+
+BigButton --* LoginRoute : contiene
+InputBox--* LoginRoute : contiene
+Controller --* LoginRoute : usa
+
 @enduml
+
+
+

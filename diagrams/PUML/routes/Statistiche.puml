@@ -1,6 +1,6 @@
 @startuml Statistiche
 
-class Controller {
+class Controller <<Control>> #coral {
     /* ... altri metodi */
     getUtenti(id: number): Utente[]
     getNumeroOrdiniEvasiPerUtente: {giorno: string, numero_ordinazioni: number}[]
@@ -69,8 +69,16 @@ class SoftButton <<Boundary>> {
 }
 
 class BarChart {
-  /* ... */
+  /* libreria esterna */
 }
 
 
+
+BarChart--* StatisticheRoute : contiene
+NavBar--* StatisticheRoute : contiene
+WelcomePanel--* StatisticheRoute : contiene
+
+SoftButton--* StatisticheRoute : contiene
+DropDownItem--* StatisticheRoute : contiene
+Controller--* StatisticheRoute : usa
 @enduml
