@@ -1,4 +1,11 @@
-@staruml login_route
+@startuml login_route
+
+class Controller <<Control>> {
+  
+  registraUtente(email: string, password: string)
+  accediUtente(email: string, password: string)
+
+}
 
 class LoginRoute {
   loginInfo: LoginInfo
@@ -14,7 +21,6 @@ class LoginRoute {
 
 
   handleInfoLogin(e: React.ChangeEvent): void
-
   handleLoginRegister(email:string, password: string, passwordVerifica: string): void
 
 }
