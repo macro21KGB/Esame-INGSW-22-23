@@ -9,10 +9,8 @@ import "../App.css";
 
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
-import { useStore } from "../stores/store";
 import { salvaTokenInCookie, verificaEmail } from "../utils/utils";
 import { RUOLI } from "../entities/utente";
-import LoadingCircle from "../components/LoadingCircle";
 import { logEventToFirebase } from "../firebase";
 
 const LoginPageContainer = styled.div`

@@ -1,0 +1,42 @@
+@staruml login_route
+
+class LoginRoute {
+  loginInfo: LoginInfo
+  setLoginInfo(info: LoginInfo): void
+
+  controller: Controller
+
+  isLoading: boolean
+  isLogging: boolean
+
+  setIsLoading(value: boolean): void
+  setIsLoading(value: boolean): void
+
+
+  handleInfoLogin(e: React.ChangeEvent): void
+
+  handleLoginRegister(email:string, password: string, passwordVerifica: string): void
+
+}
+
+class InputBox <<Boundary>> {
+
+	value: string
+	placeholder: string
+	name: string
+	type: string
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) : void
+	onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) : void
+
+}
+
+class BigButton <<Boundary>> {
+
+  onClick: () : void
+  text: string
+  color: string
+  disabled: boolean
+
+}
+
+@enduml

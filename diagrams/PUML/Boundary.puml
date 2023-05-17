@@ -6,21 +6,24 @@ class AutoCompleteComponent <<Boundary>> {
     valueToSearch: string
 
 }
+
 class BigButton <<Boundary>> {
 
-    onClick: () : void
-    text: string
-    color: string
-    disabled: boolean
+  onClick: () : void
+  text: string
+  color: string
+  disabled: boolean
 
 }
+
 class DropDownItem <<Boundary>> {
 
-    children: React.ReactNode
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
-    bgColor: string
+  children: React.ReactNode
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
+  bgColor: string
 
 }
+
 class ELementoOrdinazioneSupervisore <<Boundary>> {
 
     ordine: Ordinazione
@@ -86,8 +89,8 @@ class LoadingCircle <<Boundary>> {
 }
 class SoftButton <<Boundary>> {
 
-    text: string
-    onClick: () : void
+  text: string
+  onClick: () : void
 
 }
 class UtenzaItem <<Boundary>> {
@@ -98,8 +101,8 @@ class UtenzaItem <<Boundary>> {
 }
 class WelcomePanel <<Boundary>> {
 
-    title: string
-    subtitle: string
+  title: string
+	subtitle: string
 
 }
 
@@ -127,7 +130,7 @@ class NavBar <<Boundary>> {
 
 class QRCodeScanner <<Boundary>> {
 	
-    fps: number
+  fps: number
 	qrbox: number
 	aspectRatio: number
 	disableFlip: boolean

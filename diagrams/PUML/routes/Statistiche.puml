@@ -1,0 +1,76 @@
+@startuml Statistiche
+
+class Controller {
+    /* ... */
+    getUtenti(id: number): Utente[]
+    getNumeroOrdiniEvasiPerUtente: {giorno: string, numero_ordinazioni: number}[]
+
+}
+
+class StatisticheRoute <<Boundary>> {
+  selectedEmailUser: string
+  setSelectedEmailUser: (value: string) => void
+
+  id: string
+  queryClient: QueryClient
+
+  startDate: string;
+  endDate: string
+
+  setStartDate: (value: string) : void
+  setEndDate: (value: string) : void
+
+  controller: Controller
+
+  mostraUtentiCucina: () : void
+  mostraOrdiniEvasi() : void
+  aggiornaTimeSpan() : void
+  aggiornaRangeDate(): void
+  onChangeInputDate(): void
+
+}
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class WelcomePanel <<Boundary>> {
+
+    title: string
+    subtitle: string
+
+}
+
+class DropDownItem <<Boundary>> {
+
+    children: React.ReactNode
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
+    bgColor: string
+
+}
+
+class DropDownItem <<Boundary>> {
+
+    children: React.ReactNode
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
+    bgColor: string
+
+}
+
+
+class SoftButton <<Boundary>> {
+
+    text: string
+    onClick: () : void
+
+}
+
+class BarChart {
+  /* ... */
+}
+
+
+@enduml

@@ -1,0 +1,101 @@
+@startuml
+
+interface InformazioniUtente {
+	nome: string
+	cognome: string
+	telefono: string
+	email: string
+	ruolo: string
+	supervisore: boolean
+}
+
+class Controller {
+  getUtenti(idRistorante: number): Utente[]
+}
+
+class GestisciUtenzaRoute {
+  showModal: boolean
+  setShowModal(value: boolean): void
+
+  isModifica: boolean
+  setIsModifica(value: boolean): void
+
+  id: string
+  controller: Controller
+  
+  queryClient: QueryClient
+
+  informazioniUtente: InformazioniUtente
+
+  defaultHandleOnChange(e: ChangeEvent): void
+
+  mostraUtentiNelRistorante(): void
+  aggiungiModificaUtente(infoUtente: InformazioniUtente): void
+
+  handleCreaUtente(): void
+  handleModificaUtente(): void
+
+  impostaInformazioniUtente(infoUtente: InformazioniUtente): void
+
+  openModal(): void
+}
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class WelcomePanel <<Boundary>> {
+
+  title: string
+	subtitle: string
+
+}
+
+class UtenzaItem <<Boundary>> {
+
+	utente: InformazioniUtente
+	onModifica: () : void
+
+}
+
+class SlideUpModal <<Boundary>> {
+
+	showModal: boolean
+	setShowModal: (showModal: boolean) : void
+	children: React.ReactNode
+	onClose: () : void
+
+}
+
+class InputBox <<Boundary>> {
+
+	value: string
+	placeholder: string
+	name: string
+	type: string
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) : void
+	onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) : void
+
+}
+
+class DropDownItem <<Boundary>> {
+
+  children: React.ReactNode
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) : void
+  bgColor: string
+
+}
+
+class BigButton <<Boundary>> {
+
+  onClick: () : void
+  text: string
+  color: string
+  disabled: boolean
+
+}
+
+@enduml

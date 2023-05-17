@@ -1,0 +1,64 @@
+@startuml
+
+
+class Controller {
+  getRistoranteAttuale(): Ristorante
+  getCategorie(idRistorante: number): Categoria[]
+  inviaOrdineAllaCucina(codiceTavolo: string, elementi: ElementoConQuantita, idRistorante: number): void
+
+}
+
+
+class InserimentoElementiOrdinazione {
+  controller: Controller
+  codiceTavolo: string
+
+  showModal: boolean
+  setShowModal(value:boolean): void
+
+  elementiScelti: {elemento: Elemento, quantita: number}[]
+
+
+  categoriaScelta: Categoria
+  setCategoriaScelta(categoria: Categoria): void
+
+  mostraCategorieDisponbili(): void
+  mostraElementiCategoriaScelta(): void
+  goBackToPreviousCategory(): void
+
+  inviaOrdineAllaCucina(codiceTavolo: string, elementi: ElementoConQuantita, idRistorante: number): void
+
+  aggiornaElementiScelti(elemento: Elemento, quantita: number)
+  checkIfElementoIsPresentAndAssignQuantita(elemento: Elemento): number
+}
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class SoftButton <<Boundary>> {
+
+  text: string
+  onClick: () : void
+
+}
+
+class LoadingCircle <<Boundary>> {
+  
+	loaderPosition: string
+
+}
+
+class SlideUpModal <<Boundary>> {
+
+	showModal: boolean
+	setShowModal: (showModal: boolean) : void
+	children: React.ReactNode
+	onClose: () : void
+
+}
+
+@enduml

@@ -1,0 +1,49 @@
+@startuml prendi_ordinazione
+
+class NavBar <<Boundary>> {
+
+	addFunc: () : void
+	backFunc: () : void
+	state: string[]
+}
+
+class ResettaPasswordPopup <<Boundary>> {
+
+    onConfirm: (password: string) : void
+    handleClickOnConfirm: () : void
+
+}
+
+class QRCodeScanner <<Boundary>> {
+	
+  fps: number
+	qrbox: number
+	aspectRatio: number
+	disableFlip: boolean
+	verbose: boolean
+	qrCodeSuccessCallback: (message: string) : void
+	qrCodeErrorCallback: (error: string) : void
+
+}
+
+class PrendiOrdinazioneRoute <<Boundary>> {
+  codiceTavolo: string
+  setCodiceTavolo(): void
+
+  isUsingFirstAccessPassword: boolean
+  cambiaPassword(newPassword: string): void
+
+  iniziaOrdinazione(): void
+
+}
+
+class BigButton <<Boundary>> {
+
+    onClick: () : void
+    text: string
+    color: string
+    disabled: boolean
+
+}
+
+@enduml

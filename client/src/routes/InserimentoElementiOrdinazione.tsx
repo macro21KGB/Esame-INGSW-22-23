@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import BigButton from "../components/BigButton";
@@ -15,10 +15,10 @@ import { logEventToFirebase } from "../firebase";
 
 const Container = styled.div`
 	position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
 `;
 
 const Content = styled.div`
