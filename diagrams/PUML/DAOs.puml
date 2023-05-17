@@ -1,12 +1,12 @@
 @startuml
 
-interface IAllergeneDAO <<Model>>{
+interface IAllergeneDAO <<DAO>>{
     +getAllergeni(id_elemento: number): Promise<Allergene[]>
     +addAllergene(allergene: Allergene): Promise<Boolean>
     +deleteAllergene(id : number): Promise<Boolean>
 }
 
-interface ICategoriaDAO <<Model>>{
+interface ICategoriaDAO <<DAO>>{
 	+getElementiCategoria(id_categoria : number): Promise<Elemento[]>
 	+getCategoria(idCategoria: number): Promise<Categoria | null>
 	+getCategorie(id_ristorante : number): Promise<Categoria[]>
@@ -16,7 +16,7 @@ interface ICategoriaDAO <<Model>>{
 	+getElementiCategoria(id_categoria : number): Promise<Elemento[]>
 }
 
-interface IContoDAO <<Model>>{
+interface IContoDAO <<DAO>>{
     +creaConto(conto: Conto, idRistorante: number): Promise<number>
     +getContoByData(data: Date): Promise<Conto>
     +getConti(idRistorante: number): Promise<Conto[]>
@@ -26,7 +26,7 @@ interface IContoDAO <<Model>>{
     +stampaConto(conto: Conto): Promise<boolean>
 }
 
-interface IElementoDAO <<Model>>{
+interface IElementoDAO <<DAO>>{
     +getElementi(id_categoria: number): Promise<Elemento[]>
     +getElemento(id: number): Promise<Elemento | null>
     +addElemento(elemento: Elemento, id_categoria: number): Promise<Boolean>
@@ -37,7 +37,7 @@ interface IElementoDAO <<Model>>{
 }
 
 
-interface IOrdinazioneDAO <<Model>> {
+interface IOrdinazioneDAO <<DAO>> {
     +getOrdinazioni(idRistorante: number, evase: boolean): Promise<Ordinazione[]>
     +getOrdinazioniNonEvase(): Promise<Ordinazione[]>
     +getOrdinazioneConCodiceTavolo(codice_tavolo: number): Promise<Ordinazione[]>
@@ -49,7 +49,7 @@ interface IOrdinazioneDAO <<Model>> {
     +deleteOrdinazione(id: number): Promise<boolean>
 }
 
-interface IRistoranteDAO <<Model>>{
+interface IRistoranteDAO <<DAO>>{
     +getRistoranti(): Promise<Ristorante[]>
     +getRistorante(id: number): Promise<Ristorante | null>
     +addRistorante(ristorante: Ristorante, id_utente:number): Promise<Boolean>
@@ -57,7 +57,7 @@ interface IRistoranteDAO <<Model>>{
     +deleteRistorante(id: number): Promise<Ristorante>
 }
 
-interface IUtenteDAO <<Model>>{
+interface IUtenteDAO <<DAO>>{
 	+isPasswordChanged(email: string): Promise<boolean>
 	+registraUtente(email: string, password: string): Promise<boolean>
 	+accediUtente(email: string, password: string): Promise<Utente | null>
