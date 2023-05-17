@@ -3,7 +3,7 @@
 
 class Controller <<Control>> #coral{
 ... altri metodi e attributi
-getCategorie() : Categoria[]
+getCategorie() : Promise<Categoria[]>
 creaCategoria(Categoria categoria) : void 
 }
 

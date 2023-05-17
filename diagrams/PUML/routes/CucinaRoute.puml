@@ -10,8 +10,8 @@ mostraOrdinazioniEvaseUltime24h() : void
 
 class Controller <<Control>> #coral{
 ... altri metodi e attributi
-getOrdinazioniDaEvadere() : Ordinazioni
-getOrdinazioniEvaseUltime24h() : Ordinazioni
+getOrdinazioniDaEvadere() : Promise<Ordinazioni>
+getOrdinazioniEvaseUltime24h() : Promise<Ordinazioni>
 
 
 }

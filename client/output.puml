@@ -1,2 +1,35 @@
 @startuml
+interface ICategoriaDAO  {
+
+	getCategorie(idRistorante: number): Promise<Categoria[]>
+}
+
+interface IContoDAO  {
+
+	chiudiConto(idConto: number): Promise<boolean> {
+}
+
+interface IElementoDAO  {
+
+	getElementi(idCategoria: number): Promise<Elemento[]> {
+}
+
+interface IOrdinazioneDAO  {
+
+	getOrdinazioniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<{ giorno: DateString, numero_ordinazioni: number
+	getOrdinazioni(evase: boolean): Promise<Result<Ordinazione[]>> {
+}
+
+interface IRistoranteDAO  {
+
+	getRistorante(id: number): Promise<Ristorante
+	getRistoranteAttuale(): Promise<Ristorante>
+	getRistoranti(): Promise<Ristorante[]>
+}
+
+interface IUtenteDAO  {
+
+	cambiaPasswordDefault(nuovaPassword: string): Promise<Result<string>>
+}
+
 @enduml

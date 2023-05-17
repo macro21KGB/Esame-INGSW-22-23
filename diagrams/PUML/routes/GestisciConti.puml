@@ -4,7 +4,7 @@
 class Controller <<Control>> #coral{
 ... altri metodi e attributi
 chiudiConto(conto : Conto) : void
-getContiTavoliUltime24h() : Conto[]
+getContiTavoliUltime24h() : Promise<Conto[]>
 }
 
 class GestisciConti<<Boundary>> {

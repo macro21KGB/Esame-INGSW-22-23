@@ -3,7 +3,7 @@
 
 class Controller <<Control>> #coral{
 ... altri metodi e attributi
-getRistoranteAttuale() : Ristorante
+getRistoranteAttuale() : Promise<Ristorante>
 }
 
 class DashboardSupervisore <<Boundary>> {

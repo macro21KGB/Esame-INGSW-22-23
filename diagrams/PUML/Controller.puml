@@ -1,13 +1,35 @@
 class Controller <<Control>> #coral{
-static getInstance() : Controller 
-
-getOrdinazioniDaEvadere() : Ordinazioni
-getOrdinazioniEvaseUltime24h() : Ordinazioni
-creaRistorante(ristorante : Ristorante) : void
-getRistorante(id : string) : Ristorante
-getRistoranteAttuale() : Ristorante
-getCategorie() : Categoria[]
-creaCategoria(Categoria categoria) : void 
-chiudiConto(conto : Conto) : void
-getContiTavoliUltime24h() : Conto[]
++static getInstance() : Controller 
+- static _instance: Controller;
+- ristoranteDAO: RistoranteDAO;
+- utenteDAO: UtenteDAO;
+- contoDAO: ContoDAO;
+- ordinazioneDAO: OrdinazioneDAO;
+- elementoMenuDAO: ElementoDAO;
+- categoriaDAO: CategoriaDAO;
++getOrdinazioniDaEvadere() : Promise<Ordinazioni>
++getOrdinazioniEvaseUltime24h() : Promise<Ordinazioni>
++creaRistorante(ristorante : Ristorante) : void
++getRistorante(id : string) : Promise<Ristorante | null>
++getRistoranti(): Promise<Ristorante[]>
++getRistoranteAttuale() : Promise<Ristorante> 
++getCategorie() : Promise<Categoria[]>
++creaCategoria(Categoria categoria) : void 
++chiudiConto(conto : Conto) : void
++getContiTavoliUltime24h() : Promise<Conto[]>
++getUtenti(idRistorante: number): Promise<Utente[]>
++inviaOrdineAllaCucina(codiceTavolo: string, elementi: ElementoConQuantita, idRistorante: number): void
++registraUtente(email: string,password: string) :  Promise<boolean> 
++accediUtente(email: string,password: string) : : Promise<Result<LoginPayload>>
++modificaUtenteConInformazioniUtente(infoUtente: InformazioniUtente): Promise<Result<string>> 
++cambiaPasswordDefault(nuovaPassword: string) : void
++isUtenteUsingDefaultPassword(): Promise<boolean>
++creaUtenteConInformazioniUtente(infoUtente: any, idRistorante: number): Promise<Result<string>>
++getElementiCategoria(idCategoria: number): Promise<Elemento[]>
++eliminaElementoCategoria(idElemento: number): Promise<Result<string>>
++aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): Promise<Result<string>>
++modificaElementoCategoria(elemento: Elemento): Promise<Result<string>>
++spostaElementiCategoria(idElemento1: number, idElemento2: number): Promise<Result<string>>
++evadiOrdinazione(ordinazione: Ordinazione): Promise<boolean> 
++getNumeroOrdiniEvasiPerUtente(selectedUserEmail: string, from: Date, to: Date): Promise<InfoGiorno[]>
 }
