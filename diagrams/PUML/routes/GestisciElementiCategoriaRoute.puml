@@ -20,7 +20,6 @@ class Controller <<Control>> #coral{
 class GestisciElementiCategoriaRoute <<Boundary>> {
 	
 	idCategoria: number
-	controller: Controller
 	queryClient: QueryClient
 	mostraElementiCategoria(idCategoria: number): void
 
@@ -113,7 +112,6 @@ SlideUpModal --* GestisciElementiCategoriaRoute : contiene
 ItemElementoCategoria "*"--* GestisciElementiCategoriaRoute : contiene
 WelcomePanel--* GestisciElementiCategoriaRoute : contiene
 NavBar --* GestisciElementiCategoriaRoute : contiene
-LoadingCircle --* GestisciElementiCategoriaRoute : contiene
 
 Controller --* GestisciElementiCategoriaRoute : usa
 @enduml

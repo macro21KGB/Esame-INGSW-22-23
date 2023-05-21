@@ -22,7 +22,6 @@ class GestisciUtenzaRoute {
   setIsModifica(value: boolean): void
 
   id: string
-  controller: Controller
   
   queryClient: QueryClient
 

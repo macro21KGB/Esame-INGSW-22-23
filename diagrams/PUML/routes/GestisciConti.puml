@@ -35,11 +35,7 @@ class WelcomePanel <<Boundary>> {
 
 }
 
-class LoadingCircle <<Boundary>> {
 
-	loaderPosition: string
-
-}
 
 
 class ItemOrdineTavolo <<Boundary>> {
@@ -53,11 +49,11 @@ class ELementoOrdinazioneSupervisore <<Boundary>> {
     ordine: Ordinazione
 
 }
-ELementoOrdinazioneSupervisore "*"--* GestisciConti: contiene
-ItemOrdineTavolo "*"--* GestisciConti: contiene
+ELementoOrdinazioneSupervisore "*"--* GestisciContiRoute: contiene
+ItemOrdineTavolo "*"--* GestisciContiRoute: contiene
 
-WelcomePanel--* GestisciConti: contiene
-NavBar --* GestisciConti: contiene
-LoadingCircle --* GestisciConti: contiene
-Controller --* GestisciConti: usa
+WelcomePanel--* GestisciContiRoute: contiene
+NavBar --* GestisciContiRoute: contiene
+
+Controller --* GestisciContiRoute: usa
 @enduml

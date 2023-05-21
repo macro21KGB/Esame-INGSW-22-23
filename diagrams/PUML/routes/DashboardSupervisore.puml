@@ -35,17 +35,13 @@ class WelcomePanel <<Boundary>> {
 
 }
 
-class LoadingCircle <<Boundary>> {
-
-	loaderPosition: string
-
-}
 
 
 
-WelcomePanel--* DashboardSupervisore : contiene
-NavBar --* DashboardSupervisore : contiene
-LoadingCircle --* DashboardSupervisore : contiene
-ResettaPasswordPopup --* DashboardSupervisore : contiene
-Controller --* DashboardSupervisore : usa
+
+WelcomePanel--* DashboardSupervisoreRoute : contiene
+NavBar --* DashboardSupervisoreRoute : contiene
+
+ResettaPasswordPopup --* DashboardSupervisoreRoute : contiene
+Controller --* DashboardSupervisoreRoute : usa
 @enduml

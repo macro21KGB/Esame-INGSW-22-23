@@ -38,11 +38,7 @@ class WelcomePanel <<Boundary>> {
 
 }
 
-class LoadingCircle <<Boundary>> {
 
-	loaderPosition: string
-
-}
 class ItemRistorante <<Boundary>> {
 
     ristorante: Ristorante
@@ -59,11 +55,11 @@ class SlideUpModal <<Boundary>> {
 
 }
 
-SlideUpModal --* Dashboard: contiene
-ItemRistorante "*"--* Dashboard: contiene
-WelcomePanel--* Dashboard: contiene
-NavBar --* Dashboard: contiene
-LoadingCircle --* Dashboard: contiene
+SlideUpModal --* DashboardRoute: contiene
+ItemRistorante "*"--* DashboardRoute: contiene
+WelcomePanel--* DashboardRoute: contiene
+NavBar --* DashboardRoute: contiene
 
-Controller --* Dashboard : usa
+
+Controller --* DashboardRoute : usa
 @enduml

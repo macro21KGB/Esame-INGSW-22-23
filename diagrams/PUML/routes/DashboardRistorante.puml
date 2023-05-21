@@ -26,17 +26,13 @@ class WelcomePanel <<Boundary>> {
 
 }
 
-class LoadingCircle <<Boundary>> {
-
-	loaderPosition: string
-
-}
 
 
 
-WelcomePanel--* DashboardRistorante: contiene
-NavBar --* DashboardRistorante: contiene
-LoadingCircle --* DashboardRistorante: contiene
 
-Controller --* DashboardRistorante: usa
+WelcomePanel--* DashboardRistoranteRoute: contiene
+NavBar --* DashboardRistoranteRoute: contiene
+
+
+Controller --* DashboardRistoranteRoute: usa
 @enduml

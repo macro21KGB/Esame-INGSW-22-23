@@ -1,0 +1,32 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+/* ... altri metodi */
+getCategorie() : Promise<Categoria[]>
+creaCategoria(Categoria categoria) : void 
+modificaCategoria(c : Categoria, id : number) : void
+}
+
+class GestisciCategorieRoute<<Boundary>> {
+ idCategoria : number
+nomeCategoria : string 
+
+aggiungiCategoria() : void
+mostraCategorie() : void
+modificaCategoria() : void
+
+}
+
+
+
+class ItemCategoria <<Boundary>> {
+
+    categoria: Categoria
+
+}
+ItemCategoria "*"--* GestisciCategorieRoute: contiene
+
+
+Controller --* GestisciCategorieRoute: usa
+@enduml

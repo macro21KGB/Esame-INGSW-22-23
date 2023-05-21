@@ -1,0 +1,21 @@
+@startuml prendi_ordinazione
+
+
+
+class QRCodeScanner <<Boundary>> {
+	
+  scan() : string
+
+}
+
+class PrendiOrdinazioneRoute <<Boundary>> {
+  codiceTavolo: string
+  setCodiceTavolo(): void
+
+  iniziaOrdinazione(): void
+
+}
+
+
+QRCodeScanner--* PrendiOrdinazioneRoute : contiene
+@enduml
