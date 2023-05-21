@@ -1,0 +1,68 @@
+@startuml
+
+enum COLORS {
+	primaryBackgroundColor: "#14213D",
+	accentBackgroundColor: "#0E1933",
+
+	primaryTextColor: "white",
+	primaryBackgroundItemColor: "#263657",
+
+	primaryColor: "#FCA311",
+
+	dangerColor: "#EF3636",
+}
+
+enum AppEvents {
+	ERROR: 'error',
+	LOGIN: 'login',
+	LOGOUT: 'logout',
+	REGISTER: 'register',
+	CLICKED_ON_RESTURANT: 'clicked_on_resturant',
+	ADD_USER_TO_RESTURANT: 'add_user_to_resturant',
+	MODIFY_USER_IN_RESTURANT: 'modify_user_to_resturant',
+	ADD_RESTURANT: 'add_resturant',
+	ADD_CATEGORY: 'add_category',
+	ADD_ELEMENT_TO_CATEGORY: 'add_element_to_category',
+	DELETE_ELEMENT_FROM_CATEGORY: 'delete_element_from_category',
+	MODIFY_ELEMENT_FROM_CATEGORY: 'modify_element_from_category',
+	START_TAKING_ORDER: 'start_taking_order',
+	SEND_ORDER: 'send_order_to_kitchen',
+	COMPLETE_ORDER: 'complete_order',
+	PRINT_ORDER: 'print_order',
+	OPEN_STATISTICS: 'open_statistics',
+}
+interface Result<T> {
+	success: boolean;
+	data: T;
+}
+interface informazioniElemento{
+nome: string
+descrizione : string
+costo : float
+allergeni : string[]
+}
+interface InformazioniUtente {
+	nome: string
+	cognome: string
+	telefono: string
+	email: string
+	ruolo: string
+	supervisore: boolean
+}
+interface LoginPayload {
+	token: string;
+	ruolo: RUOLI;
+	supervisore: boolean;
+}
+
+
+interface TokenPayload {
+	id: number,
+	nome: string,
+	cognome: string,
+	email: string,
+	ruolo: RUOLI
+	supervisore: boolean
+}
+
+@enduml

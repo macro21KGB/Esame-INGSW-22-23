@@ -84,11 +84,7 @@ class ItemRistorante <<Boundary>> {
     onClick: () : void
 
 }
-class LoadingCircle <<Boundary>> {
 
-	loaderPosition: string
-
-}
 class SoftButton <<Boundary>> {
 
   text: string

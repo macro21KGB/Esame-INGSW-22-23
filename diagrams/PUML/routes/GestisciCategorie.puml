@@ -35,11 +35,7 @@ class WelcomePanel <<Boundary>> {
 
 }
 
-class LoadingCircle <<Boundary>> {
 
-	loaderPosition: string
-
-}
 
 class SlideUpModal <<Boundary>> {
 
@@ -55,10 +51,10 @@ class ItemCategoria <<Boundary>> {
     categoria: Categoria
 
 }
-ItemCategoria "*"--* GestisciCategorie: contiene
-SlideUpModal --* GestisciCategorie: contiene
-WelcomePanel--* GestisciCategorie: contiene
-NavBar --* GestisciCategorie: contiene
-LoadingCircle --* GestisciCategorie: contiene
-Controller --* GestisciCategorie: usa
+ItemCategoria "*"--* GestisciCategorieRoute: contiene
+SlideUpModal --* GestisciCategorieRoute: contiene
+WelcomePanel--* GestisciCategorieRoute: contiene
+NavBar --* GestisciCategorieRoute: contiene
+
+Controller --* GestisciCategorieRoute: usa
 @enduml

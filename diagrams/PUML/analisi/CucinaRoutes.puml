@@ -1,9 +1,6 @@
 @startuml
 class CucinaRoute <<Boundary>>{
-isUsingFirstAccessPassword : bool
-isScreenTooSmall : bool
-SetIsScreenTooSmall(val : bool)  : void
-cambiaPassword(val : bool) : void
+ordinazioni : Ordinazione[]
 mostraOrdinazioniDaEvadere() : void
 mostraOrdinazioniEvaseUltime24h() : void
 }
@@ -24,24 +21,6 @@ class ItemOrdinazioneCucina <<Boundary>> {
 }
 
 
-class NavBar <<Boundary>> {
-
-	addFunc: () : void
-	backFunc: () : void
-	state: string[]
-}
-
-class ResettaPasswordPopup <<Boundary>> {
-
-    onConfirm: (password: string) : void
-    handleClickOnConfirm: () : void
-
-}
-
-
-NavBar --* CucinaRoute : contiene
-
-ResettaPasswordPopup --* CucinaRoute : contiene
 ItemOrdinazioneCucina "*"--* CucinaRoute : contiene
 
 
