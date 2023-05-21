@@ -1,10 +1,10 @@
 import { Meta } from "@storybook/react";
 import DropDownItem from ".";
-import { ChangeEvent } from "react";
 
 const meta: Meta = {
     title: "Components/DropDownItem",
     component: DropDownItem,
+    tags: ['autodocs'],
     args: {
         children: (
             <>

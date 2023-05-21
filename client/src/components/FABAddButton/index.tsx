@@ -25,6 +25,6 @@ transition: transform 0.2s ease-in-out;
 
 `;
 
-export default function FABAddButton(props: FABAddButtonProps) {
-	return <FABButton onClick={props.onClick}>+</FABButton>;
+export default function FABAddButton({ onClick }: FABAddButtonProps) {
+	return <FABButton onClick={onClick}>+</FABButton>;
 }

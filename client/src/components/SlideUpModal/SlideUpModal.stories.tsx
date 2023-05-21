@@ -1,7 +1,5 @@
-import React from 'react';
 import { Meta } from "@storybook/react";
 import SlideUpModal from ".";
-import BigButton from '../BigButton';
 
 
 

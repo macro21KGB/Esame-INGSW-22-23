@@ -4,6 +4,7 @@ import InputBox from ".";
 const meta: Meta = {
     title: "Components/InputBox",
     component: InputBox,
+    tags: ['autodocs'],
     args: {
         placeholder: "Placeholder",
         type: "text",

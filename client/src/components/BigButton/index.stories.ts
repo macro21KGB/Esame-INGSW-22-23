@@ -4,6 +4,7 @@ import BigButton from ".";
 const meta: Meta = {
     title: "Components/BigButton",
     component: BigButton,
+    tags: ['autodocs'],
     args: {
         text: "Button",
         disabled: false,
