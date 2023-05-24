@@ -6,6 +6,7 @@ import { dummyElemento, dummyElementoConQuantita } from "../../entities/dummyObj
 const meta: Meta = {
     title: "Components/ItemElementoOrdinazione",
     component: ItemElementoOrdinazione,
+    tags: ['autodocs'],
     args: {
         elemento: dummyElementoConQuantita
     }

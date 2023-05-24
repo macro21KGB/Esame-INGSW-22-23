@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Conto } from "../../entities/conto";
 import { useEffect } from "react";
-import { getOraMinutiDaDate } from "../../utils/utils";
+import { getOraMinutiDaDate } from "../../utils/functions";
 
 interface ItemOrdineTavoloProps {
     conto: Conto;

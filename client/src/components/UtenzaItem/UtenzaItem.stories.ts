@@ -28,6 +28,7 @@ const utenteAddettoCameriere = {
 const meta: Meta = {
     title: "Components/UtenzaItem",
     component: UtenzaItem,
+    tags: ['autodocs'],
     args: {
         utente,
         onModifica: () => { },

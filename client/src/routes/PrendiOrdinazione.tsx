@@ -6,8 +6,6 @@ import { useNavigate } from "react-router";
 import styled from "styled-components";
 import QRCodeScanner from "../components/QRCodeScanner";
 import { toast } from "react-toastify";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Controller } from "../entities/controller";
 import LoadingCircle from "../components/LoadingCircle";
 import { logEventToFirebase } from "../firebase";
 import { AppEvents } from "../utils/constants";

@@ -3,6 +3,7 @@ import QRCodeScanner from ".";
 
 const meta: Meta = {
     title: "Components/QRCodeScanner",
+    tags: ['autodocs'],
     component: QRCodeScanner,
     args: {
         qrCodeSuccessCallback: (data: string) => { console.log(data) },

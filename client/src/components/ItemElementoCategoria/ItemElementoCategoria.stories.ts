@@ -4,6 +4,7 @@ import { dummyElemento } from "../../entities/dummyObjects";
 
 const meta: Meta = {
     title: "Components/ItemElementoCategoria",
+    tags: ['autodocs'],
     component: ItemElementoCategoria,
 };
 

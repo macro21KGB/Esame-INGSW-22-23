@@ -1,14 +1,12 @@
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components"
 import { NavbarFactory } from "../components/NavBar"
 import SoftButton from "../components/SoftButton";
-import { useStore } from "../stores/store";
 import { useCheckFirstAccessPassword } from "../utils/hooks";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import LoadingCircle from "../components/LoadingCircle";
 import ResettaPasswordPopup from "../components/ResettaPasswordPopup";
 import WelcomePanel from "../components/WelcomePanel";
-import { decodeJWTPayload, getTokenDaCookie } from "../utils/utils";
 import { Controller } from "../entities/controller";
 import { useQuery } from "react-query";
 

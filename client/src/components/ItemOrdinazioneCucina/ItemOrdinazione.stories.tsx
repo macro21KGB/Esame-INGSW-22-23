@@ -13,6 +13,7 @@ const meta: Meta = {
     args: {
         ordinazione: dummyOrdinazione
     },
+    tags: ['autodocs'],
     decorators: [
         (Story) => (
             <div>

@@ -1,6 +1,6 @@
 import { Ordinazione } from "../../entities/ordinazione";
 import styled from "styled-components";
-import { getOraMinutiDaDate } from "../../utils/utils";
+import { getOraMinutiDaDate } from "../../utils/functions";
 import { useState } from "react";
 interface EOSProps {
     ordine: Ordinazione;

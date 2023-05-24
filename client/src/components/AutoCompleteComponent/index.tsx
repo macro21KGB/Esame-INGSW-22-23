@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import offlineJSONautocomplete from './offline-autocomplete.json'
-import { stringSimilarity } from "../../utils/utils";
+import { stringSimilarity } from "../../utils/functions";
 const AutoCompleteContainer = styled.button`
     all:unset;
 

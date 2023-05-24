@@ -4,6 +4,7 @@ import SoftButton from ".";
 const meta: Meta = {
     title: "Components/SoftButton",
     component: SoftButton,
+    tags: ['autodocs'],
     args: {
         text: "Button",
         onClick: () => {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { convertToDateString, createInfoGiorniFromDateToDate, getTokenDaCookie } from '../../utils/utils';
+import { convertToDateString, createInfoGiorniFromDateToDate, getTokenDaCookie } from '../../utils/functions';
 import { Ordinazione } from './../ordinazione';
 import { API_URL, DateString, OrdinazioneConCodice, Result } from '../../utils/constants';
 

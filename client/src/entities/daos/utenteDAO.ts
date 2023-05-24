@@ -2,7 +2,7 @@ import { InformazioniUtente } from './../../routes/GestisciUtenza';
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { API_URL, LoginPayload, Result } from "../../utils/constants";
-import { getTokenDaCookie, salvaTokenInCookie, verificaEmail } from "../../utils/utils";
+import { getTokenDaCookie, salvaTokenInCookie, verificaEmail } from "../../utils/functions";
 import { RUOLI, Utente } from "../utente";
 
 

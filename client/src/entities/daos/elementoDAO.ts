@@ -1,6 +1,6 @@
 import { Allergene } from './../allergene';
 import { Elemento } from "../menu";
-import { getTokenDaCookie } from '../../utils/utils';
+import { getTokenDaCookie } from '../../utils/functions';
 import { API_URL, Result } from '../../utils/constants';
 import axios, { AxiosError } from 'axios';
 

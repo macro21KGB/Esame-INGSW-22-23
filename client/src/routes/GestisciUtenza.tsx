@@ -15,7 +15,7 @@ import WelcomePanel from "../components/WelcomePanel";
 import { Controller } from "../entities/controller";
 import { Ruolo } from "../entities/utente";
 import { AppEvents, Result } from "../utils/constants";
-import { isValoriNonSettati } from "../utils/utils";
+import { isValoriNonSettati } from "../utils/functions";
 import { logEventToFirebase } from "../firebase";
 
 const DashboardContainer = styled.div`
