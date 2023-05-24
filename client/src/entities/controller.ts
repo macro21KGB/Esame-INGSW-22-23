@@ -1,6 +1,6 @@
 import { DateString, InfoGiorno, LoginPayload, OrdinazioneConCodice, Result } from "./../utils/constants";
 import { ContoDAO } from "./daos/contoDAO";
-import { generaFakeDataCharts, wait } from "./../utils/utils";
+import { generaFakeDataCharts, wait } from "../utils/functions";
 import { RistoranteDAO } from "./daos/ristoranteDAO";
 import { Ristorante } from "./ristorante";
 import { UtenteDAO } from "./daos/utenteDAO";

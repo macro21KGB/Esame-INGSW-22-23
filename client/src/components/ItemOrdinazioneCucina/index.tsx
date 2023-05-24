@@ -1,7 +1,7 @@
 import { Ordinazione } from "../../entities/ordinazione";
 import styled from "styled-components";
 import ItemElementoOrdinazione from "../ItemElementoOrdinazione";
-import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/utils";
+import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/functions";
 import { useEffect, useState } from "react";
 import { AppEvents, COLORS } from "../../utils/constants";
 import { useMutation, useQuery, useQueryClient } from "react-query";

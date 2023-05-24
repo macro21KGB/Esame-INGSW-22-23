@@ -8,7 +8,7 @@ import WelcomePanel from "../components/WelcomePanel";
 import { Conto } from "../entities/conto";
 import { Controller } from "../entities/controller";
 import { useStore } from "../stores/store";
-import { getOraMinutiDaDate, isContoClosed as isContoChiuso, scriviContoSuPDF } from "../utils/utils";
+import { getOraMinutiDaDate, isContoClosed as isContoChiuso, scriviContoSuPDF } from "../utils/functions";
 import ELementoOrdinazioneSupervisore from "../components/ElementoOrdinazioneSupervisore";
 import { toast } from "react-toastify";
 import { logEventToFirebase } from "../firebase";

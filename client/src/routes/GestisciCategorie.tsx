@@ -52,7 +52,7 @@ export default function GestisciMenuRoute() {
 	const [nomeCategoria, setNomeCategoria] = useState("");
 
 	const query = useQuery(["categorie"], () => {
-		return controller.getCategorie(parseInt(id || "-1") || -1);
+		return controller.getCategorie(parseInt(id!));
 	});
 
 	const aggiungiCategoriaMutation = useMutation(async () => {

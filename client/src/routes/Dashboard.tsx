@@ -52,7 +52,6 @@ function App() {
 	const utenteCorrente = useStore((state) => state.user);
 	const query = useQuery(["ristoranti"], () => controller.getRistoranti());
 
-	const saveIdRistorante = useStore((state) => state.setIdRistorante);
 	const [showModal, setShowModal] = useState(false);
 	const [informazioniRistorante, setInformazioniRistorante] = useState({
 		nome: "",
@@ -74,7 +73,6 @@ function App() {
 		logEventToFirebase("clicked_on_resturant", {
 			id_ristorante: id,
 		})
-		saveIdRistorante(+id);
 		navigate(`/dashboard/${id}`);
 	};
 

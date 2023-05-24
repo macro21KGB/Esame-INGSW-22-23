@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getTokenDaCookie } from "../../utils/utils";
+import { getTokenDaCookie } from "../../utils/functions";
 import { Conto } from "../conto";
 import { ElementoConQuantita } from "../menu";
 import { API_URL, Result } from "../../utils/constants";

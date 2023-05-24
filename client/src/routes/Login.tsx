@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -9,7 +9,7 @@ import "../App.css";
 
 //@ts-ignore
 import logoIcon from "../public/logo.svg";
-import { salvaTokenInCookie, verificaEmail } from "../utils/utils";
+import { extractJWTTokenPayload, getDefaultHomePageForUserOfType, getTokenDaCookie, salvaTokenInCookie, verificaEmail } from "../utils/functions";
 import { RUOLI } from "../entities/utente";
 import { logEventToFirebase } from "../firebase";
 
@@ -47,7 +47,7 @@ interface LoginInfo {
 }
 
 export default function Login() {
-	const [loginInfo, setLoginInfo] = React.useState<LoginInfo>({
+	const [loginInfo, setLoginInfo] = useState<LoginInfo>({
 		email: "",
 		password: "",
 	});
@@ -55,9 +55,11 @@ export default function Login() {
 	const controller = Controller.getInstance();
 	const navigate = useNavigate();
 
-	const [isLoading, setIsLoading] = React.useState(false);
-	const [isLogging, setIsLogging] = React.useState(true);
-	const handleInfoLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+	const [isLoading, setIsLoading] = useState(false);
+	const [isLogging, setIsLogging] = useState(true);
+
+	const handleInfoLogin = (e: ChangeEvent<HTMLInputElement>) => {
 		setLoginInfo({
 			...loginInfo,
 			[e.target.name]: e.target.value,
@@ -112,23 +114,14 @@ export default function Login() {
 				logEventToFirebase("login", { email })
 				salvaTokenInCookie(result.data.token, 3600);
 
-				// route per il supervisore
-				if (result.data.supervisore) {
-					navigate("/supervisore", { replace: true });
-					return;
-				}
+				const defaultHomePage = getDefaultHomePageForUserOfType(
+					{
+						ruolo: result.data.ruolo,
+						supervisore: result.data.supervisore
+					}
+				);
 
-				switch (result.data.ruolo) {
-					case RUOLI.ADMIN:
-						navigate("/dashboard", { replace: true });
-						break;
-					case RUOLI.CAMERIERE:
-						navigate("/ordinazione", { replace: true });
-						break;
-					case RUOLI.ADDETTO_CUCINA:
-						navigate("/cucina", { replace: true });
-						break;
-				}
+				navigate(defaultHomePage, { replace: true });
 
 			} else {
 				setIsLoading(false);

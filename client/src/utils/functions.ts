@@ -1,11 +1,8 @@
-import { Conto } from './../entities/conto';
+import { Conto } from '../entities/conto';
 import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
-import { Elemento } from '../entities/menu';
 import { DateString, InfoGiorno, TokenPayload } from './constants';
-import { table } from 'console';
-import { string } from 'prop-types';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -28,24 +25,6 @@ export function stringToRuolo(ruoloString: string) {
 	}
 }
 
-/**
- * Delays the execution of the next line of code by the number of milliseconds
- * specified in the parameter. This function is an async wrapper around
- * setTimeout().
- * @param {number} ms The number of milliseconds to wait.
- * @returns {Promise<void>} A Promise that resolves once the specified number
- * of milliseconds have elapsed.
- */
-export const wait = (ms: number) =>
-	new Promise((resolve) => setTimeout(resolve, ms));
-
-export function verificaEmail(email: string) {
-	try {
-		return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) !== null;
-	} catch (e) {
-		return false;
-	}
-}
 
 /**
  * Salva il token nel cookie
@@ -218,16 +197,11 @@ export const createInfoGiorniFromDateToDate = (from: Date, to: Date, completati:
 	return result;
 };
 
-export function isContoClosed(conto: Conto): boolean {
+export function isContoClosed(conto: Conto) {
 	return conto.ordini.every(ordinazione => ordinazione.evaso === true);
 }
 
-/**
- * Calcola la similarità tra due stringhe
- * @param str1 stringa 1 da confrontare
- * @param str2 stringa 2 da confrontare
- * @returns un numero tra 0 e 1 che indica la similarità tra le due stringhe
- */
+// controlla quanto sono simili due stringhe
 export function stringSimilarity(str1: string, str2: string): number {
 	const set1 = new Set(str1.split(""));
 	const set2 = new Set(str2.split(""));
@@ -236,14 +210,9 @@ export function stringSimilarity(str1: string, str2: string): number {
 	return intersection.size / union.size;
 }
 
-/**
- * 
- * @param token token AWT da decodificare
- * @returns il payload del token
- */
-export const decodeJWTPayload = (token: string): TokenPayload => {
+export const extractJWTTokenPayload = (token: string): TokenPayload => {
 	const payload = token.split(".")[1];
-	const decodedPayload = atob(payload);
+	const decodedPayload = window.atob(payload);
 	return JSON.parse(decodedPayload);
 }
 
@@ -255,9 +224,40 @@ export function isAllFieldDefined<T extends Record<string, any>>(obj: T, except?
 	Object.keys(obj).forEach(currentKey => {
 		const currentValue = obj[currentKey];
 		if (currentValue === null || currentValue === "" || currentValue === undefined || currentValue?.length === 0)
+
 			if (!except?.includes(currentKey))
 				isAllOk = false;
 	})
 
 	return isAllOk;
+}
+
+export const wait = (ms: number) =>
+	new Promise((resolve) => setTimeout(resolve, ms));
+
+export function verificaEmail(email: string) {
+	try {
+		return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) !== null;
+	} catch (e) {
+		return false;
+	}
+}
+
+
+export function getDefaultHomePageForUserOfType({ ruolo, supervisore }: { ruolo: RUOLI, supervisore: boolean }) {
+	if (supervisore) {
+		return "/supervisore";
+	}
+
+	if (ruolo === RUOLI.ADDETTO_CUCINA) {
+		return "/cucina";
+	}
+	else if (ruolo === RUOLI.CAMERIERE) {
+		return "/ordinazione";
+	}
+	else if (ruolo === RUOLI.ADMIN) {
+		return "/dashboard";
+	}
+
+	return "/login";
 }

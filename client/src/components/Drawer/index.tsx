@@ -3,7 +3,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { AppEvents, COLORS } from "../../utils/constants";
 import { useStore } from "../../stores/store";
 import { useNavigate } from "react-router";
-import { rimuoviTokenDaCookie } from "../../utils/utils";
+import { rimuoviTokenDaCookie } from "../../utils/functions";
 import { toast } from "react-toastify";
 import { logEventToFirebase } from "../../firebase";
 

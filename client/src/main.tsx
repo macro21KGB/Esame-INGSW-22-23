@@ -1,11 +1,12 @@
-import React, { lazy, Suspense, startTransition } from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, redirect, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ErrorPage from "./error-page";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingCircle from "./components/LoadingCircle";
+import { getTokenDaCookie, extractJWTTokenPayload, getDefaultHomePageForUserOfType } from "./utils/functions";
 
 const Login = lazy(() => import("./routes/Login"));
 const App = lazy(() => import("./routes/Dashboard"));
@@ -23,6 +24,20 @@ const StatisticheRoute = lazy(() => import("./routes/Statistiche"));
 export const router = createBrowserRouter([
 	{
 		path: "/",
+		loader: () => {
+			const token = getTokenDaCookie();
+			if (token) {
+				const extractedPaylod = extractJWTTokenPayload(token);
+				const defaultHomePage = getDefaultHomePageForUserOfType(
+					{
+						ruolo: extractedPaylod.ruolo,
+						supervisore: extractedPaylod.supervisore
+					}
+				);
+				return redirect(defaultHomePage);
+			}
+			return null;
+		},
 		element:
 			<Suspense fallback={<LoadingCircle />}>
 				<Login />

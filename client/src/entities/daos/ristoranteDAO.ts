@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import axios from "axios";
-import { getTokenDaCookie } from "../../utils/utils";
+import { getTokenDaCookie } from "../../utils/functions";
 import { API_URL, Result } from "../../utils/constants";
 import { dummyResturant } from "../dummyObjects";
 import { Ristorante } from "./../ristorante";

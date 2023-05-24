@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_URL, Result } from "../../utils/constants";
-import { getTokenDaCookie } from "../../utils/utils";
+import { getTokenDaCookie } from "../../utils/functions";
 import { dummyCategoria } from "../dummyObjects";
 import { Categoria, Elemento } from "../menu";
 import { Ristorante } from "../ristorante";
