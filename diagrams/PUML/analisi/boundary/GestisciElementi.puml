@@ -1,0 +1,38 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+
+	/* ... altri metodi */
+	getElementiCategoria(idCategoria: number): Promise<Elemento[]>
+	eliminaElementoCategoria(idElemento): void
+	aggiungiElementoCategoria(elemento: Elemento, idCategoria: number): void
+	spostaElementiCategoria(idElemento1: number, idCategoria: number): void
+	modificaElementoCategoria(elementoDaModificare: Elemento): void
+}
+
+class GestisciElementiCategoria <<Boundary>> {
+	
+	idCategoria: number
+	mostraElementiCategoria(idCategoria: number): void
+	idElementoCorrente: number
+	elementoCorrente : Elemento
+	spostaSu(id_elemento : number): void
+        spostaGiu(id_elemento : number): void
+	creaNuovoElemento(informazioniElemento: InformazioniElemento): void
+	modificaElemento(informazioniElemento: InformazioniElemento): void
+	cancellaElemento(idElemento: number): void
+
+}
+
+class ItemElementoCategoria <<Boundary>> {
+
+	elemento: Elemento
+	ordine: number
+
+}
+
+ItemElementoCategoria "*"--* GestisciElementiCategoria : contiene
+
+Controller --* GestisciElementiCategoria : usa
+@enduml

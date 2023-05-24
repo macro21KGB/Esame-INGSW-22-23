@@ -1,0 +1,33 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+/* ... altri metodi */
+creaRistorante(ristorante : Ristorante) : void
+getRistoranti() : Ristorante[]
+}
+
+class DashboardIniziale <<Boundary>> {
+ristoranti : Ristorante[]
+
+nuovoRistorante : Ristorante 
+utenteCorrente : Utente
+mostraRistoranti() : void
+aggiungiRistorante() : void
+}
+
+
+class ItemRistorante <<Boundary>> {
+
+    ristorante: Ristorante
+
+}
+
+
+
+ItemRistorante "*"--* DashboardIniziale : contiene
+
+
+
+Controller --* DashboardIniziale : usa
+@enduml

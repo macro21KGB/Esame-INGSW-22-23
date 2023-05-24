@@ -1,0 +1,47 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+  /* ... altri metodi */
+  getUtenti(idRistorante: number): Promise<Utente[]>
+  insertUtente(popupForm) : void
+  aggiornaListaUtenti() : void
+}
+
+class PaginaUtenze {
+
+
+  utenteSelezionato: Utente
+  
+  clickPlusButton()
+  mostraUtentiNelRistorante(): void
+  aggiungiModificaUtente(infoUtente: Utente): void
+
+
+  impostaInformazioniUtente(infoUtente: Utente): void
+}
+
+class UtenzaItem <<Boundary>> {
+
+	utente: Utente
+
+}
+
+class PopupFormUtente<<Boundary>> {
+
+	open()
+        clickCreateButton()
+  
+
+}
+
+
+class Toast<<Boundary>> {
+	toast(esitoOperazione: bool)
+}
+
+UtenzaItem "*"--* PaginaUtenze : contiene
+Controller --* PaginaUtenze : usa
+Toast --* Controller : usa
+PopupFormUtente "1"--* PaginaUtenze : contiene
+@enduml

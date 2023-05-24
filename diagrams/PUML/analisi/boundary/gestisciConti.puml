@@ -1,0 +1,33 @@
+@startuml
+
+
+class Controller <<Control>> #coral{
+/* ... altri metodi */
+chiudiConto(conto : Conto) : void
+getContiTavoli() : Promise<Conto[]>
+}
+
+class GestisciConti<<Boundary>> {
+
+idRistorante : number
+contoSelezionato : Conto
+
+chiudiConto(conto : Conto) : void
+chiudiEStampaConto()
+mostraContiTavoli()
+}
+
+
+class ItemOrdineTavolo <<Boundary>> {
+
+    conto: Conto
+
+}
+
+
+ItemOrdineTavolo "*"--* GestisciConti: contiene
+
+
+
+Controller --* GestisciConti: usa
+@enduml

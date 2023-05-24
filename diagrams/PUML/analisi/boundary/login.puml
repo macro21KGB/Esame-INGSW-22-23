@@ -1,0 +1,35 @@
+@startuml login_route
+
+class Controller <<Control>> #coral{
+  
+  registraUtente(email: string, password: string) : Promise<boolean>
+  accediUtente(email: string, password: string) : Promise<LoginPayLoad>
+
+}
+
+class Login<<Boundary>> {
+  loginInfo: LoginInfo
+
+
+  handleInfoLogin(event): void
+  handleLogin(email:string, password: string): void
+  handleRegister(email:string, password: string, confermaPassword: string): boolean
+
+}
+
+interface LoginInfo {
+email:string
+password: string
+passwordVerifica: string
+}
+
+
+
+
+
+Controller --* Login : usa
+
+@enduml
+
+
+

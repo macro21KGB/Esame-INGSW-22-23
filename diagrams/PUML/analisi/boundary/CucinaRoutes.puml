@@ -1,0 +1,36 @@
+@startuml test
+class Cucina <<Boundary>>{
+ordinazioni : Ordinazione[]
+mostraOrdinazioniDaEvadere() : void
+mostraOrdinazioniEvaseUltime24h() : void
+}
+
+class Controller <<Control>> #coral{
+/* ... altri metodi */
+getOrdinazioniDaEvadere() : Promise<Ordinazioni>
+getOrdinazioniEvaseUltime24h() : Promise<Ordinazioni>
+evadi(ordine : Ordinazione) : void
+updateOrdine(ordine: Ordinazione) : void
+}
+
+class OrdinazioneComponent<<Boundary>> {
+
+    ordine: Ordinazione
+    evasa: boolean
+    clickEvadiButton() : void
+}
+class ContainerDaEvadere<<Boundary>> {
+ordinazioni : Ordinazione[]
+   remove(ordine :Ordinazione)
+}
+
+class ContainerEvasi<<Boundary>> {
+ordinazioni : Ordinazione[]
+   add(ordine : Ordinazione)
+}
+
+OrdinazioneComponent"*"--* Cucina: contiene
+ContainerDaEvadere"1"--* Cucina: contiene
+ContainerEvasi"1"--* Cucina: contiene
+Controller --* Cucina : usa
+@enduml
