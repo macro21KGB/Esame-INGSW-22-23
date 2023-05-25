@@ -10,7 +10,7 @@
     "test": "vitest",
     "test:utils": "vitest utils",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build -o /dist-storybook"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.6",

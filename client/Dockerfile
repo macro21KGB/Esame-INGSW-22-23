@@ -1,15 +1,17 @@
+# Use a lightweight Node.js base image suitable for running the production build
+FROM node:14-alpine
 
-FROM node
-EXPOSE 3001
+# Set the working directory inside the container
+WORKDIR /app
 
-WORKDIR /src
+# Copy the built files from the /dist folder to the container
+COPY ./dist .
 
-RUN npm install i npm@latest -g
+# Expose the port used by the Vite application
+EXPOSE 3000
 
-COPY package.json package-lock*.json ./
+# Install the serve package globally
+RUN npm install -g serve
 
-RUN npm install
-
-COPY . .
-
-CMD ["node", "dist/index.js"]
+# Start the serve command to serve the static files
+CMD ["serve", "-s", "."]
