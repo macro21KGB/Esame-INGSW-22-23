@@ -28,3 +28,13 @@ services:
       - POSTGRES_DB=ratatouille
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+  storybook:
+    container_name: storybook
+    restart: on-failure
+    build:
+      context: client/.
+      dockerfile: Dockerfile-storybook # Specifica il nome del Dockerfile per Storybook
+    ports:
+      - "6006:6006"
+    depends_on:
+      - node-frontend

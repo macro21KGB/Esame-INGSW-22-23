@@ -1,0 +1,17 @@
+# Use a lightweight Node.js base image suitable for running the production build
+FROM node
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built files from the /dist folder to the container
+COPY . .
+
+# Expose the port used by the Vite application
+EXPOSE 6006
+
+# Install the serve package globally
+RUN npm install
+
+# Start the serve command to serve the static files
+CMD ["npm", "run", "storybook"]
