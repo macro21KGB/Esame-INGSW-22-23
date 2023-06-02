@@ -26,7 +26,7 @@ const ItemRistoranteContainer = styled.button`
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: 18rem;
+        max-inline-size: 12ch;
 
     }
 
@@ -40,7 +40,20 @@ const ItemRistoranteContainer = styled.button`
     #infos {
         padding: 0.5rem;
         line-height: 1.5rem;
-    `;
+    }
+    
+    img {
+        width: 5rem;
+        height: 5rem;
+    }
+
+    @media screen and (min-width: 600px) {
+    
+        p {
+            max-inline-size: 30ch;
+        }
+    }
+`;
 
 interface ItemRistoranteProps {
     ristorante: Ristorante;

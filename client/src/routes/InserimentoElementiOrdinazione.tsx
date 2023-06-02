@@ -156,13 +156,13 @@ export default function InserimentoElementiOrdinazioneRoute() {
 			toast.success("Ordine inviato alla cucina");
 			logEventToFirebase("send_order_to_kitchen", {
 				id_ristorante: queryRistorante.data!.id,
-				codice_tavolo: codiceTavolo,
 				elementi: elementiConQuantita.map((e) => {
 					return {
 						nome: e.nome,
 						quantita: e.quantita
 					}
-				})
+				}),
+				quantita_elementi: elementiConQuantita.length
 			})
 			setElementiScelti([]);
 			setCategoriaScelta(undefined);

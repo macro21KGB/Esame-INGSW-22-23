@@ -1,9 +1,10 @@
-import { Meta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import SlideUpModal from ".";
+import InputBox from "../InputBox";
 
 
 
-const meta: Meta = {
+const meta: Meta<typeof SlideUpModal> = {
     title: "Components/SlideUpModal",
     component: SlideUpModal,
     args: {
@@ -12,12 +13,14 @@ const meta: Meta = {
 }
 export default meta;
 
+
 export const Default = {
     args: {
         children: (
-            <div>
-                <h1>Test</h1>
-                <p>Bottone</p>
+            <div style={{ textAlign: "center" }}>
+                <h1>Modify Something</h1>
+                <p>Lorem ipsum dolor sit amet consectetur.</p>
+                <InputBox placeholder="Email" name="email" />
             </div>
         ),
         setShowModal: () => {

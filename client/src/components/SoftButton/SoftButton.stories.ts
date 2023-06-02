@@ -1,7 +1,7 @@
-import { Meta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import SoftButton from ".";
 
-const meta: Meta = {
+const meta: Meta<typeof SoftButton> = {
     title: "Components/SoftButton",
     component: SoftButton,
     tags: ['autodocs'],
@@ -12,8 +12,8 @@ const meta: Meta = {
         }
     }
 }
-
-
 export default meta;
 
-export const Default = {}
+type Story = StoryObj<typeof SoftButton>
+
+export const Default: Story = {}

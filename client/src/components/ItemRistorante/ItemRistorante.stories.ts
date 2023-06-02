@@ -1,23 +1,28 @@
-import { Meta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import ItemRistorante from ".";
 import { dummyResturant } from "../../entities/dummyObjects";
 
-const meta: Meta = {
+const meta: Meta<typeof ItemRistorante> = {
     title: "Components/ItemRistorante",
     component: ItemRistorante,
     tags: ['autodocs'],
 
     args: {
-        ristorante: dummyResturant
+        ristorante: dummyResturant,
+        onClick: () => {
+            console.log("Clicked on " + dummyResturant.nome)
+        }
     }
 }
 
 export default meta;
 
 
-export const Default = {}
+type Story = StoryObj<typeof ItemRistorante>
 
-export const ConNomeMoltoLungo = {
+export const Default: Story = {}
+
+export const ConNomeMoltoLungo: Story = {
     args: {
         ristorante: {
             ...dummyResturant,

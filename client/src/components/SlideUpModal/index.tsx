@@ -39,8 +39,8 @@ const CloseModalButton = styled(animated.button)`
   cursor: pointer;
   
   position: absolute;
-  right: 0;
-  top: 0;
+  right: -10px;
+  top: -10px;
 
   width: 40px;
   height: 40px;
