@@ -27,7 +27,7 @@ const swaggerSetup = {
             description: "Server di sviluppo in locale"
         },
         {
-            url: "http://209.38.197.162/api",
+            url: "http://209.38.197.162:3000/api",
             description: "Server pubblico in cloud"
         }
     ],
