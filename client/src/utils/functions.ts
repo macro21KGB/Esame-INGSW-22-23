@@ -2,7 +2,8 @@ import { Conto } from '../entities/conto';
 import { RUOLI } from "../entities/utente";
 import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
-import { DateString, InfoGiorno, TokenPayload } from './constants';
+import { DateString, InfoGiorno, POSSIBLE_ROUTES_FOR_TYPES, TokenPayload } from './constants';
+import { redirect } from 'react-router';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -260,4 +261,23 @@ export function getDefaultHomePageForUserOfType({ ruolo, supervisore }: { ruolo:
 	}
 
 	return "/login";
+}
+
+export async function redirectIfUserTypeIsNot(userType: RUOLI) {
+	const token = getTokenDaCookie();
+	if (token === null) {
+		return null;
+	}
+
+	const payload = extractJWTTokenPayload(token);
+	const { ruolo, supervisore } = payload;
+
+	//@ts-ignore
+	if (POSSIBLE_ROUTES_FOR_TYPES[userType].includes(window.location.pathname)) {
+		return null;
+	}
+
+	const defaultHomePage = getDefaultHomePageForUserOfType({ ruolo, supervisore });
+	console.log("redirecting to", defaultHomePage);
+	return redirect(defaultHomePage);
 }
