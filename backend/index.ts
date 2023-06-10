@@ -500,6 +500,21 @@ router.put('/categoria/:id_categoria', authenticateToken, requiresSupervisor, as
 // --------------------------------------------------------------------------------------
 
 router.post('/ordina/:idRistorante', authenticateToken, async (req: Request, res: Response) => {
+  // ottieni token
+  const token = getAuthTokenFromRequest(req);
+  if (token == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+  const infoUtente = jwt.verify(token, secret) as TokenPayload;
+  if (infoUtente == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+  if(infoUtente.ruolo != RUOLI.CAMERIERE) {
+    res.status(403).json({ success: false, data: 'Forbidden' });
+    return;
+  }
   const idRistorante = req.params.idRistorante;
   const codiceTavolo = req.body['codiceTavolo'];
   const elementi = req.body['elementi'] as ElementoConQuantita[];
@@ -623,17 +638,23 @@ router.get('/ordinazioni/:isEvase', authenticateToken, async (req: Request, res:
 })
 
 router.delete('/ordinazione/:idOrdinazione', authenticateToken, async (req: Request, res: Response) => {
+  const token = getAuthTokenFromRequest(req);
+  if (token == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+  const infoUtente = jwt.verify(token, secret) as TokenPayload;
+  if (infoUtente == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+  if(infoUtente.ruolo != RUOLI.CAMERIERE) {
+    res.status(403).json({ success: false, data: 'Forbidden' });
+    return;
+  }
   const idOrdinazione: number = +req.params.idOrdinazione;
   if (idOrdinazione == null) {
     res.status(400).json({ success: false, data: 'Bad request' });
-    return;
-  }
-
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (token == undefined) {
-    res.status(401).json({ success: false, data: 'Unauthorized' });
     return;
   }
 
@@ -661,17 +682,23 @@ router.delete('/ordinazione/:idOrdinazione', authenticateToken, async (req: Requ
 
 // evadi ordinazione
 router.put('/ordinazione/:idOrdinazione', authenticateToken, async (req: Request, res: Response) => {
+  const token = getAuthTokenFromRequest(req);
+  if (token == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+  const infoUtente = jwt.verify(token, secret) as TokenPayload;
+  if (infoUtente == undefined) {
+    res.status(401).json({ success: false, data: 'Unauthorized' });
+    return;
+  }
+  if(infoUtente.ruolo != RUOLI.ADDETTO_CUCINA) {
+    res.status(403).json({ success: false, data: 'Forbidden' });
+    return;
+  }
   const idOrdinazione: number = +req.params.idOrdinazione;
   if (idOrdinazione == null) {
     res.status(400).json({ success: false, data: 'Bad request' });
-    return;
-  }
-
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (token == undefined) {
-    res.status(401).json({ success: false, data: 'Unauthorized' });
     return;
   }
 
