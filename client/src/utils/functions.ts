@@ -133,11 +133,20 @@ export function getOraMinutiDaDate(date: Date | string) {
 }
 
 // prese due date, restituisce la differenza in minuti e ora nel segue formato: hh:mm
-export function getDifferenzaInMinuti(date1: Date | string, date2: Date | string) {
-	const diff = dayjs(date2).diff(dayjs(date1), "minute");
-	const ore = Math.floor(diff / 60);
-	const minuti = diff % 60;
-	return `${addZeroPrefix(ore)}:${addZeroPrefix(minuti)}`;
+export function getDifferenzaTempo(date1: Date | string, date2: Date | string) {
+	const diff = dayjs(date2).diff(dayjs(date1), "second");
+	//const ore = Math.floor(diff / 3600);
+	const minuti = Math.floor((diff % 3600) / 60);
+	const secondi = diff % 60;
+
+	// Verifica se il conteggio ha raggiunto il valore massimo
+	const isMaxReached = minuti >= 59 && secondi >= 59;
+
+	if (isMaxReached) {
+	  return "+1h!";
+	} else {
+	  return `${addZeroPrefix(minuti)}:${addZeroPrefix(secondi)}`;
+	}
 }
 
 export function isValoriNonSettati(obj: Record<string, any>, except?: string[]): boolean {
