@@ -6,7 +6,7 @@ services:
     restart: on-failure
     build: client/.
     ports:
-      - "3001:3000"
+      - "80:3000"
     depends_on:
       - node-backend
   node-backend:

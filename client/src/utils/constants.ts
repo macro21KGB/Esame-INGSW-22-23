@@ -61,7 +61,7 @@ export const ALLERGENI = {
 	SESAMO: "sesamo",
 } as const;
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://209.38.197.162:3000/api";
 
 export interface Result<T> {
 	success: boolean;
