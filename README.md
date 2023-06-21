@@ -53,7 +53,21 @@ Svantaggi
 
 *riassumendo, con iDAO si deve fare una classe per entità con tutti i relativi metodi, si usano gli sql statements, se si vuole cambiare database occorrere riscrivere tutti i DAO per il nuovo database*
 ## Presentazione Finale
+### Allow unsafe origin per QR scan
+Articolo guida per chrome:
 
+https://medium.com/@Carmichaelize/enabling-the-microphone-camera-in-chrome-for-local-unsecure-origins-9c90c3149339
+
+- digitare su chrome: 
+
+> chrome://flags/#unsafely-treat-insecure-origin-as-secure
+
+- aggiungere nelle origin:
+
+> http://ratatouille.bonomo.cloud/
+
+ora se ci si logga con un cameriere ad esempio *salvatore* è possibile fare il qr scan senza problemi di permission alla camera del browser.
+### Power point
 La presentazione deve essere tecnica.
 Lunghezza del PowerPoint con la presentazione di almeno 15 minuti
 ## Statechart

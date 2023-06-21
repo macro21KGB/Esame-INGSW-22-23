@@ -62,6 +62,7 @@ export const ALLERGENI = {
 } as const;
 
 const API_URL = "http://209.38.197.162:3000/api";
+const DEV_API_URL = "http://localhost:3000/api";
 
 export interface Result<T> {
 	success: boolean;
@@ -70,6 +71,12 @@ export interface Result<T> {
 
 export type OrdinazioneConCodice = Ordinazione & { codiceTavolo: string };
 
+export const POSSIBLE_ROUTES_FOR_TYPES = {
+	[RUOLI.CAMERIERE]: ["/ordina", "/ordinazione"],
+	[RUOLI.ADDETTO_CUCINA]: ["/cucina"],
+	[RUOLI.ADMIN]: ["/dashboard"],
+	"SUPERVISORE": ["/supervisore", "/statistiche"]
+} as const;
 
 export interface LoginPayload {
 	token: string;
@@ -77,4 +84,4 @@ export interface LoginPayload {
 	supervisore: boolean;
 }
 
-export { COLORS, API_URL };
+export { COLORS, API_URL, DEV_API_URL };
