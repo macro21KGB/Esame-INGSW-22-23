@@ -61,8 +61,7 @@ export const ALLERGENI = {
 	SESAMO: "sesamo",
 } as const;
 
-const API_URL = "http://209.38.197.162:3000/api";
-const DEV_API_URL = "http://localhost:3000/api";
+const API_URL = import.meta.env.DEV ? "http://localhost:3000/api" : "http://209.38.197.162:3000/api";
 
 export interface Result<T> {
 	success: boolean;
@@ -84,4 +83,4 @@ export interface LoginPayload {
 	supervisore: boolean;
 }
 
-export { COLORS, API_URL, DEV_API_URL };
+export { COLORS, API_URL };

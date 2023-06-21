@@ -66,9 +66,10 @@ const MacroSection = styled.div<{ bgColor: string }>`
     grid-template-columns: 1fr 1fr;
     padding: 1rem;
     gap: 1rem;
+    max-height: 80vh;
     width: 50%;
     padding-top: 2rem;
-    overflow: hidden;
+    overflow-y: auto;
 
     &:before {
         content: "${(props) => props.title}";
@@ -149,7 +150,7 @@ export default function CucinaRoute() {
 
 
             <div id="sections">
-                <MacroSection title="Ordinazioni da evadere" bgColor="red">
+                <MacroSection title="Ordinazioni da evadere" bgColor="#bb0000">
                     {queryOrdinazioni[0].isLoading ? (
                         <p>Caricamento...</p>
                     ) : queryOrdinazioni[0].isError ? (

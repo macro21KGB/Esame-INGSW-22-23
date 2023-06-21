@@ -3,9 +3,11 @@ import { animated, useSpring } from "@react-spring/web";
 import { AppEvents, COLORS } from "../../utils/constants";
 import { useStore } from "../../stores/store";
 import { useNavigate } from "react-router";
-import { rimuoviTokenDaCookie } from "../../utils/functions";
+import { extractJWTTokenPayload, getTokenDaCookie, rimuoviTokenDaCookie } from "../../utils/functions";
 import { toast } from "react-toastify";
 import { logEventToFirebase } from "../../firebase";
+import { useState } from "react";
+import UtenzaItem from "../UtenzaItem";
 
 const DrawerBackground = styled.div`
     position: fixed;
@@ -120,6 +122,7 @@ function Drawer(props: DrawerProps) {
 
 	const setUserInStore = useStore((state) => state.setUser);
 	const navigate = useNavigate();
+	const [userData, _] = useState(extractJWTTokenPayload(getTokenDaCookie()));
 
 	const logout = () => {
 
@@ -164,7 +167,14 @@ function Drawer(props: DrawerProps) {
 						</svg>
 					</CloseModalButton>
 				</DrawerHeader>
-
+				<UtenzaItem utente={{
+					nome: userData?.nome,
+					cognome: userData?.cognome,
+					telefono: "",
+					email: userData?.email,
+					ruolo: userData?.ruolo,
+					supervisore: userData?.supervisore,
+				}} />
 				<DrawerButton>
 					<svg
 						width="40"
