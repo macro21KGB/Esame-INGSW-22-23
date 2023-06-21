@@ -117,13 +117,15 @@ CREATE  OR REPLACE VIEW conto_numero_ordini AS SELECT c.id_conto, c.codice_tavol
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Mario', 'Rossi', 'mario.rossi@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADMIN','3333333333');
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Salvatore', 'Esposito', 'salvo.espo@gmail.com','$2a$12$nzu1NWK7El1q9AeHsa7PFuy16lE740S/KYeGIemtzqcSeiSFfKI8u','CAMERIERE','3333333333');
 INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore, telefono) VALUES ( 'Luigi', 'Verdi', 'luigi.verdi@gmail.com','$2a$12$yiZCgsjbcUuor2lbRk4fBeUjSAXHe4C/bvWExUJhBU8YUWFuw796m','ADDETTO_CUCINA',true,'3333333333');
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore, telefono) VALUES ( 'Mario', 'Cameriere', 'mario.cameriere@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADDETTO_CUCINA',false,'3333333333');
-INSERT INTO "Utente" ( nome, cognome, email,password,ruolo,supervisore, telefono) VALUES ( 'Peppe', 'Cameriere', 'peppe.cameriere@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADDETTO_CUCINA',false,'3333333333');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Mario', 'Cameriere', 'mario.cameriere@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADDETTO_CUCINA','3333333333');
+INSERT INTO "Utente" ( nome, cognome, email,password,ruolo, telefono) VALUES ( 'Peppe', 'Cameriere', 'peppe.cameriere@gmail.com','$2a$12$2bqYtHD/BMJEx68.mYsQQeV27Uf5r.6kSIA69ADAr3DElSqtj21DS','ADDETTO_CUCINA','3333333333');
 INSERT INTO "Ristorante" ( nome, indirizzo, telefono, sito_web, foto_path) VALUES ( 'Ristorante 1', 'Via Roma 1', '3333333333', 'www.ristorante1.it', 'foto1.jpg');
 
 INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 1, 1, true);
 INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 2, 1, false);
 INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 3, 1, false);
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 4, 1, false);
+INSERT INTO "UtenteRistorante" ( id_utente, id_ristorante, is_admin) VALUES ( 5, 1, false);
 
 INSERT INTO "Categoria" ( id_ristorante, nome) VALUES ( 1, 'Primi');
 INSERT INTO "Categoria" ( id_ristorante, nome) VALUES ( 1, 'Secondi');
