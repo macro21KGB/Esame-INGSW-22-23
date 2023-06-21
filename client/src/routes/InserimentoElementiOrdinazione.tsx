@@ -9,7 +9,7 @@ import SlideUpModal from "../components/SlideUpModal";
 import SoftButton from "../components/SoftButton";
 import { Controller } from "../entities/controller";
 import { Categoria, Elemento, ElementoConQuantita } from "../entities/menu";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import { logEventToFirebase } from "../firebase";
 
@@ -78,6 +78,7 @@ const ElementiRiepilogoContainer = styled.div`
 
 export default function InserimentoElementiOrdinazioneRoute() {
 	const controller = Controller.getInstance();
+	const navigate = useNavigate();
 	const { codiceTavolo } = useParams<{ codiceTavolo: string }>();
 
 	const [showModal, setShowModal] = useState(false);
@@ -115,23 +116,13 @@ export default function InserimentoElementiOrdinazioneRoute() {
 	);
 
 	const goBackToPreviousCategory = () => {
+
+		if (categoriaScelta === undefined) {
+			navigate("/");
+		}
+
 		setCategoriaScelta(undefined);
 	};
-
-	const mutationInviaOrdineAllaCucina = useMutation({
-		mutationKey: "inviaOrdineAllaCucina",
-		mutationFn: (data: {
-			codiceTavolo: string;
-			elementi: ElementoConQuantita[];
-			idRistorante: number;
-		}) => {
-			return controller.inviaOrdineAllaCucina(
-				data.codiceTavolo,
-				data.elementi,
-				data.idRistorante,
-			);
-		}
-	});
 
 	const inviaAllaCucina = async () => {
 		if (codiceTavolo === undefined) {

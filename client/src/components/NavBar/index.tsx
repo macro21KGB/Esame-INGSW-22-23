@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { COLORS } from "../../utils/constants";
 import { createPortal } from "react-dom";
 import Drawer from "../Drawer";
+import { Link } from "react-router-dom";
 
 // the state variable accept an array of 1 or more of the following strings: "add", "back", "menu"
 interface NavBarProps {
@@ -112,7 +113,9 @@ function NavBar(props: NavBarProps) {
 
 	return (
 		<NavBarContainer>
-			<h3 style={{ fontFamily: "Pacifico" }}>Ratatouille</h3>
+			<Link to="/">
+				<h3 style={{ fontFamily: "Pacifico" }}>Ratatouille</h3>
+			</Link>
 			{drawerOpen &&
 				createPortal(<Drawer onClose={closeDrawer} />, document.body)}
 			<ButtonsContainer>

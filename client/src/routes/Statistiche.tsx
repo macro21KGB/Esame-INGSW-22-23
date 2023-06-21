@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Cell, Bar, Tooltip } from "recharts";
 import styled from "styled-components"
@@ -23,7 +23,7 @@ const DashboardContainer = styled.div`
 
     height: 100%;
     margin: 0;
-    padding: 0 0.5rem;
+    padding: 0;
 
     #options {
         display: flex;
@@ -72,7 +72,7 @@ export default function StatisticheRoute() {
     const queryUtenti = useQuery(["utenti", "cucina"], async () => {
         if (id === undefined) return [];
         const utenti = await controller.getUtenti(+id);
-        return utenti.filter(utente => utente.ruolo === RUOLI.ADDETTO_CUCINA);
+        return utenti.filter(utente => utente.ruolo === RUOLI.ADDETTO_CUCINA && utente.supervisore === false);
     });
 
     const queryOrdiniEvasi = useQuery(["ordini", "evasi", selectedEmailUser], () => {
@@ -98,6 +98,10 @@ export default function StatisticheRoute() {
         }
     });
 
+    useEffect(() => {
+        inviaRicerca();
+    }, [startDate, endDate]);
+
     const aggiornaTimeSpan = (newRange: { from: string, to: string }) => {
         setStartDate(newRange.from);
         setEndDate(newRange.to);
@@ -110,6 +114,11 @@ export default function StatisticheRoute() {
         } else {
             setEndDate(value);
         }
+    }
+
+    const inviaRicerca = () => {
+        const newRange = { from: startDate, to: endDate };
+        mutationAggiornaRangeDate.mutate(newRange);
     }
 
     return (
@@ -132,7 +141,7 @@ export default function StatisticheRoute() {
 
                 {queryOrdiniEvasi.isLoading && <LoadingCircle loaderPosition="absolute" />}
 
-                {queryOrdiniEvasi.data &&
+                {(queryOrdiniEvasi.data && selectedEmailUser) &&
                     <>
                         <div id="options">
                             <div id="buttons">
@@ -144,10 +153,7 @@ export default function StatisticheRoute() {
                             <div id="time-control">
                                 <input type="date" name="startDate" value={startDate.split("T")[0]} onChange={onChangeInputDate} />
                                 <input type="date" name="endDate" value={endDate?.split("T")[0]} onChange={onChangeInputDate} />
-                                <button onClick={() => {
-                                    const newRange = { from: startDate, to: endDate };
-                                    mutationAggiornaRangeDate.mutate(newRange);
-                                }}>Cerca</button>
+                                <button onClick={inviaRicerca}>Cerca</button>
                             </div>
                         </div>
                         <ResponsiveContainer width="95%" >
