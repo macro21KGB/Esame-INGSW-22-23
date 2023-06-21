@@ -648,7 +648,7 @@ router.delete('/ordinazione/:idOrdinazione', authenticateToken, async (req: Requ
     res.status(401).json({ success: false, data: 'Unauthorized' });
     return;
   }
-  if(infoUtente.ruolo != RUOLI.CAMERIERE) {
+  if(infoUtente.ruolo != RUOLI.CAMERIERE && infoUtente.ruolo != RUOLI.ADDETTO_CUCINA) {
     res.status(403).json({ success: false, data: 'Forbidden' });
     return;
   }

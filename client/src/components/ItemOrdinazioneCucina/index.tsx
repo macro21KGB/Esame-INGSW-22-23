@@ -1,7 +1,7 @@
 import { Ordinazione } from "../../entities/ordinazione";
 import styled from "styled-components";
 import ItemElementoOrdinazione from "../ItemElementoOrdinazione";
-import { getDifferenzaInMinuti, getOraMinutiDaDate } from "../../utils/functions";
+import { getDifferenzaTempo, getOraMinutiDaDate } from "../../utils/functions";
 import { useEffect, useState } from "react";
 import { AppEvents, COLORS } from "../../utils/constants";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -108,7 +108,7 @@ const DateHolder = styled.div`
     padding: 0.5rem;
     background-color: #e1e1e1;
     color: #4D4D4D;
-    min-width: 3rem;
+    min-width: 3.5rem;
 
     & > p {
         font-size: 1.2rem;
@@ -162,7 +162,14 @@ export default function ItemOrdinazione({
 	const [differenzaTempo, setDifferenzaTempo] = useState("");
 
 	useEffect(() => {
-		setDifferenzaTempo(getDifferenzaInMinuti(tempoOrdinazione, new Date()));
+		const updateTime = () => {
+		setDifferenzaTempo(getDifferenzaTempo(tempoOrdinazione, new Date()));
+		};
+		const timer = setInterval(updateTime, 1000);
+		return () => {
+		  clearInterval(timer);
+		};
+
 	}, [tempoOrdinazione]);
 
 	const controller = Controller.getInstance();
