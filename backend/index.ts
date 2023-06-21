@@ -669,14 +669,9 @@ router.delete('/ordinazione/:idOrdinazione', authenticateToken, async (req: Requ
       return;
     }
 
-    const isDeleted = await OrdinazioneDAO.deleteOrdinazione(idOrdinazione);
-
-    if (isDeleted) {
-      res.status(200).json({ success: true, data: 'Ordinazione cancellata' });
-    }
-    else {
-      res.status(400).json({ success: false, data: 'Ordinazione non cancellata' });
-    }
+    await OrdinazioneDAO.deleteOrdinazione(idOrdinazione);
+    res.status(200).json({ success: true, data: 'Ordinazione cancellata' });
+    
   });
 });
 
