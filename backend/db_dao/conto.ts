@@ -74,47 +74,44 @@ export class ContoDAOPostgresDB implements IContoDAO {
         const client = await conn.connect();
         try {
             const queryText = `
-            SELECT c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso 
-            from "Conto" c 
-            JOIN "Ordinazione" o ON o.id_conto = c.id_conto 
-            JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  
-            JOIN "Elemento" e ON e.id_elemento = eo.id_elemento 
-            where eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;`
+      SELECT c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso 
+      FROM "Conto" c 
+      JOIN "Ordinazione" o ON o.id_conto = c.id_conto 
+      JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  
+      JOIN "Elemento" e ON e.id_elemento = eo.id_elemento 
+      WHERE eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;
+    `;
             const result = await client.query<ContiQueryResult>(queryText, [idRistorante]);
 
-
             const conti: Conto[] = [];
+            const elementiOrdinazioneMap: { [key: number]: ElementoConQuantita[] } = {}; // map of id_ordinazione to array of ElementoConQuantita
+            for (const row of result.rows) {
+                const elementiOrdinazione = elementiOrdinazioneMap[row.id_ordinazione] || [];
+                elementiOrdinazione.push(ElementoConQuantita.fromElemento(new Elemento(row.nome, "", row.prezzo, {
+                    allergeni: [],
+                    ingredienti: [],
+                    ordine: 0,
+                }), row.quantita));
+                elementiOrdinazioneMap[row.id_ordinazione] = elementiOrdinazione;
+            }
+
             for (const row of result.rows) {
                 const contoInArray = conti.find(c => c.id_conto === row.id_conto);
-                const elementiOrdinazione = result.rows.filter(r => r.id_ordinazione === row.id_ordinazione).map(r => {
-                    return ElementoConQuantita.fromElemento(new Elemento(r.nome, "", r.prezzo, {
-                        allergeni: [],
-                        ingredienti: [],
-                        ordine: 0,
-                    }), r.quantita)
-                });
+                const elementiOrdinazione = elementiOrdinazioneMap[row.id_ordinazione];
 
                 // se il conto è già presente nell'array, aggiungo l'ordinazione
                 if (contoInArray) {
-                    
                     contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione));
-                }
-                else {
+                } else {
                     const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione, row.id_ordinazione)];
-
                     conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto, row.chiuso));
                 }
-
             }
 
-
-
             return conti;
-
         } catch (err) {
             throw new Error(`Could not get conti. Error: ${err}`);
-        }
-        finally {
+        } finally {
             client.release();
         }
     }

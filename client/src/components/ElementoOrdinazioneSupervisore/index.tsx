@@ -13,6 +13,7 @@ const Container = styled.button`
     padding: 1rem;
     border-radius: 0.5rem;
     line-height: 1.2rem;
+    margin: 0.5rem 0;
 
     
 `;
