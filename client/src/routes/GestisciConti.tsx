@@ -28,7 +28,6 @@ const Content = styled.div`
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    height: 100%;
     padding: 1rem;
 
     #start_paragraph {
@@ -49,11 +48,6 @@ const Content = styled.div`
 const StampaButton = styled.button`
     all: unset;
     
-    position: absolute;
-    bottom: 1rem;
-    left: 1.7rem;
-
-    width: 80%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -160,6 +154,7 @@ export default function GestisciContiRoute() {
                                 return prev + curr.elementi.length;
                             }, 0)}</p>
                         </div>
+
                         {
                             !contoSelezionato.chiuso &&
                             <StampaButton onClick={chiudiEStampaConto}>Chiudi e Stampa Conto</StampaButton>

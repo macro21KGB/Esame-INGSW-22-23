@@ -143,9 +143,9 @@ export function getDifferenzaTempo(date1: Date | string, date2: Date | string) {
 	const isMaxReached = minuti >= 59 && secondi >= 59;
 
 	if (isMaxReached) {
-	  return "+1h!";
+		return "+1h!";
 	} else {
-	  return `${addZeroPrefix(minuti)}:${addZeroPrefix(secondi)}`;
+		return `${addZeroPrefix(minuti)}:${addZeroPrefix(secondi)}`;
 	}
 }
 
