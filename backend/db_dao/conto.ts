@@ -73,7 +73,13 @@ export class ContoDAOPostgresDB implements IContoDAO {
         }
         const client = await conn.connect();
         try {
-            const queryText = `SELECT c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso from "Conto" c JOIN "Ordinazione" o ON o.id_conto = c.id_conto JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  JOIN "Elemento" e ON e.id_elemento = eo.id_elemento where eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;`
+            const queryText = `
+            SELECT c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso 
+            from "Conto" c 
+            JOIN "Ordinazione" o ON o.id_conto = c.id_conto 
+            JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  
+            JOIN "Elemento" e ON e.id_elemento = eo.id_elemento 
+            where eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;`
             const result = await client.query<ContiQueryResult>(queryText, [idRistorante]);
 
 
@@ -90,9 +96,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
 
                 // se il conto è già presente nell'array, aggiungo l'ordinazione
                 if (contoInArray) {
-                    if (contoInArray.ordini.length > 0) {
-                        continue;
-                    }
+                    
                     contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione));
                 }
                 else {
