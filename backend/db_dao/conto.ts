@@ -98,12 +98,13 @@ export class ContoDAOPostgresDB implements IContoDAO {
             for (const row of result.rows) {
                 const contoInArray = conti.find(c => c.id_conto === row.id_conto);
                 const elementiOrdinazione = elementiOrdinazioneMap[row.id_ordinazione];
-
-                // se il conto è già presente nell'array, aggiungo l'ordinazione
-                if (contoInArray) {
-                    contoInArray.ordini.push(new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione));
+                const ordinazioneToPush = new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione, row.id_ordinazione);
+                // se il conto è già presente nell'array e 
+                // non hai già inserto la stessa ordinazione nell'array, aggiungo l'ordinazione
+                if (contoInArray && !contoInArray.ordini.find(o => o.id === ordinazioneToPush.id)) {
+                    contoInArray.ordini.push(ordinazioneToPush);
                 } else {
-                    const ordinazioni = [new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione, row.id_ordinazione)];
+                    const ordinazioni = [ordinazioneToPush];
                     conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto, row.chiuso));
                 }
             }
