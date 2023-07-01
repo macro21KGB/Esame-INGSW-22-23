@@ -64,6 +64,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
             id_conto: number;
             id_ordinazione: number;
             codice_tavolo: string;
+            timestamp: Date;
             id_ristorante: number;
             prezzo: number;
             nome: string;
@@ -74,7 +75,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
         const client = await conn.connect();
         try {
             const queryText = `
-      SELECT c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso 
+      SELECT o.timestamp, c.id_conto, c.chiuso, c.codice_tavolo, c.id_ristorante, e.prezzo, e.nome, eo.quantita, o.evaso, o.id_ordinazione, o.evaso 
       FROM "Conto" c 
       JOIN "Ordinazione" o ON o.id_conto = c.id_conto 
       JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  
@@ -94,11 +95,15 @@ export class ContoDAOPostgresDB implements IContoDAO {
                 }), row.quantita));
                 elementiOrdinazioneMap[row.id_ordinazione] = elementiOrdinazione;
             }
-
+            
+            // NON TOCCARE QUESTO CODICE!!!
             for (const row of result.rows) {
                 const contoInArray = conti.find(c => c.id_conto === row.id_conto);
                 const elementiOrdinazione = elementiOrdinazioneMap[row.id_ordinazione];
-                const ordinazioneToPush = new Ordinazione(row.codice_tavolo, undefined, undefined, row.evaso, elementiOrdinazione, row.id_ordinazione);
+
+                if (elementiOrdinazione === undefined) continue;
+
+                const ordinazioneToPush = new Ordinazione(row.codice_tavolo, row.timestamp, undefined, row.evaso, elementiOrdinazione, row.id_ordinazione);
                 // se il conto è già presente nell'array e 
                 // non hai già inserto la stessa ordinazione nell'array, aggiungo l'ordinazione
                 if (contoInArray && !contoInArray.ordini.find(o => o.id === ordinazioneToPush.id)) {
@@ -107,6 +112,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
                     const ordinazioni = [ordinazioneToPush];
                     conti.push(new Conto(new Date(), row.codice_tavolo, ordinazioni, row.id_conto, row.chiuso));
                 }
+                delete elementiOrdinazioneMap[row.id_ordinazione];
             }
 
             return conti;
