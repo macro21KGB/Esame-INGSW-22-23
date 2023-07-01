@@ -72,14 +72,14 @@ export function scriviContoSuPDF(conto: Conto) {
 	doc.text(`Data: ${dataConOraAttuale}`, 14, 38);
 
 	contoAttuale.ordini.forEach((ordinazione, index) => {
-		doc.text(`Ordinazione ${index + 1}`, 14, 60 + index * 6);
-		doc.text(`Totale: €${ordinazione.getImporto()}`, 14, 66 + index * 6);
-		doc.text(`Totale elementi: ${ordinazione.getTotaleElementi()}\n\n`, 14, 72 + index * 6);
+		doc.text(`Ordinazione ${index + 1}`, 14, 10 + index * 6);
+		doc.text(`Totale: €${ordinazione.getImporto()}`, 14, 18 + index * 6);
+		doc.text(`Totale elementi: ${ordinazione.getTotaleElementi()}\n\n`, 14, 32 + index * 6);
 		ordinazione.elementi.forEach((elemento, index2) => {
-			doc.text(`Elemento ${index2 + 1}`, 14, 78 + index * 8 + index2 * 30);
-			doc.text(`Nome: ${elemento.nome}`, 14, 84 + index * 8 + index2 * 30);
-			doc.text(`Prezzo: €${elemento.prezzo}`, 14, 90 + index * 8 + index2 * 30);
-			doc.text(`Quantità: ${elemento.quantita}`, 14, 96 + index * 8 + index2 * 30);
+			doc.text(`Elemento ${index2 + 1}`, 14, 40 + index * 8 + index2 * 20);
+			doc.text(`Nome: ${elemento.nome}`, 14, 50 + index * 8 + index2 * 30);
+			doc.text(`Prezzo: €${elemento.prezzo}`, 14, 60 + index * 8 + index2 * 30);
+			doc.text(`Quantità: ${elemento.quantita}`, 14, 70 + index * 8 + index2 * 30);
 		});
 	});
 

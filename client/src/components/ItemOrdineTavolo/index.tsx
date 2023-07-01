@@ -60,7 +60,7 @@ export default function ItemOrdineTavolo({ conto, onClick }: ItemOrdineTavoloPro
     return (
         <Container onClick={onClick}>
             <p>Tavolo {conto.codice_tavolo}</p>
-            <span>{getOraMinutiDaDate(conto.data)}</span>
+            <span>{getOraMinutiDaDate(conto.ordini[0].timestamp)}</span>
             <ContoLabel chiuso={conto.chiuso}>{conto.chiuso ? "CONTO CHIUSO" : "IN CORSO"}</ContoLabel>
         </Container>
     )

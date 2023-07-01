@@ -24,7 +24,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
 
         try {
             const result = await client.query(
-                `SELECT * FROM "Conto" WHERE codice_tavolo = $1 AND id_ristorante = $2`,
+                `SELECT * FROM "Conto" WHERE codice_tavolo = $1 AND id_ristorante = $2 and chiuso = 'f'`,
                 [codiceTavolo, idRistorante]
             );
             if (result.rows.length > 0) {
@@ -95,7 +95,7 @@ export class ContoDAOPostgresDB implements IContoDAO {
                 }), row.quantita));
                 elementiOrdinazioneMap[row.id_ordinazione] = elementiOrdinazione;
             }
-            
+
             // NON TOCCARE QUESTO CODICE!!!
             for (const row of result.rows) {
                 const contoInArray = conti.find(c => c.id_conto === row.id_conto);
