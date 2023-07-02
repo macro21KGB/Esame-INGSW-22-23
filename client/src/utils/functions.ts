@@ -4,6 +4,7 @@ import jsPDF from 'jspdf';
 import dayjs from 'dayjs';
 import { DateString, InfoGiorno, POSSIBLE_ROUTES_FOR_TYPES, TokenPayload } from './constants';
 import { redirect } from 'react-router';
+import { func } from 'prop-types';
 
 // This function checks if a telephone number is valid using a regular expression
 export function verificaNumeroTelefono(numeroTelefono: string): boolean {
@@ -56,9 +57,10 @@ export function getTokenDaCookie(): string {
  * @param conto conto da scrivere su pdf
  */
 export function scriviContoSuPDF(conto: Conto) {
-
-	const doc = new jsPDF();
-
+	const w = 200;
+	const h = 380;
+	const doc = new jsPDF('p', 'mm', [w, h]);//new jsPDF();
+	
 	const contoAttuale = Conto.fromContoJSON(conto);
 
 	doc.setFontSize(20);
@@ -66,21 +68,83 @@ export function scriviContoSuPDF(conto: Conto) {
 	doc.text("Conto", 14, 22);
 	doc.setFontSize(12);
 	doc.text(`Numero tavolo: ${contoAttuale.codice_tavolo}`, 14, 32);
-
 	const dataConOraAttuale = dayjs(contoAttuale.data).format("DD/MM/YYYY HH:mm:ss");
+
+	
 
 	doc.text(`Data: ${dataConOraAttuale}`, 14, 38);
 
-	contoAttuale.ordini.forEach((ordinazione, index) => {
-		doc.text(`Ordinazione ${index + 1}`, 14, 10 + index * 6);
-		doc.text(`Totale: €${ordinazione.getImporto()}`, 14, 18 + index * 6);
-		doc.text(`Totale elementi: ${ordinazione.getTotaleElementi()}\n\n`, 14, 32 + index * 6);
-		ordinazione.elementi.forEach((elemento, index2) => {
-			doc.text(`Elemento ${index2 + 1}`, 14, 40 + index * 8 + index2 * 20);
-			doc.text(`Nome: ${elemento.nome}`, 14, 50 + index * 8 + index2 * 30);
-			doc.text(`Prezzo: €${elemento.prezzo}`, 14, 60 + index * 8 + index2 * 30);
-			doc.text(`Quantità: ${elemento.quantita}`, 14, 70 + index * 8 + index2 * 30);
+	doc.text(`Importo totale: ${contoAttuale.getImportoTotale()}`, 14, 48);
+	doc.text(`Totale elementi: ${contoAttuale.getTotaleElementi()}`, 14, 58);
+	
+	// SIMLE FACE
+	const origin = [w/2 , h/2 -50];
+	const radius = 50;
+	// head
+	doc.circle(origin[0], origin[1], radius);
+
+	// eye balls
+	const leftEyeCenter = [origin[0] - radius / 3, origin[1] - radius / 3];
+	const rightEyeCenter = [origin[0] + radius / 3, origin[1] - radius / 3];
+	const eyeRadius = radius / 10;
+	doc.circle(leftEyeCenter[0], leftEyeCenter[1], eyeRadius);
+	doc.circle(rightEyeCenter[0], rightEyeCenter[1], eyeRadius);
+	
+	let prevX, prevY;
+	let x,y;
+	// smile
+	let xSpread = 1.2;
+	for(let i = 0; i <= Math.PI; i+= Math.PI/20) {
+		x= origin[0] - (radius/2* xSpread) * Math.cos(i);
+		y= origin[1] - (radius/2 +5) * Math.sin(-i);
+		//doc.circle(x, y, 1);
+		if (prevX && prevY && x && y) {
+			doc.line(prevX, prevY, x, y);
+		}
+		prevX = x;
+		prevY = y;
+	}
+	doc.addPage();
+
+	const offsetX = 14;
+	const offsetY = 14;
+	const lineSpacing = 10;
+	let sum_height_page = offsetY;
+
+	function setBold() {
+		doc.setFont('','bold');	
+	}
+
+	function setNormal() {
+		doc.setFont('','normal');
+	}
+	function appendLine(text: string, offsetX : number = 14) {
+		doc.text(text, offsetX, sum_height_page);
+		sum_height_page += lineSpacing;
+		if(sum_height_page > h) {
+			sum_height_page = offsetY;
+			doc.addPage();
+		}
+	}
+
+	contoAttuale.ordini.forEach((ordinazione, ord_index) => {
+		setBold();
+		appendLine(`Ordinazione ${ord_index + 1}:`);
+		setNormal();
+		ordinazione.elementi.forEach((elemento, el_index) => {
+			setBold();
+			appendLine(`Elemento ${el_index + 1}:`, offsetX*2);
+			setNormal();
+			appendLine(`- Nome: ${elemento.nome}`, offsetX*3);
+			appendLine(`- Prezzo: €${elemento.prezzo}`, offsetX*3);
+			appendLine(`- Quantità: ${elemento.quantita}`, offsetX*3);
 		});
+		
+		setBold();
+		appendLine(`- Totale ordine: €${ordinazione.getImporto()}`);
+		appendLine(`- Totale elementi ordinati: ${ordinazione.getTotaleElementi()}`);
+		setNormal();
+		sum_height_page += lineSpacing;
 	});
 
 	doc.save(`contoAttuale_${contoAttuale.codice_tavolo}_${contoAttuale.data}.pdf`);
