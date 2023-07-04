@@ -73,7 +73,10 @@ const ElementiRiepilogoContainer = styled.div`
 	margin: 0;
 	padding: 0.5rem;
 	min-height: 15rem;
+	max-height: 15rem;
 	overflow-y: auto;
+	width: 100%;
+	text-align: center;
 	`;
 
 export default function InserimentoElementiOrdinazioneRoute() {

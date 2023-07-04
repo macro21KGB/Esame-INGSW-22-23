@@ -80,7 +80,9 @@ export class ContoDAOPostgresDB implements IContoDAO {
       JOIN "Ordinazione" o ON o.id_conto = c.id_conto 
       JOIN "ElementoConQuantita" eo ON eo.id_ordinazione = eo.id_ordinazione  
       JOIN "Elemento" e ON e.id_elemento = eo.id_elemento 
-      WHERE eo.id_ordinazione = o.id_ordinazione AND id_ristorante = $1;
+      WHERE eo.id_ordinazione = o.id_ordinazione 
+      AND id_ristorante = $1
+      AND c.data >= NOW() - INTERVAL '24 HOURS';
     `;
             const result = await client.query<ContiQueryResult>(queryText, [idRistorante]);
 
