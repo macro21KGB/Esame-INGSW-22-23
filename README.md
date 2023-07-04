@@ -1,3 +1,5 @@
+Progetto iniziato 19 nov 2022, consegnato il 4 luglio 2023. 7 mesi di duro lavoro
+
 - Mettere le proprie Revisioni nello schema
 
 Strutturato in quattro parti
