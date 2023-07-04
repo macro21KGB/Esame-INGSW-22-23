@@ -76,7 +76,7 @@ export function scriviContoSuPDF(conto: Conto) {
 
 	doc.text(`Importo totale: ${contoAttuale.getImportoTotale()}`, 14, 48);
 	doc.text(`Totale elementi: ${contoAttuale.getTotaleElementi()}`, 14, 58);
-	
+	/*
 	// SIMLE FACE
 	const origin = [w/2 , h/2 -50];
 	const radius = 50;
@@ -104,6 +104,7 @@ export function scriviContoSuPDF(conto: Conto) {
 		prevX = x;
 		prevY = y;
 	}
+	*/
 	doc.addPage();
 
 	const offsetX = 14;
