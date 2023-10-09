@@ -1,4 +1,12 @@
-Progetto iniziato 19 nov 2022, consegnato il 4 luglio 2023. 7 mesi di duro lavoro
+Progetto iniziato 19 nov 2022, consegnato il 4 luglio 2023. 7 mesi di duro lavoro.
+Presentato il 5 ottobre 2023 dopo che il 20 settembre non c'era cutugno.
+
+## Segnaposti 
+![WhatsApp Image 2023-10-05 at 16 20 34](https://github.com/macro21KGB/Esame-INGSW-22-23/assets/75626033/f6fbf5ab-e092-4bdd-ba7c-f0050608c255)
+
+## Rip ratatouille
+
+![WhatsApp Image 2023-10-09 at 22 08 41](https://github.com/macro21KGB/Esame-INGSW-22-23/assets/75626033/31e6e6f9-8e7f-447e-91e5-1e537bb39756)
 
 - Mettere le proprie Revisioni nello schema
 
