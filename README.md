@@ -1,5 +1,9 @@
-# Esame di INGEGNERIA DEL SOFTWARE a.s. 22-23 UNIVERSITÀ DEGLI STUDI DI NAPOLI FEDERICO II 
+# Esame di INGEGNERIA DEL SOFTWARE a.s. 22-23  
 #### Documentazione completa
+UNIVERSITÀ DEGLI STUDI DI NAPOLI FEDERICO II - CORSO DI LAUREA IN INFORMATICA INSEGNAMENTO DI
+INGEGNERIA DEL SOFTWARE ANNO ACCADEMICO 2022/2023 - Specifica, progettazione, implementazione e validazione del
+Sistema Informativo “Ratatouille23”
+
 [See full documentation](https://github.com/macro21KGB/Esame-INGSW-22-23/blob/0a892bc2036aad68a2edb86f2f5b047fca5ade6e/DOC_ING_SW_2022_23.pdf)
 #### Autori
 - Mario De Luca N86/3911
